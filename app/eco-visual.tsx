@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useRef,useSyncExternalStore} from 'react';
-import {Recycle,Leaf,BatteryMedium,Sparkles,Pause} from 'lucide-react';
+import {Recycle,Leaf,PackageCheck,Sparkles,Pause} from 'lucide-react';
 
 export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
@@ -26,7 +26,7 @@ export function EcoScene(){
   </div></div>
   <div className="floating-label label-recycle"><span><Recycle/></span><b>Tái chế</b></div>
   <div className="floating-label label-leaf"><span><Leaf/></span><b>Sống xanh</b></div>
-  <div className="floating-label label-special"><span><BatteryMedium/></span><b>Thu gom riêng</b></div>
+  <div className="floating-label label-special"><span><PackageCheck/></span><b>Thu gom riêng</b></div>
  </div>;
 }
 

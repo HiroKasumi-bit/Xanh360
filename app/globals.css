@@ -264,6 +264,14 @@
     font-weight: 400;
   }
 
+  /* Underlines sit clear of the dot below (ạ, ụ, ị) so "dụng" never reads "dung". text-underline-offset is inherited, so
+     underlined text buttons (.text-button) and inline links in paragraphs get the same offset; thickness is not. */
+  a,
+  button {
+    text-underline-offset: .24em;
+    text-decoration-thickness: 1px;
+  }
+
   a {
     color: inherit;
   }
@@ -319,9 +327,15 @@ button {
   cursor: pointer;
 }
 
-button:disabled {
+button:disabled,
+button.primary[aria-disabled=true] {
   opacity: .55;
   cursor: not-allowed;
+}
+
+/* Busy buttons keep focus (aria-disabled rather than disabled) and say they are working. */
+button[aria-busy=true] {
+  cursor: progress;
 }
 
 button,
@@ -708,8 +722,9 @@ header {
   white-space: nowrap;
 }
 
-/* Wider screens show the level names as badges, so the range itself is plain text. */
-@media (min-width: 641px) {
+/* Wider screens show the level names as badges, so the range itself is plain text. Short landscape phones keep the
+   compact phone chip (see the block after the phone rules). */
+@media (min-width: 641px) and (min-height: 501px), (min-width: 641px) and (orientation: portrait) {
   .city-readings .city-aqi-value.aqi-badge {
     padding: 0;
     background: none;
@@ -776,6 +791,11 @@ header {
   height: 15px;
 }
 
+/* While a refresh runs the buttons stay focusable (aria-disabled, not disabled) and ignore presses. */
+.city-widget [aria-disabled=true] {
+  cursor: progress;
+}
+
 .city-details summary {
   list-style: none;
   cursor: pointer;
@@ -816,7 +836,7 @@ header {
 }
 
 .city-details-body a {
-  text-decoration: underline;
+  text-decoration-line: underline;
 }
 
 .city-overview {
@@ -1264,6 +1284,7 @@ header {
   border: 1px solid var(--border);
   padding: 18px 32px 18px 18px;
   align-items: center;
+  align-content: start;
   border-radius: var(--r-lg);
   transition: transform var(--dur-base) var(--ease-spring);
 }
@@ -1462,13 +1483,25 @@ header {
   width: min(70%, 300px);
 }
 
+/* A result is taller than a question: about the height of the shortest results (measured), so the card grows a little
+   at most instead of tripling. */
+.result-skeleton.is-result {
+  min-height: 390px;
+}
+
+.result-skeleton .skeleton-sign {
+  height: 112px;
+  margin-bottom: 10px;
+  border-radius: var(--r-lg);
+}
+
 .skeleton-choices {
   display: flex;
   gap: 10px;
 }
 
 .skeleton-choices > [data-slot=skeleton] {
-  width: 80px;
+  width: 104px;
   height: 44px;
   border-radius: var(--r-sm);
 }
@@ -1600,7 +1633,7 @@ header {
   line-height: 1.5;
   margin-top: 14px;
   color: var(--green-600);
-  text-decoration: underline;
+  text-decoration-line: underline;
 }
 
 /* An atomic inline box does not inherit the link underline, so the check date reads as metadata. */
@@ -1643,9 +1676,14 @@ header {
   box-shadow: var(--elev-pressed);
 }
 
+/* The spinner sits in the button's left padding, so the pressed button keeps its width and "Chưa biết" does not move. */
 .choices .btn-outline .spin {
+  position: absolute;
+  top: 50%;
+  left: 8px;
   width: 16px;
   height: 16px;
+  margin-top: -8px;
 }
 
 .question-panel legend {
@@ -1662,7 +1700,9 @@ header {
 }
 
 .choices .btn-outline {
-  min-width: 80px;
+  position: relative;
+  min-width: 104px;
+  padding-inline: 28px;
 }
 
 /* WasteSign: a vinyl bin sticker. A category band runs down the left edge, the icon is embossed on a raised plate, and the sticker sits on the card with a thin contact shadow. */
@@ -1948,10 +1988,20 @@ textarea {
 /* Dialog containers */
 /* The shell (paper surface, soft border, --elev-3, scrim, the one scroller, the sticky close strip, --dialog-pad) lives in
    components/ui/dialog.tsx and alert-dialog.tsx. On phones the same shells become bottom sheets (see the 640px block). */
-/* shadcn titles use leading-none; stacked Vietnamese marks need room when a title wraps. */
+/* Every dialog title is on the h2 step of the scale, so it stands above the h3 sections inside (shadcn's text-lg/600
+   made "Điều kiện tiếp nhận" as large as the title). shadcn titles use leading-none; stacked Vietnamese marks need room
+   when a title wraps. */
 [data-slot=dialog-title],
 [data-slot=alert-dialog-title] {
+  font-size: var(--fs-h2);
+  font-weight: 700;
   line-height: 1.3;
+  letter-spacing: var(--tr-h2);
+}
+
+/* The dialog shells animate only opacity and transform (their keyframes); nothing else on them transitions. */
+:is([data-slot=dialog-overlay], [data-slot=dialog-content], [data-slot=alert-dialog-overlay], [data-slot=alert-dialog-content]) {
+  transition-property: opacity, transform;
 }
 
 /* The content's flex/grid gap sets the rhythm, so element margins from the base layer are removed. Class rules further down still win. */
@@ -1974,6 +2024,12 @@ textarea {
   margin-inline: calc(-1 * var(--dialog-pad));
   padding: 0 calc(var(--dialog-pad) + 44px) 6px var(--dialog-pad);
   background: var(--paper-raised);
+}
+
+/* Content scrolled under the header: a hairline and a soft shadow under the sticky title separate the two. */
+[data-slot=dialog-content][data-scrolled] > [data-slot=dialog-title],
+[data-slot=dialog-content][data-scrolled] > .photo-title {
+  box-shadow: 0 1px 0 var(--line-soft), 0 8px 12px -10px rgb(16 58 42 / .35);
 }
 
 /* The sticky title carries its own 6px, so its description sits right under it. */
@@ -2142,7 +2198,7 @@ textarea {
 .position-actions a,
 .position-actions button {
   font-size: var(--fs-caption);
-  text-decoration: underline;
+  text-decoration-line: underline;
 }
 
 .location-divider {
@@ -2659,7 +2715,7 @@ footer .text-button {
 @media (hover: hover) and (pointer: fine) {
   /* Shared text, buttons and badges */
   .text-button:hover {
-    text-decoration: underline;
+    text-decoration-line: underline;
   }
 
   .primary:hover {
@@ -2731,9 +2787,13 @@ footer .text-button {
     grid-template-columns: 1fr;
   }
 
-  /* Collection points */
+  .result-skeleton.is-result {
+    min-height: 680px;
+  }
+
+  /* Collection points: wide enough that "Toàn TP. Hồ Chí Minh" and "Cá nhân / hộ gia đình" stay on one line. */
   .point-layout {
-    grid-template-columns: 230px 1fr;
+    grid-template-columns: 264px minmax(0, 1fr);
   }
 }
 
@@ -2745,13 +2805,9 @@ footer .text-button {
     --fs-wordmark: 1.375rem;
   }
 
-  /* Page shell: 16px gutters, and room at the bottom for the fixed tab bar. */
-  html {
-    scroll-padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
-  }
-
+  /* Page shell: 16px gutters (the room for the bottom tab bar is added in the next block). */
   .shell {
-    padding: 0 max(16px, env(safe-area-inset-right)) calc(var(--tabbar-h) + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
   }
 
   /* Site header and brand: two compact rows, brand and location first, then the weather chip with the motion toggle beside it. */
@@ -2802,15 +2858,15 @@ footer .text-button {
     display: none;
   }
 
-  /* City weather chip: fills the second row beside the motion toggle, kept to one line; the level names move to the details. */
+  /* City weather chip: fills the second row beside the motion toggle; the level names move to the details. */
   .city-widget {
     flex: 1;
     min-width: 0;
+    padding-left: 12px;
   }
 
   .city-readings {
     flex: 1;
-    flex-wrap: nowrap;
   }
 
   /* The chip starts at the left gutter now, so its details open from its left edge across the screen. */
@@ -2819,65 +2875,6 @@ footer .text-button {
     left: 0;
     width: calc(100vw - 32px);
     max-width: none;
-  }
-
-  .city-aqi-levels {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  /* Navigation tabs: a bottom tab bar with four equal columns, the icon over a 12px label, 56px plus the home-indicator
-     inset. It is still the Radix tablist, so Tab reaches the active tab and the arrow keys, Home and End move between
-     tabs. The material lives in visuals.css. */
-  .nav-tabs {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 40;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    width: auto;
-    max-width: none;
-    margin: 0;
-    padding: 0 max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
-    gap: 0;
-    border-radius: 0;
-    overflow: visible;
-  }
-
-  .nav-tabs [role=tab] {
-    flex-direction: column;
-    gap: 4px;
-    height: var(--tabbar-h);
-    min-height: 0;
-    min-width: 0;
-    padding: 0 2px;
-    border-radius: var(--r-md);
-    font-size: var(--fs-caption);
-    line-height: 1.25;
-  }
-
-  .nav-tabs [role=tab] svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  /* An inset ring, so the bar's edges and the screen edge never clip it. */
-  .nav-tabs [role=tab]:focus-visible {
-    outline-offset: -4px;
-  }
-
-  /* The sliding pill (TabPill in app/waste-app.tsx) becomes a 60x30 lozenge behind the active tab's icon. */
-  .tab-pill {
-    height: 30px;
-    translate: var(--pill-x, 0) 5px;
-    border-radius: 0;
-    clip-path: inset(0 calc(50% - 30px) round 15px);
   }
 
   /* Page intro and hero */
@@ -3090,9 +3087,13 @@ footer .text-button {
     padding: 20px;
   }
 
-  /* A question wraps to more lines on a phone, so its placeholder is taller too. */
+  /* A question wraps to more lines on a phone, so its placeholder is taller too; a result stacks into one tall column. */
   .result-skeleton {
     min-height: 184px;
+  }
+
+  .result-skeleton.is-result {
+    min-height: 800px;
   }
 
   .source-panel {
@@ -3169,7 +3170,7 @@ footer .text-button {
     inset: auto 0 0;
     translate: none;
     max-width: none;
-    max-height: calc(100dvh - 24px);
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top) + 8px));
     border-width: 1px 0 0;
     border-radius: 24px 24px 0 0;
     --tw-enter-opacity: 1;
@@ -3254,6 +3255,102 @@ footer .text-button {
   }
 }
 
+/* Phones, and phones held sideways (short landscape screens): the bottom tab bar, so navigation stays on screen however
+   long the page is, and the compact weather chip. */
+@media (max-width: 640px), (orientation: landscape) and (max-height: 500px) {
+  /* Page shell: room at the bottom for the fixed tab bar. */
+  html {
+    scroll-padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
+  }
+
+  .shell {
+    padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  }
+
+  /* City weather chip: one line when it fits. A long reading (two three-digit AQI values) wraps the badge under the
+     temperature instead of running under the refresh button. The range becomes the badge, coloured by the higher level;
+     the level names move to the details and "US" to screen readers, so the accessible text stays "US AQI …". */
+  /* The two 44px buttons sit edge to edge (their icons are small, so they still read as separate), which leaves the
+     reading room for "27–31°C AQI 180–320" on one line from 360px up. */
+  .city-widget {
+    gap: 0;
+  }
+
+  .city-icon {
+    margin-right: 6px;
+  }
+
+  .city-readings {
+    flex-wrap: wrap;
+    gap: 2px 6px;
+    margin-right: 4px;
+  }
+
+  .city-sep {
+    display: none;
+  }
+
+  .city-aqi-levels,
+  .city-aqi-us {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Navigation tabs: a bottom tab bar with four equal columns, the icon over a 12px label, 56px plus the home-indicator
+     inset. It is still the Radix tablist, so Tab reaches the active tab and the arrow keys, Home and End move between
+     tabs. The material lives in visuals.css. */
+  .nav-tabs {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0 max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
+    gap: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .nav-tabs [role=tab] {
+    flex-direction: column;
+    gap: 4px;
+    height: var(--tabbar-h);
+    min-height: 0;
+    min-width: 0;
+    padding: 0 2px;
+    border-radius: var(--r-md);
+    font-size: var(--fs-caption);
+    line-height: 1.25;
+  }
+
+  .nav-tabs [role=tab] svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* An inset ring, so the bar's edges and the screen edge never clip it. */
+  .nav-tabs [role=tab]:focus-visible {
+    outline-offset: -4px;
+  }
+
+  /* The sliding pill (TabPill in app/waste-app.tsx) becomes a 60x30 lozenge behind the active tab's icon. */
+  .tab-pill {
+    height: 30px;
+    translate: var(--pill-x, 0) 5px;
+    border-radius: 0;
+    clip-path: inset(0 calc(50% - 30px) round 15px);
+  }
+}
+
 /* Admin on phones. */
 @media (max-width: 600px) {
   /* Admin */
@@ -3288,10 +3385,29 @@ footer .text-button {
   }
 }
 
-/* Narrow phones: the weather icon gives way so the chip stays on one line. */
-@media (max-width: 380px) {
+/* Narrow phones: the weather icon gives way so the reading has room on one line. */
+@media (max-width: 420px) {
   .city-icon {
     display: none;
+  }
+}
+
+/* Very narrow phones, and small phones held sideways (where the weather chip shares the one header row): "Thử lại"
+   keeps only its icon (the word stays its accessible name), so "Chưa có dữ liệu" fits on one line. */
+@media (max-width: 359px), (orientation: landscape) and (max-height: 500px) and (max-width: 700px) {
+  .city-retry {
+    justify-content: center;
+    min-width: 44px;
+    padding: 0;
+  }
+
+  .city-retry-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
@@ -3364,9 +3480,151 @@ footer .text-button {
   }
 }
 
-/* Phones in landscape: the camera stage fits the screen height and the shutter moves to a rail on the right, so it is on
-   screen together with the guide. Last, so it wins over the portrait phone rules on small landscape phones. */
+/* Under 360px the half cards are too narrow for the icon and a two-word title side by side: the icon takes its own row
+   (with the arrow), and the title and description run the full width below it. The primary row gives its text a little
+   more room too. */
+@media (max-width: 359px) {
+  .capture-card.capture-primary {
+    column-gap: 12px;
+    padding-right: 36px;
+  }
+
+  .capture-card.capture-primary > svg {
+    right: 12px;
+  }
+
+  .capture-card:not(.capture-primary) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 12px 14px;
+  }
+
+  .capture-card:not(.capture-primary) > svg {
+    top: 16px;
+    right: 12px;
+  }
+}
+
+/* Phones in landscape. Last, so it wins over the portrait phone rules on small landscape phones.
+   The header is one row (brand, location, weather, motion) without the tagline; the chips may shrink and wrap inside
+   themselves rather than push a second header row. The camera stage fits the screen height and the shutter moves to a
+   rail on the right, so it is on screen together with the guide. */
 @media (orientation: landscape) and (max-height: 500px) {
+  .shell {
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-left: max(16px, env(safe-area-inset-left));
+  }
+
+  .site-header {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: max(8px, env(safe-area-inset-top)) 0 8px;
+  }
+
+  .brand {
+    flex-shrink: 0;
+    gap: 8px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .brand-symbol {
+    width: 39px;
+    height: 39px;
+  }
+
+  .brand-symbol svg {
+    width: 27px;
+  }
+
+  .location-button {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 6px 12px 6px 10px;
+    gap: 6px;
+    font-size: var(--fs-chip);
+  }
+
+  .location-button svg:last-child {
+    display: none;
+  }
+
+  .header-tools {
+    flex: 0 1 auto;
+    gap: 8px;
+  }
+
+  .city-widget {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding-left: 12px;
+  }
+
+  .city-icon {
+    display: none;
+  }
+
+  .desktop-break {
+    display: none;
+  }
+
+  /* A shorter bottom bar: 44px, the icon beside its label (as phone tab bars do sideways), the pill behind both. */
+  :root {
+    --tabbar-h: 44px;
+  }
+
+  .nav-tabs [role=tab] {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .nav-tabs [role=tab] svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tab-pill {
+    translate: var(--pill-x, 0) 7px;
+    clip-path: inset(0 max(0px, calc(50% - 76px)) round 15px);
+  }
+
+  /* Capture cards as compact rows: the icon beside the title and its line, so all three sit above the tab bar. */
+  .capture-actions {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .capture-actions > .capture-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: center;
+    align-items: center;
+    gap: 0 12px;
+    min-height: 64px;
+    padding: 10px 34px 10px 12px;
+  }
+
+  .capture-actions > .capture-card > .capture-card-icon {
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+  }
+
+  .capture-card > b,
+  .capture-card > span:not(.capture-card-icon) {
+    grid-column: 2;
+  }
+
+  .capture-actions > .capture-card > svg {
+    top: 50%;
+    right: 12px;
+    width: 14px;
+    height: 14px;
+    translate: 0 -50%;
+  }
+
   .camera-stage {
     --hint-space: 48px;
     --shutter-space: 14px;

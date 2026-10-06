@@ -173,8 +173,11 @@ body {
   display: inline-flex;
 }
 
-/* Hero: deep forest lit by one key light from the top right */
+/* Hero: deep forest lit by one key light from the top right. Its headline can take focus (when a button opens the
+   search tab), so the ring switches to sprout on the dark surface. */
 .hero-intro {
+  --focus-ring: var(--focus-ring-on-dark);
+  --focus-halo: var(--focus-halo-on-dark);
   position: relative;
   display: grid;
   grid-template-columns: 1.13fr 1fr;
@@ -550,6 +553,12 @@ body {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2), 0 4px 10px -4px rgb(23 105 76 / .55);
 }
 
+/* An unavailable primary button lies flat, so it does not look pressable. */
+.primary:disabled,
+.primary[aria-disabled=true] {
+  box-shadow: none;
+}
+
 .quick button {
   background: var(--paper-raised);
   border-color: var(--line);
@@ -706,6 +715,24 @@ body {
   }
 }
 
+/* The enter/exit keyframes of tw-animate-css (dialogs, sheets, selects) also animate filter: blur(), which keeps the
+   whole animation off the compositor even at blur(0). The same keyframes without the filter: only opacity and
+   transform move. Tailwind writes its theme keyframes at the end of globals.css, and this file is imported after it,
+   so these definitions are the last ones and win. */
+@keyframes enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
+  }
+}
+
+@keyframes exit {
+  to {
+    opacity: var(--tw-exit-opacity, 1);
+    transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
+  }
+}
+
 /* Hover only where a real pointer can hover, so a tap never leaves anything stuck in its hover state. Cards lift 2px
    and fade in a pre-drawn shadow; rows take a tint and nudge their arrow 3px; buttons and chips firm up their edge. */
 @media (hover: hover) and (pointer: fine) {
@@ -797,7 +824,7 @@ body {
   transition: translate var(--dur-base) var(--ease-spring);
 }
 
-.primary:not(:disabled):active,
+.primary:not(:disabled, [aria-disabled=true]):active,
 .btn-outline:not(:disabled):active,
 .icon-button:not(:disabled):active,
 .text-button:not(:disabled):active,
@@ -964,36 +991,6 @@ body {
     border-radius: var(--r-sm);
   }
 
-  /* The tab list is fixed to the bottom, so its row in the flow is only a gap under the header. */
-  .nav-line {
-    margin: 0 0 12px;
-  }
-
-  /* Bottom tab bar: frosted paper over the page, a bright top edge and a soft shadow cast upwards. */
-  .nav-line .nav-tabs {
-    background: rgb(255 253 248 / .82);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    backdrop-filter: blur(18px) saturate(140%);
-    border-top: 1px solid var(--line-soft);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(16 58 42 / .22);
-  }
-
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .nav-line .nav-tabs {
-      background: rgb(255 253 248 / .97);
-    }
-  }
-
-  .nav-tabs [role=tab][data-state=active] {
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .tab-pill {
-    background: linear-gradient(180deg, #dcebd6, var(--green-100));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
-  }
-
   .hero-intro {
     border-radius: var(--r-xl);
     margin: 0 0 14px;
@@ -1052,6 +1049,40 @@ body {
   }
 }
 
+/* Phones, and phones held sideways: the tab list is a frosted bottom bar (layout in globals.css). The paper is nearly
+   opaque, so text scrolling under the short bar does not compete with its labels. */
+@media (max-width: 640px), (orientation: landscape) and (max-height: 500px) {
+  /* The tab list is fixed to the bottom, so its row in the flow is only a gap under the header. */
+  .nav-line {
+    margin: 0 0 12px;
+  }
+
+  /* Bottom tab bar: frosted paper over the page, a bright top edge and a soft shadow cast upwards. */
+  .nav-line .nav-tabs {
+    background: rgb(255 253 248 / .9);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    border-top: 1px solid var(--line-soft);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(16 58 42 / .22);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-line .nav-tabs {
+      background: rgb(255 253 248 / .97);
+    }
+  }
+
+  .nav-tabs [role=tab][data-state=active] {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .tab-pill {
+    background: linear-gradient(180deg, #dcebd6, var(--green-100));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
+  }
+}
+
 /* Small phones: the hero's padding tightens, and the globe starts a little lower so the first headline line fits beside it. */
 @media (max-width: 389px) {
   .hero-intro {
@@ -1069,6 +1100,61 @@ body {
     --planet: 132px;
     --globe-drop: 96px;
     --globe-bleed: 48px;
+  }
+}
+
+/* Phones in landscape: the screen is short, so the hero is compact at every width, and the capture cards start within
+   the first screen, above the bottom tab bar. The hero flows as a block with a 100px globe floating beside the headline
+   (as on tablets, see the 900px block), and the eyebrow and the meta line give way to the headline and its sentence. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-intro {
+    display: block;
+    min-height: 0;
+    padding: 14px 22px;
+    margin: 0 0 12px;
+    border-radius: var(--r-xl);
+  }
+
+  .hero-intro .eyebrow,
+  .hero-meta {
+    display: none;
+  }
+
+  .hero-intro h1 {
+    margin: 2px 0 6px;
+    font-size: clamp(1.625rem, 1rem + 2.2vw, 2.125rem);
+  }
+
+  .hero-intro h1 em {
+    display: inline;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .hero-copy > p {
+    max-width: none;
+    line-height: 1.5;
+  }
+
+  .eco-scene {
+    --planet: 100px;
+    --planet-x: 50%;
+    --planet-top: calc(100% - var(--planet) / 2);
+    --lift: -5px;
+    --globe-drop: 8px;
+    --globe-bleed: 22px;
+    float: right;
+    width: var(--planet);
+    max-width: none;
+    height: calc(var(--planet) + var(--globe-drop));
+    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
+    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
+    shape-margin: 10px;
+  }
+
+  .eco-scene .floating-label,
+  .eco-scene .planet-shadow {
+    display: none;
   }
 }
 

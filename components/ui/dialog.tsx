@@ -52,6 +52,31 @@ function DialogOverlay({
 // it opened, then the opener of the dialog that one sat in (for a dialog opened from a dialog that has since closed).
 const returnTargets = new WeakMap<Element, HTMLElement[]>()
 
+// How far the sticky header (the close strip with its 44px button, and the sticky title under it) reaches into the
+// scroller, kept in --dialog-sticky-h. The scroller's scroll-padding-top reads it, so a control that takes focus is
+// scrolled clear of the header instead of sitting underneath it. Measured again when the title or the layout changes.
+function trackStickyHeader(content: HTMLDivElement | null) {
+  if (!content) return
+  const measure = () => {
+    let bottom = 0
+    for (const child of Array.from(content.children)) {
+      if (!(child instanceof HTMLElement) || getComputedStyle(child).position !== "sticky") continue
+      const top = parseFloat(getComputedStyle(child).top) || 0
+      bottom = Math.max(bottom, top + child.offsetHeight)
+      for (const inner of Array.from(child.children)) {
+        if (inner instanceof HTMLElement) bottom = Math.max(bottom, top + inner.offsetTop + inner.offsetHeight)
+      }
+    }
+    content.style.setProperty("--dialog-sticky-h", `${Math.ceil(bottom)}px`)
+  }
+  measure()
+  if (typeof ResizeObserver !== "function") return
+  const observer = new ResizeObserver(measure)
+  observer.observe(content)
+  for (const child of Array.from(content.children)) observer.observe(child)
+  return () => observer.disconnect()
+}
+
 function DialogContent({
   className,
   children,
@@ -68,6 +93,18 @@ function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
+        ref={trackStickyHeader}
+        // Radix moves focus without scrolling when Tab wraps around the dialog, and keyboard scrolling alone can leave a
+        // control under the sticky header. Every control that takes focus is brought fully into view, clear of the header
+        // (scroll-padding-top); the close button lives in the header and is always visible.
+        onFocus={(event) => {
+          const target = event.target
+          if (target === event.currentTarget || !(target instanceof HTMLElement)) return
+          if (target.closest("[data-slot=dialog-close-bar]")) return
+          target.scrollIntoView({ block: "nearest", inline: "nearest" })
+        }}
+        // Once content scrolls under the sticky header, the header draws a hairline and a soft shadow (globals.css).
+        onScroll={(event) => event.currentTarget.toggleAttribute("data-scrolled", event.currentTarget.scrollTop > 2)}
         onOpenAutoFocus={(event) => {
           const opener = document.activeElement
           const chain = opener instanceof HTMLElement && opener !== document.body ? [opener] : []
@@ -88,7 +125,7 @@ function DialogContent({
           returnTo.current.find((element) => element.isConnected)?.focus()
         }}
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-(--dialog-pad) pt-0 text-(--ink) shadow-(--elev-3) duration-(--dur-slow) ease-(--ease-out) outline-none [--dialog-pad:1.5rem] *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-98 data-[state=closed]:duration-(--dur-base) data-[state=closed]:ease-(--ease-in) data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-97 data-[state=open]:slide-in-from-bottom-2 sm:max-w-lg",
+          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain scroll-pt-[calc(var(--dialog-sticky-h,3.5rem)_+_8px)] scroll-pb-4 rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-(--dialog-pad) pt-0 text-(--ink) shadow-(--elev-3) duration-(--dur-slow) ease-(--ease-out) outline-none [--dialog-pad:1.5rem] *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-98 data-[state=closed]:duration-(--dur-base) data-[state=closed]:ease-(--ease-in) data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-97 data-[state=open]:slide-in-from-bottom-2 sm:max-w-lg",
           className
         )}
         {...props}

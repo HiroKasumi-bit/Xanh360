@@ -1,18 +1,19 @@
 import type { Metadata, Viewport } from "next";
-// Be Vietnam Pro, self-hosted: only the vietnamese + latin subsets for the weights in use (400–800).
-// These subset files carry no unicode-range, so the face declared last is tried first for every
-// character; latin goes last so plain text stays in one face and only Vietnamese letters (ạ, ệ, Đ, ơ…)
-// fall through to the vietnamese face.
-import "@fontsource/be-vietnam-pro/vietnamese-400.css";
-import "@fontsource/be-vietnam-pro/vietnamese-500.css";
-import "@fontsource/be-vietnam-pro/vietnamese-600.css";
-import "@fontsource/be-vietnam-pro/vietnamese-700.css";
-import "@fontsource/be-vietnam-pro/vietnamese-800.css";
+// Be Vietnam Pro, self-hosted: only the latin + vietnamese subsets for the weights in use (400–800).
+// These subset files carry no unicode-range, so for every character the browser tries the face declared last first.
+// Vietnamese is imported last on purpose: its precomposed letters (ạ, ệ, ỗ, Đ, ơ…) then come straight from the vietnamese
+// face, and everything that face lacks (plain a–z, digits, punctuation) falls through to latin. In the other order the
+// latin face is tried first and the browser decomposes letters such as ỗ into marks it stacks wrongly ("chỗ" read "chố̃").
 import "@fontsource/be-vietnam-pro/latin-400.css";
 import "@fontsource/be-vietnam-pro/latin-500.css";
 import "@fontsource/be-vietnam-pro/latin-600.css";
 import "@fontsource/be-vietnam-pro/latin-700.css";
 import "@fontsource/be-vietnam-pro/latin-800.css";
+import "@fontsource/be-vietnam-pro/vietnamese-400.css";
+import "@fontsource/be-vietnam-pro/vietnamese-500.css";
+import "@fontsource/be-vietnam-pro/vietnamese-600.css";
+import "@fontsource/be-vietnam-pro/vietnamese-700.css";
+import "@fontsource/be-vietnam-pro/vietnamese-800.css";
 import "./globals.css";
 import "./visuals.css";
 
