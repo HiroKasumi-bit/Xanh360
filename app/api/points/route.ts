@@ -1,0 +1,3 @@
+import {z} from 'zod';import {catalog} from '@/lib/repository';import {handle,json,body,sameOrigin} from '@/lib/http';import {findPoints,idSchema} from '@/lib/domain';
+const schema=z.object({itemId:idSchema,areaId:idSchema,quantity:z.number().int().min(1).max(100000),audience:z.enum(['household','business']),intact:z.boolean(),radius:z.number().refine(n=>[0,5,10,25,50].includes(n)),position:z.object({lat:z.number().min(-90).max(90),lng:z.number().min(-180).max(180)}).optional()});
+export const POST=(req:Request)=>handle(async()=>{sameOrigin(req);const q=schema.parse(await body(req));return json(findPoints(await catalog(),q))});
