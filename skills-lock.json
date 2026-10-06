@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "skills": {
+    "vibe-to-ui": {
+      "source": "MonkeyUI-dev/vibe-to-ui",
+      "ref": "v0.6.0",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "cfb62a5f0a9fbb93a68a478f14a9652cf028bc7d661548ec3e2d71a5d7938fbc"
+    }
+  }
+}
