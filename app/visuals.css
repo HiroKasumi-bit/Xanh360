@@ -1,8 +1,12 @@
-/* Xanh360 colour and motion layer, loaded after globals.css. Decorative scenes do not intercept product actions. */
+/* Xanh360 material, light and motion layer ("Leaf & paper in the sun"), loaded after globals.css.
+   One key light comes from the top right: highlights sit on top/right edges, shadows fall down and slightly left.
+   Decorative scenes never intercept product actions, and loops animate only transform and opacity. */
 
-/* Page background and ambient colour */
+/* Page: warm recycled paper with a fine grain tile as a background layer */
 body {
-  background: #f2f7f5;
+  background-color: var(--paper);
+  background-image: var(--grain);
+  background-size: 180px 180px;
 }
 
 .experience-color {
@@ -10,6 +14,7 @@ body {
   isolation: isolate;
 }
 
+/* Static ambient light: a warm sun glow from the top right that fades out well inside the first screen. No animation, so it costs one composited layer. */
 .eco-atmosphere {
   position: fixed;
   inset: 0;
@@ -22,52 +27,33 @@ body {
 .ambient-color {
   position: absolute;
   border-radius: 50%;
-  opacity: .55;
-  animation: ambient-drift 20s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
-.ambient-mint {
-  width: 70vw;
-  height: 70vw;
-  left: -35vw;
-  top: 4vh;
-  background: radial-gradient(circle, #9feac2 0, transparent 67%);
-}
-
-.ambient-lilac {
-  width: 70vw;
-  height: 70vw;
-  right: -36vw;
-  top: 17vh;
-  background: radial-gradient(circle, #dad4fa 0, transparent 67%);
-  animation-delay: -9s;
-}
-
 .ambient-sun {
-  width: 60vw;
-  height: 60vw;
-  left: 28vw;
-  top: 65vh;
-  background: radial-gradient(circle, #f3e8ba 0, transparent 68%);
-  animation-delay: -14s;
-  opacity: .45;
+  width: 90vmax;
+  height: 90vmax;
+  right: -42vmax;
+  top: -50vmax;
+  background: radial-gradient(closest-side, rgb(255 233 168 / .5), rgb(255 233 168 / .18) 55%, rgb(255 233 168 / 0));
 }
 
 /* Site header */
 .site-header {
-  border-color: #d9e7e080;
+  border-color: var(--line-soft);
 }
 
+/* App tile lit from the top right: a bright top edge, a darker foot and a soft drop, no hard offset slab. */
 .brand-symbol {
-  background: linear-gradient(140deg, #29a274, #0c604c 75%);
-  border: 1px solid #ffffffba;
-  border-radius: 15px;
-  box-shadow: 0 6px 0 #c8e6d8, 0 9px 22px #0b735322;
+  background: radial-gradient(120% 100% at 78% 0, #2f9a6c 0, var(--green-600) 55%, #0f4a37 100%);
+  border: 1px solid #0b3a2c;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -2px 4px rgb(0 0 0 / .2), 0 1px 2px rgb(10 42 34 / .22), -2px 8px 16px -8px rgb(10 42 34 / .5);
 }
 
 .brand-symbol svg {
-  color: #e4ffb6;
+  color: var(--sprout);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / .25));
 }
 
 .brand {
@@ -75,22 +61,17 @@ body {
 }
 
 .brand small {
-  color: #5d8c77;
+  color: var(--ink-2);
 }
 
 .location-button {
-  background: #ffffffc9;
-  border-color: #ffffff;
-  box-shadow: 0 4px 20px #24564308;
+  background: var(--paper-raised);
+  border-color: var(--line-soft);
+  box-shadow: var(--elev-1);
+  color: var(--ink);
 }
 
-.city-widget {
-  background: linear-gradient(125deg, #e0f4f5, #f0f0fb);
-  border-color: #cfe4e9;
-  box-shadow: 0 4px 15px #1a627009;
-}
-
-/* Navigation line and motion control. The tabs keep their natural width; when the row is too narrow the motion control wraps below instead of clipping the last tab. */
+/* Navigation: a pressed-in tray with a raised paper pill on the active tab */
 .nav-line {
   display: flex;
   flex-wrap: wrap;
@@ -102,14 +83,19 @@ body {
 
 .nav-line .nav-tabs {
   margin: 0;
-  background: #e6efeaab !important;
-  border: 1px solid #dce9e2;
+  background: var(--paper-sunken) !important;
+  border: 0;
+  box-shadow: inset 0 1px 2px rgb(13 42 31 / .09), inset 0 0 0 1px rgb(13 42 31 / .05), 0 1px 0 rgb(255 255 255 / .8);
+}
+
+.nav-tabs [role=tab] {
+  color: var(--ink-2);
 }
 
 .nav-tabs [role=tab][data-state=active] {
-  background: linear-gradient(115deg, #fff, #f7ffed);
+  background: var(--paper-raised);
   color: var(--green-600);
-  box-shadow: 0 3px 12px #20584313;
+  box-shadow: var(--edge-light), 0 1px 1px rgb(16 58 42 / .08), 0 2px 6px -1px rgb(16 58 42 / .12);
 }
 
 .motion-control {
@@ -117,10 +103,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1px solid #d9e6df;
-  border-radius: 30px;
-  background: #ffffffc4;
-  color: #557366;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  box-shadow: var(--elev-1);
+  color: var(--ink-2);
   padding: 8px 12px;
   font-size: var(--fs-caption);
   font-weight: 500;
@@ -129,7 +116,7 @@ body {
   margin-left: auto;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  transition: transform var(--dur-instant) var(--ease-press);
 }
 
 .motion-control svg {
@@ -137,12 +124,13 @@ body {
   height: 13px;
 }
 
-.motion-control:hover {
-  background: white;
-  box-shadow: 0 4px 16px #28644712;
+/* Under the system reduced-motion setting the control only explains the state, so its label stays fully readable. */
+.motion-control:disabled {
+  opacity: 1;
+  cursor: default;
 }
 
-/* Hero */
+/* Hero: deep forest lit by one key light from the top right */
 .hero-intro {
   position: relative;
   display: grid;
@@ -152,37 +140,57 @@ body {
   min-height: 390px;
   padding: 43px 42px;
   margin: 0 0 24px;
-  border-radius: 30px;
-  background: radial-gradient(ellipse at 100% 0, #20735f 0, transparent 56%), linear-gradient(120deg, #082e2b, #11483a 65%, #174d47);
+  border-radius: var(--r-2xl);
+  background:
+    radial-gradient(120% 100% at 98% -18%, rgb(118 190 128 / .55) 0, rgb(88 170 118 / .22) 36%, rgb(74 168 118 / 0) 62%),
+    radial-gradient(85% 75% at -4% 112%, rgb(4 22 17 / .85) 0, rgb(4 22 17 / 0) 62%),
+    linear-gradient(160deg, var(--green-800), var(--green-900));
   color: #fff;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid #5ab79648;
-  box-shadow: 0 25px 65px -32px #0c564874, inset 0 1px 0 #d3ffe427;
+  border: 1px solid #0a2a22;
+  box-shadow: inset 0 1px 0 rgb(217 255 230 / .16), inset 0 0 0 1px rgb(255 255 255 / .04), 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
 }
 
+/* Paper grain also lives on the forest, mixed in softly so the dark surface is not plastic-flat. */
 .hero-intro::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(#bfffc609 1px, transparent 1px), linear-gradient(90deg, #bfffc609 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(90deg, transparent, #000);
+  background-image: var(--grain);
+  background-size: 180px 180px;
+  opacity: .5;
+  mix-blend-mode: overlay;
   pointer-events: none;
   z-index: -1;
 }
 
+/* Sunlight through leaves (nang xuyen la): soft pools of light with a few bright cores, clustered under the key light and swaying slowly. */
 .hero-intro::after {
+  --pool: rgb(255 238 186 / .7), rgb(255 238 186 / .35) 50%, rgb(255 238 186 / 0) 100%;
+  --core: rgb(255 246 214 / 1), rgb(255 246 214 / .6) 40%, rgb(255 246 214 / 0) 100%;
   content: '';
   position: absolute;
-  width: 350px;
-  height: 350px;
-  left: -230px;
-  bottom: -230px;
-  background: radial-gradient(circle, #80d86766, transparent 70%);
-  border-radius: 50%;
+  inset: -20% -10% 10% 28%;
+  background:
+    radial-gradient(1.6% 1.2% at 74% 14%, var(--core)),
+    radial-gradient(1.1% .9% at 81% 23%, var(--core)),
+    radial-gradient(1.9% 1.4% at 88% 12%, var(--core)),
+    radial-gradient(1% .8% at 66% 25%, var(--core)),
+    radial-gradient(1.3% 1% at 93% 31%, var(--core)),
+    radial-gradient(.9% .7% at 60% 12%, var(--core)),
+    radial-gradient(1.2% .9% at 85% 40%, var(--core)),
+    radial-gradient(9% 6% at 76% 16%, var(--pool)),
+    radial-gradient(7% 5% at 88% 26%, var(--pool)),
+    radial-gradient(10% 6.5% at 64% 30%, var(--pool)),
+    radial-gradient(6% 4.5% at 94% 12%, var(--pool)),
+    radial-gradient(8% 5% at 82% 44%, var(--pool)),
+    radial-gradient(6% 4% at 55% 15%, var(--pool)),
+    radial-gradient(5% 3.5% at 70% 46%, var(--pool));
+  mix-blend-mode: soft-light;
   pointer-events: none;
   z-index: -1;
+  animation: leaf-sway 13s var(--ease-float) infinite alternate;
 }
 
 .hero-copy {
@@ -190,39 +198,44 @@ body {
   z-index: 2;
 }
 
+/* Frosted glass is used only over the dark hero. */
 .hero-intro .eyebrow {
   display: inline-flex;
-  border: 1px solid #a8eaa52b;
-  border-radius: 16px;
-  background: #aff2a00a;
+  border: 1px solid rgb(255 255 255 / .16);
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / .07);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .14);
   padding: 6px 12px;
-  color: #c7eab7;
+  color: #dcf0cd;
 }
 
 .hero-intro .eyebrow svg {
   width: 12px;
   height: 12px;
+  color: var(--sprout);
 }
 
 .hero-intro h1 {
   margin: 20px 0 18px;
-  color: #fff;
+  color: #fbfdf7;
 }
 
-/* Gradient text only paints inside its own box, so the box is padded to hold stacked marks and descenders; the negative margin keeps the line spacing unchanged. */
+/* The second line catches the light from above: a short vertical sprout ramp, not a rainbow. The box is padded so the clipped gradient keeps stacked marks and descenders; the negative margin keeps the line spacing unchanged. */
 .hero-intro h1 em {
   display: inline-block;
   padding: .12em .04em .16em 0;
   margin: -.12em -.04em -.16em 0;
-  color: #c4ed8c;
-  background: linear-gradient(90deg, #cdf784 5%, #99edc5 70%, #85e8dd);
+  color: #c9ef98;
+  background: linear-gradient(180deg, #e9fcc0 12%, #b9e795 88%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .hero-copy > p {
-  color: #bdd6cc;
+  color: #d5e8de;
   max-width: 465px;
   margin: 0;
 }
@@ -230,21 +243,26 @@ body {
 .hero-meta {
   gap: 8px 16px;
   margin-top: 25px;
-  color: #d1e5d5;
+  color: #dcecdf;
 }
 
 .hero-meta span {
-  gap: 5px;
+  gap: 6px;
 }
 
 .hero-meta svg {
-  color: #b8e57f;
-  width: 13px;
-  height: 13px;
+  color: var(--sprout);
+  width: 14px;
+  height: 14px;
 }
 
-/* Decorative eco scene */
+/* Decorative globe. Layers, back to front: contact shadow on the ground, the bobbing planet (a rotating surface and drifting clouds under a fixed lighting shell), then glass labels.
+   --planet is the diameter, --planet-x/--planet-top the centre within the scene, --lift how far it rises. Labels are placed from the planet, not the scene edges, so they keep clear of it at every size. */
 .eco-scene {
+  --planet: 196px;
+  --planet-x: 50%;
+  --planet-top: 46%;
+  --lift: -12px;
   position: relative;
   min-width: 0;
   height: 330px;
@@ -256,408 +274,219 @@ body {
   isolation: isolate;
 }
 
-.scene-halo {
+/* The ground shadow: darkest and widest when the planet is lowest, shrinking and fading as it rises (same timing as the bob). Offset slightly left, away from the key light. */
+.planet-shadow {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  background: radial-gradient(ellipse, #5de29c29 0, #6adec00e 50%, transparent 70%);
-  animation: halo-breathe 8s ease-in-out infinite alternate;
+  left: var(--planet-x);
+  top: calc(var(--planet-top) + var(--planet) / 2 + 24px);
+  width: calc(var(--planet) * .72);
+  height: calc(var(--planet) * .13);
+  translate: calc(-50% - 10px) -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 9 6 / .7), rgb(0 9 6 / .34) 52%, rgb(0 9 6 / 0));
+  z-index: 1;
+  animation: planet-shadow 3.7s var(--ease-float) infinite alternate;
 }
 
 .planet-float {
   position: absolute;
-  left: 50%;
-  top: 46%;
-  width: 200px;
-  height: 200px;
-  margin: -100px 0 0 -100px;
-  animation: planet-float 7s ease-in-out infinite;
+  left: var(--planet-x);
+  top: var(--planet-top);
+  width: var(--planet);
+  height: var(--planet);
+  translate: -50% -50%;
   z-index: 2;
+  animation: planet-bob 3.7s var(--ease-float) infinite alternate;
 }
 
 .eco-planet {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
   overflow: hidden;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 21%, #e4ffc9 0, #c6ee94 14%, #70d3a2 39%, #2db196 62%, #12756b 81%, #15413c 100%);
-  box-shadow: inset -18px -17px 33px #0b373c60, inset 7px 7px 17px #f1ffc583, 0 15px 55px #0424224a, 0 0 40px #8be4a117;
-  border: 1px solid #c6ffc276;
+  isolation: isolate;
+  background: #1a6863;
+  box-shadow: 3px -3px 16px rgb(168 236 196 / .16), 0 0 0 1px rgb(2 20 15 / .25);
 }
 
-.planet-glint {
+/* Only the surface turns: a strip two globes wide, tiled with a seamless map, pans one globe-width and loops. The clouds drift a little faster for depth. */
+.planet-surface,
+.planet-clouds {
   position: absolute;
-  width: 90%;
-  height: 38%;
-  top: -3%;
-  left: -12%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, #fff9, transparent 70%);
-  transform: rotate(-35deg);
+  inset: 0 auto 0 0;
+  width: 200%;
+  height: 100%;
+  background: url(/globe/land.webp) 0 0 / 50% 100% repeat-x;
 }
 
-.planet-latitude {
-  position: absolute;
-  left: -4%;
-  width: 108%;
-  height: 40%;
-  border: 1px solid #ebffe539;
-  border-radius: 50%;
-  transform: rotate(-20deg);
+.planet-surface {
+  animation: planet-turn 84s linear infinite;
 }
 
-.latitude-one {
-  top: 23%;
+.planet-clouds {
+  background-image: url(/globe/clouds.webp);
+  opacity: .45;
+  animation: planet-turn 58s linear infinite;
 }
 
-.latitude-two {
-  top: 48%;
-  height: 24%;
-}
-
-.planet-meridian {
-  position: absolute;
-  inset: -3% 24%;
-  border: 1px solid #ebffe52e;
-  border-radius: 50%;
-  transform: rotate(30deg);
-}
-
-.planet-emblem {
+/* Fixed lighting shell: the glint, the terminator and the rim light stay put while the surface turns underneath. */
+.planet-light {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-  color: #fffef4;
-  filter: drop-shadow(0 5px 6px #165e4950);
-  transform: rotate(-12deg);
-}
-
-.planet-emblem svg {
-  width: 106px;
-  height: 106px;
-}
-
-.orb-orbit {
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  width: 310px;
-  height: 150px;
-  margin: -75px 0 0 -155px;
-  border: 1px solid #c1f7cd4a;
   border-radius: 50%;
-  z-index: 1;
-  transform: rotate(-25deg);
+  background:
+    radial-gradient(circle at 69% 26%, rgb(255 250 226 / .34) 0, rgb(255 250 226 / .1) 9%, rgb(255 250 226 / 0) 22%),
+    radial-gradient(circle at 66% 30%, rgb(2 20 15 / 0) 0, rgb(2 20 15 / 0) 28%, rgb(2 20 15 / .42) 50%, rgb(1 14 10 / .82) 68%, rgb(1 12 9 / .94) 82%);
+  box-shadow: inset -3px 4px 7px rgb(226 255 206 / .3), inset 12px -16px 28px rgb(1 14 10 / .45);
 }
 
-.orbit-one {
-  animation: orbit-sway 15s ease-in-out infinite alternate;
-}
-
-.orbit-two {
-  width: 290px;
-  height: 290px;
-  margin: -145px 0 0 -145px;
-  border-style: dashed;
-  border-color: #baf2c417;
-  transform: rotate(22deg);
-  animation: orbit-turn 80s linear infinite;
-}
-
-.orb-orbit::after {
-  content: '';
-  position: absolute;
-  right: 39px;
-  top: 7px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #d7f79b;
-  box-shadow: 0 0 15px #d1f98b77;
-}
-
-.orbit-two::after {
-  width: 5px;
-  height: 5px;
-  right: 42px;
-  top: 36px;
-  background: #a4dcef;
-  box-shadow: none;
-}
-
+/* Floating labels: real frosted glass over the dark hero, upright, each on its own rhythm. */
 .floating-label {
+  --bob: -7px;
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   z-index: 4;
-  border-radius: 14px;
-  border: 1px solid #ffffff45;
-  background: linear-gradient(115deg, #ffffffed, #effff1df);
-  box-shadow: 0 12px 28px #061f292a, inset 0 1px 0 #fff;
-  padding: 10px 14px 10px 10px;
-  color: #244d3c;
-  animation: label-float 6.5s ease-in-out infinite;
+  border-radius: var(--r-md);
+  border: 1px solid rgb(255 255 255 / .2);
+  background: linear-gradient(180deg, rgb(255 255 255 / .16), rgb(255 255 255 / .06));
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -1px 0 rgb(0 0 0 / .12), 0 1px 2px rgb(1 15 11 / .25), -6px 14px 24px -12px rgb(1 15 11 / .65);
+  padding: 8px 14px 8px 8px;
+  color: #f4fff7;
+  animation: label-bob 2.65s var(--ease-float) infinite alternate;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .floating-label {
+    background: rgb(24 78 61 / .94);
+  }
 }
 
 .floating-label > span {
   display: grid;
   place-items: center;
-  width: 33px;
-  height: 33px;
-  border-radius: 10px;
-  background: #dcefc8;
-  color: #417432;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-xs);
+  background: rgb(255 255 255 / .13);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .22);
+  color: var(--sprout);
 }
 
 .floating-label svg {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
 }
 
 .floating-label b {
-  font-size: var(--fs-meta);
+  font-size: var(--fs-small);
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -.01em;
+  white-space: nowrap;
 }
 
+/* Each label sits off a diagonal of the planet with room for both to bob: top-left, right and lower, bottom-left.
+   Co-prime half-periods (2.65s, 3.35s, 4.05s) and different lifts keep the three from ever moving in step. */
 .label-recycle {
-  left: 0;
-  top: 25px;
-  transform: rotate(-6deg);
+  right: calc(100% - var(--planet-x) + var(--planet) * .354 + 12px);
+  bottom: calc(100% - var(--planet-top) + var(--planet) * .354 + 6px);
 }
 
 .label-leaf {
-  right: -5px;
-  top: 105px;
-  animation-delay: -2.3s;
-  background: linear-gradient(115deg, #e3fbffed, #d5f3f6e8);
-}
-
-.label-leaf > span {
-  background: #bde9e5;
-  color: #277e73;
+  --bob: -9px;
+  left: calc(var(--planet-x) + var(--planet) * .43 + 6px);
+  top: calc(var(--planet-top) + var(--planet) * .3 + 4px);
+  animation-duration: 3.35s;
+  animation-delay: -1.4s;
 }
 
 .label-special {
-  left: 22px;
-  bottom: 30px;
-  animation-delay: -4.1s;
-  background: linear-gradient(115deg, #fff7e9f0, #ffe5cdeb);
+  --bob: -6px;
+  right: calc(100% - var(--planet-x) + var(--planet) * .3 + 10px);
+  top: calc(var(--planet-top) + var(--planet) * .42 + 6px);
+  animation-duration: 4.05s;
+  animation-delay: -2.9s;
 }
 
-.label-special > span {
-  background: #ffe3b6;
-  color: #a76e30;
-}
-
-.scene-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  color: #a9c9b9;
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: var(--tr-label);
-  line-height: var(--lh-label);
-  text-align: center;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-.scene-caption > span {
-  flex-shrink: 0;
-}
-
-.scene-caption > span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #caee94;
-  box-shadow: 0 0 9px #c5f88777;
-}
-
-.scene-dots {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.scene-dots i {
-  position: absolute;
-  left: 12%;
-  top: 35%;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #c5f288;
-  opacity: .65;
-  animation: spark-float 5s ease-in-out infinite alternate;
-}
-
-.scene-dots i:nth-child(2) {
-  left: 82%;
-  top: 16%;
-  width: 6px;
-  height: 6px;
-  background: #79d3dd;
-  animation-delay: -2s;
-}
-
-.scene-dots i:nth-child(3) {
-  left: 80%;
-  top: 78%;
-  width: 5px;
-  height: 5px;
-  animation-delay: -1s;
-}
-
-.scene-dots i:nth-child(4) {
-  left: 33%;
-  top: 3%;
-  width: 3px;
-  height: 3px;
-  animation-delay: -3s;
-}
-
-.scene-dots i:nth-child(5) {
-  left: 96%;
-  top: 61%;
-  width: 3px;
-  height: 3px;
-  background: #f2c898;
-  animation-delay: -4s;
-}
-
-.scene-dots i:nth-child(6) {
-  left: 5%;
-  top: 80%;
-  width: 3px;
-  height: 3px;
-  background: #94e2cb;
-  animation-delay: -2.5s;
-}
-
-/* Capture cards */
+/* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
 .capture-actions {
-  gap: 17px;
+  gap: 16px;
   grid-template-columns: 1.13fr 1fr 1fr;
 }
 
 .capture-card {
-  overflow: hidden;
   isolation: isolate;
-  background: linear-gradient(120deg, #f9f6ff, #efecfe);
-  border: 1px solid #ddd5f3;
-  border-radius: 21px;
-  box-shadow: 0 8px 25px #6854a20b, inset 0 1px 0 #fff;
-  padding: 23px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-xl);
+  box-shadow: var(--elev-1);
+  padding: 22px;
 }
 
-.capture-card:nth-child(3) {
-  background: linear-gradient(120deg, #fff8ef, #ffeddc);
-  border-color: #f3dec6;
-  color: #775122;
-  box-shadow: 0 8px 25px #ad783b0a, inset 0 1px 0 #fff;
-}
-
-.capture-card:nth-child(2) {
-  color: #604395;
-}
-
-.capture-card:nth-child(2) > span:not(.capture-card-icon) {
-  color: #796a95;
-}
-
-.capture-card:nth-child(3) > span:not(.capture-card-icon) {
-  color: #947853;
+/* Hover elevation is a pre-drawn shadow that fades in, so the browser never animates box-shadow. */
+.capture-card::after,
+.item-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: var(--elev-lift);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
 .capture-card-icon {
-  background: linear-gradient(135deg, #cfc2f5, #e5d9fb);
-  color: #64429b;
-  box-shadow: inset 0 1px 0 #fff9, 0 4px 12px #694c9620;
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-
-.capture-card:nth-child(3) .capture-card-icon {
-  background: linear-gradient(135deg, #f9d49e, #ffe4bb);
-  color: #93602c;
-  box-shadow: inset 0 1px 0 #fff9, 0 4px 12px #b9803920;
+  background: linear-gradient(180deg, #eef5e6, #dfeacf);
+  color: var(--green-600);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(13 42 31 / .08), 0 1px 2px rgb(13 42 31 / .12);
 }
 
 .capture-card > svg {
-  color: currentColor;
-  opacity: .7;
+  color: var(--ink-3);
   transition: transform var(--dur-base) var(--ease-out);
 }
 
-.capture-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -90%;
-  width: 55%;
-  height: 200%;
-  background: linear-gradient(90deg, transparent, #ffffff38, transparent);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.capture-card::after {
-  content: '';
-  position: absolute;
-  right: -60px;
-  bottom: -95px;
-  width: 190px;
-  height: 190px;
-  border: 22px solid #cabbef38;
-  border-radius: 50%;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.capture-card:nth-child(3)::after {
-  border-color: #f6d6ae4a;
-}
-
 .capture-primary {
-  background: linear-gradient(125deg, #17875e, #126b5b);
-  border-color: #2c966e;
-  color: white;
-  box-shadow: 0 9px 27px #0b8b6530, inset 0 1px 0 #c9ffda47;
-}
-
-.capture-primary > span:not(.capture-card-icon) {
-  color: #cef1df;
-}
-
-.capture-primary .capture-card-icon {
-  background: linear-gradient(135deg, #d4fba1, #a9e89e);
-  color: #1d684c;
-  box-shadow: inset 0 1px 0 #fff9, 0 4px 12px #042c281a;
+  background: radial-gradient(120% 130% at 90% -24%, #2c8d66 0, rgb(44 141 102 / 0) 58%), linear-gradient(180deg, var(--green-600), #0f4a37);
+  border-color: #0b3a2c;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .16), inset 0 -2px 6px rgb(0 0 0 / .18), 0 1px 2px rgb(10 42 34 / .25), -2px 12px 24px -12px rgb(15 74 55 / .7);
 }
 
 .capture-primary::after {
-  border-color: #92e3b826;
+  box-shadow: 0 2px 4px rgb(10 42 34 / .12), -2px 18px 32px -14px rgb(15 74 55 / .75);
+}
+
+.capture-primary > span:not(.capture-card-icon) {
+  color: #e6f4ec;
+}
+
+.capture-primary > svg {
+  color: #cfe6d9;
+}
+
+.capture-primary .capture-card-icon {
+  background: linear-gradient(180deg, #e8fbbf, #c4ea8e);
+  color: var(--green-700);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7), inset 0 -1px 0 rgb(13 42 31 / .12), 0 1px 2px rgb(0 0 0 / .2);
 }
 
 /* Search card and quick picks */
 .search-card,
 .classification {
-  background: linear-gradient(130deg, #fffffff7, #fafffbeb);
-  border: 1px solid #fff;
-  box-shadow: 0 12px 32px #1d59450a, 0 1px 2px #3564470b;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-soft);
+  box-shadow: var(--elev-1);
+}
+
+.classification {
+  box-shadow: var(--elev-2);
 }
 
 .search-card {
@@ -665,280 +494,165 @@ body {
   isolation: isolate;
 }
 
+/* The field is a shallow well pressed into the paper. */
 .searchbox {
-  background: #f6fbf8;
-  border-color: #d6e6dd;
-  box-shadow: inset 0 2px 4px #37634a04;
+  background: #faf9f4;
+  border-color: var(--line-strong);
+  box-shadow: inset 0 1px 2px rgb(13 42 31 / .07);
 }
 
 .searchbox button,
 .primary {
-  background: linear-gradient(120deg, #168568, #126144) !important;
-  box-shadow: 0 4px 12px #146a4420;
-}
-
-.searchbox button:hover,
-.primary:hover {
-  box-shadow: 0 6px 20px #146a4430;
+  background: linear-gradient(180deg, var(--green-500), var(--green-600)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2), 0 4px 10px -4px rgb(23 105 76 / .55);
 }
 
 .quick button {
-  background: #f0f7ed;
-  border-color: #e0ebd7;
-}
-
-.quick button:nth-of-type(2) {
-  background: #fff5e7;
-  border-color: #f2e0c5;
-  color: #8a6130;
-}
-
-.quick button:nth-of-type(3) {
-  background: #eef2fc;
-  border-color: #dde3f4;
-  color: #4f6589;
-}
-
-.quick button:nth-of-type(4) {
-  background: #f5eefb;
-  border-color: #e9dcf4;
-  color: #79618f;
+  background: var(--paper-raised);
+  border-color: var(--line);
+  color: var(--green-700);
+  box-shadow: 0 1px 1px rgb(16 58 42 / .05);
 }
 
 /* Item cards */
 .item-card {
-  background: #ffffffdc;
-  border-color: #fff;
-  box-shadow: 0 6px 20px #294d3a06;
   position: relative;
-  overflow: hidden;
   isolation: isolate;
-  animation: item-appear .45s ease both;
-}
-
-.item-card::after {
-  content: '';
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  right: -35px;
-  bottom: -40px;
-  background: #daeede61;
-  z-index: -1;
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-
-.item-card:nth-child(3n+2)::after {
-  background: #f9e1bb6b;
-}
-
-.item-card:nth-child(3n+3)::after {
-  background: #e4dbf661;
+  background: var(--paper-raised);
+  border-color: var(--line-soft);
+  box-shadow: var(--elev-1);
+  /* backwards, not both: once the entrance ends the card's own transform is free again, so the hover lift works. */
+  animation: item-appear var(--dur-slow) var(--ease-out) backwards;
 }
 
 .item-card:nth-child(2) {
-  animation-delay: .035s;
+  animation-delay: 30ms;
 }
 
 .item-card:nth-child(3) {
-  animation-delay: .07s;
+  animation-delay: 60ms;
 }
 
 .item-card:nth-child(4) {
-  animation-delay: .105s;
+  animation-delay: 90ms;
 }
 
 .item-card:nth-child(5) {
-  animation-delay: .14s;
+  animation-delay: 120ms;
 }
 
-.item-card:nth-child(6) {
-  animation-delay: .175s;
+.item-card:nth-child(n+6) {
+  animation-delay: 150ms;
+}
+
+/* Icon tiles are small pressed paper chips tinted by category. */
+.item-icon {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(13 42 31 / .07);
 }
 
 .item-icon.recycle {
-  background: linear-gradient(135deg, #d9efcd, #e2f3df);
-  color: #427347;
+  background: linear-gradient(180deg, #edf5ea, var(--cat-recycle-bg));
+  color: var(--cat-recycle-fg);
 }
 
 .item-icon.organic {
-  background: linear-gradient(135deg, #e7edbf, #f2f5d8);
-  color: #747b38;
+  background: linear-gradient(180deg, #f4f6e4, var(--cat-organic-bg));
+  color: var(--cat-organic-fg);
 }
 
 .item-icon.special {
-  background: linear-gradient(135deg, #fbdcb8, #fff0d9);
-  color: #a16836;
+  background: linear-gradient(180deg, #fdf4e4, var(--cat-special-bg));
+  color: var(--cat-special-fg);
 }
 
 .item-icon.unknown {
-  background: linear-gradient(135deg, #e4def1, #f1ecf8);
-  color: #7b629c;
+  background: linear-gradient(180deg, #f4f5f3, var(--cat-unknown-bg));
+  color: var(--cat-unknown-fg);
 }
 
-/* Section headings and panels */
-.section-heading h2 {
-  position: relative;
-}
-
-.popular-section > .section-heading h2::before {
-  content: '';
-  display: inline-block;
-  width: 5px;
-  height: 20px;
-  border-radius: 5px;
-  background: linear-gradient(#93db91, #2a9c84);
-  vertical-align: -2px;
-  margin-right: 10px;
-}
-
+/* Panels */
 .how-grid {
-  background: linear-gradient(115deg, #e2f1e6, #ebf2df 55%, #e6eef6);
-  border: 1px solid #fff;
-  box-shadow: 0 10px 30px #305d4106;
-}
-
-.how-grid > div {
-  position: relative;
-}
-
-.how-grid .step-no {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 28px;
-  border-radius: 9px;
-  background: #ffffffa1;
-  color: #477663;
-  box-shadow: 0 2px 7px #3c644407;
-}
-
-.how-grid h3 {
-  color: #244e3b;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-soft);
+  box-shadow: var(--elev-1);
 }
 
 .source-panel {
-  background: linear-gradient(135deg, #edf5e6, #e9f4ef);
+  background: #f1f4ec;
+  border: 1px solid var(--line-soft);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
 }
 
 .filter-card,
 .point-card,
-.history-list {
-  border-color: #fff;
-  background: #ffffffed;
-  box-shadow: 0 8px 26px #24523d07;
+.history-list,
+.empty-card {
+  border-color: var(--line-soft);
+  background: var(--paper-raised);
+  box-shadow: var(--elev-1);
 }
 
 .pin-icon {
-  background: linear-gradient(135deg, #cce9d8, #e0f3e4);
-  color: #2c805e;
-}
-
-.waste-sign {
-  box-shadow: inset 0 1px 0 #fff;
-  position: relative;
-  overflow: hidden;
-}
-
-.waste-sign-icon {
-  box-shadow: 0 4px 14px #376c4212;
-}
-
-.empty-card {
-  background: linear-gradient(145deg, #ffffffeb, #f7fcf7);
-  border-color: #e0eae0;
+  background: linear-gradient(180deg, #edf5ea, var(--cat-recycle-bg));
+  color: var(--green-600);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(13 42 31 / .07);
 }
 
 /* Photo dialog and location card */
 .photo-dropzone {
-  background: linear-gradient(135deg, #edf7e6, #e6f3ee);
-  border-color: #9fbfac;
+  background: var(--paper-sunken);
+  border-color: #9fbf9f;
+  box-shadow: inset 0 2px 6px rgb(13 42 31 / .06);
 }
 
-.photo-actions .btn-outline:first-child {
-  background: #e4f2e4;
-  border-color: #c9dfca;
-  color: #3b6f4a;
-}
-
-.photo-actions .btn-outline:last-child {
-  background: #ede8f9;
-  border-color: #dbd0ee;
-  color: #71578b;
+.drop-icon {
+  background: var(--paper-raised);
+  color: var(--green-600);
+  box-shadow: var(--elev-1);
 }
 
 .feature-icon {
-  background: linear-gradient(135deg, #d3edc4, #caeae0);
+  background: linear-gradient(180deg, #eef5e6, #dfeacf);
+  color: var(--green-600);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(13 42 31 / .08);
 }
 
 .position-card {
-  background: linear-gradient(135deg, #e5f3dd, #e5f4ee);
+  background: var(--green-100);
 }
 
-/* Keyframes */
-@keyframes ambient-drift {
+/* Keyframes: decorative loops move only transform and opacity. */
+@keyframes planet-bob {
+  to {
+    transform: translateY(var(--lift));
+  }
+}
+
+@keyframes planet-shadow {
+  to {
+    transform: scale(.8);
+    opacity: .5;
+  }
+}
+
+@keyframes planet-turn {
   from {
-    transform: translate3d(0, 0, 0);
+    transform: translateX(-50%);
   }
   to {
-    transform: translate3d(35px, -28px, 0);
+    transform: translateX(0);
   }
 }
 
-@keyframes planet-float {
-  0%, 100% {
-    transform: translateY(0) rotate(-5deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(4deg);
-  }
-}
-
-@keyframes label-float {
-  0%, 100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -9px;
-  }
-}
-
-@keyframes halo-breathe {
-  from {
-    transform: scale(.92);
-    opacity: .65;
-  }
+@keyframes label-bob {
   to {
-    transform: scale(1.1);
-    opacity: 1;
+    transform: translateY(var(--bob));
   }
 }
 
-@keyframes orbit-sway {
-  from {
-    transform: rotate(-25deg);
-  }
+@keyframes leaf-sway {
   to {
-    transform: rotate(-9deg);
-  }
-}
-
-@keyframes orbit-turn {
-  to {
-    transform: rotate(382deg);
-  }
-}
-
-@keyframes spark-float {
-  from {
-    transform: translateY(0);
-    opacity: .4;
-  }
-  to {
-    transform: translateY(-9px);
-    opacity: .85;
+    transform: translate3d(-16px, 9px, 0) rotate(-1.6deg);
   }
 }
 
@@ -947,72 +661,68 @@ body {
     opacity: 0;
     transform: translateY(8px);
   }
-  to {
+}
+
+/* Lift on hover only where a real pointer can hover, so a tap never leaves a card stuck in the air. */
+@media (hover: hover) and (pointer: fine) {
+  .capture-card:hover,
+  .item-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .capture-card:hover::after,
+  .item-card:hover::after {
     opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes card-sheen {
-  from {
-    transform: translateX(0) rotate(25deg);
-  }
-  to {
-    transform: translateX(450%) rotate(25deg);
-  }
-}
-
-/* Hover effects only on devices that can hover. */
-@media (hover: hover) {
-  /* Navigation line and motion control */
-  .motion-control:active {
-    transform: translateY(1px);
-  }
-
-  /* Capture cards */
-  .capture-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 32px #65528a20;
-    border-color: #baa4e3;
-  }
-
-  .capture-primary:hover {
-    background: linear-gradient(125deg, #17875e, #126b5b);
-    border-color: #76c8a1;
-    box-shadow: 0 15px 32px #12826233;
-  }
-
-  .capture-card:nth-child(3):hover {
-    border-color: #e3bc89;
-    box-shadow: 0 15px 32px #a4752920;
-  }
-
-  .capture-card:hover .capture-card-icon {
-    transform: translateY(-2px) rotate(-7deg);
   }
 
   .capture-card:hover > svg {
-    transform: translate(3px, -3px);
+    transform: translate(2px, -2px);
   }
 
-  .capture-card:hover::before {
-    animation: card-sheen .8s ease forwards;
-  }
-
-  /* Item cards */
   .item-card:hover {
-    box-shadow: 0 11px 24px #2b754e13;
-    border-color: #a5ceb6;
+    border-color: var(--line);
   }
 
-  .item-card:hover::after {
-    transform: scale(1.4);
+  .item-card:hover > svg {
+    transform: translateX(3px);
+  }
+
+  .quick button:hover {
+    border-color: var(--green-300);
+  }
+
+  .motion-control:hover {
+    border-color: var(--line);
   }
 }
 
-/* Small laptops and tablets. */
+/* Pressing sinks the surface: a slight scale and an inset shadow, shown at once rather than animated. */
+.capture-card:active,
+.item-card:active {
+  transform: scale(.97);
+  transition-duration: var(--dur-instant);
+}
+
+.capture-card:active::after,
+.item-card:active::after {
+  opacity: 0;
+}
+
+.capture-card:not(.capture-primary):active,
+.item-card:active {
+  box-shadow: var(--elev-pressed);
+}
+
+.capture-primary:active {
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / .25);
+}
+
+.motion-control:active {
+  transform: scale(.97);
+}
+
+/* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. */
 @media (max-width: 1000px) {
-  /* Hero */
   .hero-intro {
     padding: 33px 30px;
     grid-template-columns: 1.2fr 1fr;
@@ -1024,36 +734,19 @@ body {
     gap: 8px 12px;
   }
 
-  /* Decorative eco scene */
   .eco-scene {
-    transform: scale(.9);
-    transform-origin: center center;
-    width: 110%;
-    margin-left: -10%;
-  }
-
-  .floating-label {
-    padding: 8px 12px 8px 8px;
+    --planet: 156px;
+    --planet-x: 62%;
+    height: 300px;
   }
 
   .label-leaf {
-    right: -8px;
+    display: none;
   }
 }
 
-/* Tablets in portrait: the hero stacks. */
-@media (max-width: 760px) {
-  /* Navigation line and motion control */
-  .nav-line {
-    gap: 8px;
-  }
-
-  .motion-control {
-    padding: 5px 10px;
-    min-height: 30px;
-  }
-
-  /* Hero */
+/* Tablets: the hero stacks and the scene becomes a wide band with a label either side of the globe. */
+@media (max-width: 900px) {
   .hero-intro {
     padding: 30px 26px;
     grid-template-columns: 1fr;
@@ -1072,128 +765,67 @@ body {
     margin-top: 18px;
   }
 
-  /* Decorative eco scene */
   .eco-scene {
-    width: 330px;
-    height: 240px;
-    transform: none;
-    margin: 5px auto -5px;
+    --planet: 136px;
+    --planet-x: 50%;
+    --planet-top: 48%;
+    width: 100%;
+    max-width: 520px;
+    height: 210px;
+    margin: 10px auto -6px;
     justify-self: center;
-    max-width: 100%;
-  }
-
-  .planet-float {
-    width: 150px;
-    height: 150px;
-    margin: -75px 0 0 -75px;
-    top: 49%;
-  }
-
-  .planet-emblem svg {
-    width: 80px;
-    height: 80px;
-  }
-
-  .orb-orbit {
-    width: 246px;
-    height: 115px;
-    margin: -57px 0 0 -123px;
-    top: 49%;
-  }
-
-  .orbit-two {
-    width: 220px;
-    height: 220px;
-    margin: -110px 0 0 -110px;
-  }
-
-  .floating-label {
-    padding: 8px 11px 8px 8px;
-    gap: 7px;
-    border-radius: 12px;
-  }
-
-  .floating-label > span {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-  }
-
-  .floating-label svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .floating-label b {
-    font-size: var(--fs-caption);
   }
 
   .label-recycle {
-    top: 12px;
-    left: 0;
+    bottom: auto;
+    right: calc(100% - var(--planet-x) + var(--planet) / 2 + 18px);
+    top: calc(var(--planet-top) - var(--planet) * .44);
   }
 
   .label-leaf {
-    top: 85px;
-    right: -6px;
+    display: flex;
+    left: calc(var(--planet-x) + var(--planet) / 2 + 18px);
+    top: calc(var(--planet-top) - var(--planet) * .02);
   }
 
   .label-special {
-    bottom: 17px;
-    left: 3px;
+    display: none;
+  }
+}
+
+/* Tablets in portrait. */
+@media (max-width: 760px) {
+  .nav-line {
+    gap: 8px;
   }
 
-  .scene-caption {
-    bottom: -5px;
+  .motion-control {
+    padding: 5px 10px;
+    min-height: 30px;
   }
 
-  .scene-dots i:nth-child(1) {
-    left: 6%;
-  }
-
-  /* Capture cards */
   .capture-actions {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-/* Phones: the decorative globe becomes a corner accent so the actions stay close to the top. */
+/* Phones: the globe is a small, sharp object tucked into the hero's top-right corner, clear of the text; the labels and ground shadow go. */
 @media (max-width: 640px) {
-  /* Page background and ambient colour */
-  .ambient-color {
-    animation: none;
-    opacity: .4;
-  }
-
-  .ambient-mint {
-    width: 130vw;
-    height: 130vw;
-    left: -75vw;
-    top: 15vh;
-  }
-
-  .ambient-lilac {
-    width: 120vw;
-    height: 120vw;
-    right: -80vw;
-    top: 60vh;
-  }
-
   .ambient-sun {
-    display: none;
+    width: 140vmax;
+    height: 140vmax;
+    right: -80vmax;
+    top: -90vmax;
   }
 
-  /* Site header */
   .site-header {
     padding-bottom: 12px;
   }
 
   .brand-symbol {
-    border-radius: 12px;
-    box-shadow: 0 4px 0 #c8e6d8, 0 7px 18px #0b73531c;
+    border-radius: var(--r-sm);
   }
 
-  /* Navigation line and motion control */
   .nav-line {
     margin: 12px 0 13px;
     justify-content: flex-end;
@@ -1207,6 +839,7 @@ body {
   .motion-control {
     border-color: transparent;
     background: transparent;
+    box-shadow: none;
     padding: 0 3px;
     min-height: 34px;
   }
@@ -1216,12 +849,15 @@ body {
     width: 11px;
   }
 
-  /* Hero */
   .hero-intro {
-    border-radius: 23px;
+    border-radius: var(--r-xl);
     margin: 0 0 17px;
     gap: 0;
     padding: 27px 22px;
+  }
+
+  .hero-intro::after {
+    inset: -10% -30% 30% 20%;
   }
 
   .hero-intro .eyebrow {
@@ -1241,129 +877,46 @@ body {
     margin-top: 16px;
   }
 
-  .hero-meta svg {
-    width: 11px;
-    height: 11px;
-  }
-
-  /* Decorative eco scene */
-  .planet-float {
-    width: 132px;
-    height: 132px;
-    margin: -66px 0 0 -66px;
-    top: 47%;
-  }
-
-  .planet-emblem svg {
-    width: 70px;
-    height: 70px;
-  }
-
-  .orb-orbit {
-    width: 220px;
-    height: 100px;
-    margin: -50px 0 0 -110px;
-    top: 47%;
-  }
-
-  .orbit-two {
-    width: 184px;
-    height: 184px;
-    margin: -92px 0 0 -92px;
-  }
-
-  .label-recycle {
-    top: 0;
-    left: 0;
-  }
-
-  .label-leaf {
-    right: -5px;
-    top: 74px;
-  }
-
-  .label-special {
-    left: 6px;
-    bottom: 12px;
-  }
-
-  .scene-caption {
-    bottom: -6px;
-  }
-
-  .scene-dots i:nth-child(n+4) {
-    display: none;
-  }
-
   .eco-scene {
+    --planet: 112px;
+    --planet-x: 50%;
+    --planet-top: 50%;
+    --lift: -6px;
     position: absolute;
-    right: -70px;
-    top: 18px;
-    width: 220px;
-    height: 220px;
+    top: 62px;
+    right: -26px;
+    width: 120px;
+    height: 120px;
     margin: 0;
-    opacity: .22;
     z-index: 0;
   }
 
   .eco-scene .floating-label,
-  .eco-scene .scene-caption,
-  .eco-scene .scene-dots {
+  .eco-scene .planet-shadow {
     display: none;
   }
 
-  .eco-scene .planet-float {
-    width: 168px;
-    height: 168px;
-    margin: -84px 0 0 -84px;
-  }
-
-  .eco-scene .orb-orbit {
-    width: 240px;
-    height: 120px;
-    margin: -60px 0 0 -120px;
-  }
-
-  .eco-scene .orbit-two {
-    width: 202px;
-    height: 202px;
-    margin: -101px 0 0 -101px;
-  }
-
-  /* Capture cards */
   .capture-actions {
     gap: 9px;
   }
 
   .capture-card {
     padding: 15px 10px 17px;
-    border-radius: 16px;
-  }
-
-  .capture-card::after {
-    width: 120px;
-    height: 120px;
-    border-width: 16px;
-    right: -44px;
-    bottom: -66px;
+    border-radius: var(--r-lg);
   }
 
   .capture-card > span:not(.capture-card-icon) {
     font-size: var(--fs-caption);
   }
 
-  /* Search card and quick picks */
   .search-card {
-    border-radius: 18px;
-    box-shadow: 0 8px 24px #285f450a;
+    border-radius: var(--r-lg);
   }
 
-  /* Item cards */
   .item-card {
-    animation-duration: .3s;
+    animation-duration: var(--dur-base);
   }
 
-  /* Section headings and panels */
   .how-grid {
     padding: 20px;
   }
@@ -1371,41 +924,14 @@ body {
 
 /* Very small phones. */
 @media (max-width: 380px) {
-  /* Hero */
   .hero-intro {
     padding: 23px 17px;
   }
-
-  /* Decorative eco scene */
-  .floating-label {
-    padding: 7px 10px 7px 7px;
-    gap: 5px;
-  }
-
-
-  .floating-label > span {
-    width: 24px;
-    height: 24px;
-  }
-
-  .label-leaf {
-    right: -2px;
-  }
-
-  .label-recycle {
-    top: 3px;
-  }
-
-  .label-special {
-    left: 0;
-    bottom: 12px;
-  }
 }
 
-/* Motion controls: a user's pause choice stops decorative and entrance motion without stopping busy indicators; hidden pages pause the decorative loops */
-.effects-paused .ambient-color,
+/* Motion controls: the pause choice stops decorative and entrance motion without stopping busy indicators. Pseudo-element loops are listed by name because `*` does not reach ::before/::after. Hidden pages pause the loops. */
 .effects-paused .eco-scene *,
-.effects-paused .capture-card::before,
+.effects-paused .hero-intro::after,
 .effects-paused .item-card,
 .effects-paused .app-tabs > [role=tabpanel],
 .effects-paused .classification {
@@ -1413,22 +939,23 @@ body {
 }
 
 .effects-paused .capture-card,
-.effects-paused .capture-card-icon,
+.effects-paused .capture-card::after,
 .effects-paused .capture-card > svg,
 .effects-paused .item-card,
-.effects-paused .item-card::after {
+.effects-paused .item-card::after,
+.effects-paused .item-card > svg {
   transition: none !important;
 }
 
 .effects-paused .capture-card:hover,
 .effects-paused .item-card:hover,
-.effects-paused .capture-card:hover .capture-card-icon,
-.effects-paused .capture-card:hover > svg {
+.effects-paused .capture-card:hover > svg,
+.effects-paused .item-card:hover > svg {
   transform: none !important;
 }
 
-.page-asleep .eco-atmosphere *,
-.page-asleep .eco-scene * {
+.page-asleep .eco-scene *,
+.page-asleep .hero-intro::after {
   animation-play-state: paused !important;
 }
 

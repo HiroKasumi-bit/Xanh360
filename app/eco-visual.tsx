@@ -1,20 +1,21 @@
 'use client';
 import {useEffect,useState} from 'react';
-import {Recycle,Leaf,Battery,Sparkles,Pause,Play} from 'lucide-react';
+import {Recycle,Leaf,BatteryMedium,Sparkles,Pause,Play} from 'lucide-react';
 
 export function EcoAtmosphere(){
- return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-mint"/><i className="ambient-color ambient-lilac"/><i className="ambient-color ambient-sun"/></div>;
+ return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
 }
 export function EcoScene(){
  return <div className="eco-scene" aria-hidden="true">
-  <div className="scene-halo"/>
-  <div className="scene-dots"><i/><i/><i/><i/><i/><i/></div>
-  <div className="orb-orbit orbit-one"/><div className="orb-orbit orbit-two"/>
-  <div className="planet-float"><div className="eco-planet"><div className="planet-latitude latitude-one"/><div className="planet-latitude latitude-two"/><div className="planet-meridian"/><div className="planet-emblem"><Recycle strokeWidth={1.35}/></div><div className="planet-glint"/></div></div>
+  <div className="planet-shadow"/>
+  <div className="planet-float"><div className="eco-planet">
+   {/* Surface and clouds are seamless tiles (public/globe, made by scripts/generate-globe-textures.mjs) on strips two globes wide. */}
+   <div className="planet-surface"/><div className="planet-clouds"/>
+   <div className="planet-light"/>
+  </div></div>
   <div className="floating-label label-recycle"><span><Recycle/></span><b>Tái chế</b></div>
   <div className="floating-label label-leaf"><span><Leaf/></span><b>Sống xanh</b></div>
-  <div className="floating-label label-special"><span><Battery/></span><b>Thu gom riêng</b></div>
-  <div className="scene-caption"><span/>Chọn đúng hôm nay · xanh hơn ngày mai</div>
+  <div className="floating-label label-special"><span><BatteryMedium/></span><b>Thu gom riêng</b></div>
  </div>;
 }
 export function MotionControl(){
