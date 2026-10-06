@@ -6,6 +6,7 @@ import {api} from '@/lib/client';
 import {prepareImage} from '@/lib/image';
 import {cameraErrorMessage, featureAllowed, stopCamera} from '@/lib/device-access';
 import {type Item, searchItems} from '@/lib/domain';
+import {durationToken, motionReduced} from './motion';
 
 type Candidate = {itemId: string; label: string};
 export default function PhotoDialog({initialMode, canRecognize, catalogReady, items, onClose, onChoose}: {
@@ -35,6 +36,15 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
   const cameraGeneration = useRef(0);
   const alive = useRef(true);
   const request = useRef<AbortController | null>(null);
+  // The dialog closes itself first, so Radix can play the exit animation, and tells the page to unmount it afterwards.
+  const [open, setOpen] = useState(true);
+  const closeTimer = useRef(0);
+  const close = () => {
+    setOpen(false); window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(onClose, motionReduced() ? 0 : durationToken('--dur-base', 220) + 40);
+  };
+  const pick = (item: Item) => { close(); onChoose(item); };
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
   const stop = useCallback(() => {
     cameraGeneration.current++;
@@ -123,7 +133,7 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
   }
   function clearImage() { invalidate(); setProcessing(false); setImage(''); setFileName(''); setStatus(''); setError(''); setCandidates([]); setConsent(false); }
   const choices = manual.trim() ? searchItems(items, manual).slice(0, 5) : [];
-  return <Dialog open onOpenChange={open => {if (!open) onClose();}}>
+  return <Dialog open={open} onOpenChange={next => {if (!next) close();}}>
     <DialogContent className="photo-dialog">
       <div className="photo-title"><span className="feature-icon"><ScanLine/></span><div><DialogTitle>Nhìn rõ món đồ. Bỏ đúng nơi.</DialogTitle><DialogDescription>Chụp hoặc chọn ảnh, rồi xác nhận vật cần phân loại.</DialogDescription></div></div>
       <input ref={fileInput} className="sr-only" tabIndex={-1} aria-label="Chọn ảnh từ thiết bị" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" onChange={e => {const file=e.currentTarget.files?.[0]; e.currentTarget.value=''; void selectImage(file);}}/>
@@ -138,8 +148,8 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
       {(cameraError || embedded) && <div className="device-alternatives"><button className="text-button" onClick={() => nativeCamera.current?.click()}><Camera/>Dùng camera của thiết bị</button><a className="text-button" href={siteUrl || '/'} target="_blank" rel="noopener noreferrer"><ExternalLink/>Mở website ở tab riêng</a></div>}
       {error && <div className="notice warning" role="alert">{error}</div>}
       {status && <p className="photo-status" role="status">{recognizing?<Loader2 className="spin"/>:<CheckCircle2/>}{status}</p>}
-      {canRecognize ? image && cameraState === 'idle' && <div className="recognition-controls"><label className="consent"><input type="checkbox" checked={consent} disabled={recognizing} onChange={e => setConsent(e.target.checked)}/><span>Tôi đồng ý gửi ảnh đến dịch vụ AI để nhận diện. Xanh360 không lưu ảnh lâu dài.</span></label><button className="primary wide" onClick={() => void recognize()} disabled={!consent || recognizing || processing}>{recognizing?<Loader2 className="spin"/>:<ScanLine/>}{recognizing?'Đang nhận diện…':'Nhận diện ảnh'}</button>{candidates.map((c,i) => <button key={i} className="result-row" disabled={!catalogReady} onClick={() => {const item=items.find(x=>x.id===c.itemId); if(item) onChoose(item);}}><CheckCircle2/><b>{c.label}</b><span>Xem hướng dẫn</span></button>)}</div> : <div className="local-photo-note"><ShieldCheck/><div><b>Chụp và tải ảnh đã sẵn sàng</b><p>Nhận diện tự động chưa kết nối dịch vụ AI. Ảnh chỉ ở trên thiết bị; hãy nhập tên món đồ bên dưới để xem cách phân loại.</p></div></div>}
-      <div className="photo-manual"><label htmlFor="photo-manual-search">{candidates.length ? 'Chưa đúng? Tìm lại tên vật' : 'Tìm tên vật để xem hướng dẫn'}</label><div className="searchbox compact"><Search/><input id="photo-manual-search" value={manual} onChange={e => setManual(e.target.value)} maxLength={100} placeholder="Ví dụ: pin, ly nhựa, hộp giấy…"/></div>{choices.map(item => <button className="result-row" key={item.id} disabled={!catalogReady} onClick={() => onChoose(item)}><span><b>{item.name}</b><small>{item.material}</small></span><Search/></button>)}{manual.trim() && !choices.length && <p className="small">Chưa có vật này. Hãy thử tên gọi khác.</p>}</div>
+      {canRecognize ? image && cameraState === 'idle' && <div className="recognition-controls"><label className="consent"><input type="checkbox" checked={consent} disabled={recognizing} onChange={e => setConsent(e.target.checked)}/><span>Tôi đồng ý gửi ảnh đến dịch vụ AI để nhận diện. Xanh360 không lưu ảnh lâu dài.</span></label><button className="primary wide" onClick={() => void recognize()} disabled={!consent || recognizing || processing}>{recognizing?<Loader2 className="spin"/>:<ScanLine/>}{recognizing?'Đang nhận diện…':'Nhận diện ảnh'}</button>{candidates.map((c,i) => <button key={i} className="result-row" disabled={!catalogReady} onClick={() => {const item=items.find(x=>x.id===c.itemId); if(item) pick(item);}}><CheckCircle2/><b>{c.label}</b><span>Xem hướng dẫn</span></button>)}</div> : <div className="local-photo-note"><ShieldCheck/><div><b>Chụp và tải ảnh đã sẵn sàng</b><p>Nhận diện tự động chưa kết nối dịch vụ AI. Ảnh chỉ ở trên thiết bị; hãy nhập tên món đồ bên dưới để xem cách phân loại.</p></div></div>}
+      <div className="photo-manual"><label htmlFor="photo-manual-search">{candidates.length ? 'Chưa đúng? Tìm lại tên vật' : 'Tìm tên vật để xem hướng dẫn'}</label><div className="searchbox compact"><Search/><input id="photo-manual-search" value={manual} onChange={e => setManual(e.target.value)} maxLength={100} placeholder="Ví dụ: pin, ly nhựa, hộp giấy…"/></div>{choices.map(item => <button className="result-row" key={item.id} disabled={!catalogReady} onClick={() => pick(item)}><span><b>{item.name}</b><small>{item.material}</small></span><Search/></button>)}{manual.trim() && !choices.length && <p className="small">Chưa có vật này. Hãy thử tên gọi khác.</p>}</div>
       {image && <button className="text-button" onClick={() => {clearImage(); void startCamera();}}><RefreshCw/>Chụp lại ảnh khác</button>}
     </DialogContent>
   </Dialog>;

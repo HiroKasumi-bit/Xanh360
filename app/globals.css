@@ -64,6 +64,9 @@
   --line: #dbe5dc;
   --line-soft: rgb(13 42 31 / .09);
   --line-strong: #c9d9cf;
+  /* List rows: hover tint and pressed tint. */
+  --row-hover: #f3f7f0;
+  --row-pressed: var(--green-100);
 
   /* Waste categories. Colour carries meaning: green recyclable, olive organic, amber collect separately, red hazard, stone residual or unknown. */
   --cat-recycle-bg: #e6f1e4;
@@ -106,6 +109,8 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .14 0 0 0 .45 -.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
   --focus-ring: var(--green-500);
   --focus-ring-on-dark: var(--sprout);
+  --focus-halo: #fff;
+  --focus-halo-on-dark: var(--green-900);
 
   /* Layout: the phone tab bar's height, before the safe-area inset is added. */
   --tabbar-h: 56px;
@@ -130,6 +135,12 @@
   --ease-press: cubic-bezier(.3, 0, .5, 1);
   /* Ambient loops (bobbing, swaying): symmetric so an alternating loop has no visible turnaround. */
   --ease-float: cubic-bezier(.45, 0, .55, 1);
+  /* Press depth (buttons, chips and cards; wide rows sink less) and the delay between list items as they appear. */
+  --press-scale: .97;
+  --press-scale-row: .99;
+  --stagger: 30ms;
+  /* Busy spinners: one turn per second. Loop periods of the hero scene live with the scene (visuals.css). */
+  --dur-spin: 1s;
 
   /* shadcn/ui theme, mapped onto the tokens above */
   --background: var(--paper);
@@ -319,12 +330,20 @@ button,
   touch-action: manipulation;
 }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 3px solid #95cbaa;
-  outline-offset: 3px;
+/* Keyboard focus: a 2.5px ring in the focus green (5.3:1 on paper), 2px off the element, with a white halo filling the
+   gap so the ring stays clear against the element and the page alike. Fully zero specificity, so a component that draws
+   its own ring (the search field) or must keep its own shadow (raised cards) overrides it; it is unlayered, so it does
+   replace the faint shadcn rings. Dark surfaces switch the ring to sprout (see .camera-stage). */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([data-slot$=dialog-content])):where(:focus-visible) {
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--focus-halo);
+}
+
+/* Inside scrollers and edge-to-edge lists the ring is drawn inside the element, so the scroller never clips it. */
+:where(.nav-tabs [role=tab], [data-slot=select-item]):where(:focus-visible) {
+  outline-offset: -2.5px;
+  box-shadow: inset 0 0 0 4.5px var(--focus-halo);
 }
 
 svg {
@@ -454,19 +473,6 @@ button.primary,
   min-height: 44px;
 }
 
-.primary,
-.btn-outline,
-.icon-button,
-.quick button {
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-
-.primary:active,
-.btn-outline:active,
-.quick button:active {
-  transform: translateY(1px);
-}
-
 .badge {
   display: inline-flex;
   align-items: center;
@@ -533,7 +539,7 @@ button.primary,
 }
 
 .spin {
-  animation: spin 1s linear infinite;
+  animation: spin var(--dur-spin) linear infinite;
 }
 
 /* Site header and brand */
@@ -935,6 +941,7 @@ header {
 
 /* These rules are unlayered, so they override the shadcn Tabs utilities without !important. */
 .nav-tabs {
+  position: relative;
   height: auto;
   justify-content: flex-start;
   overflow-x: auto;
@@ -956,12 +963,34 @@ header {
   border-radius: 12px;
   min-height: 46px;
   font-weight: 600;
-  /* The active pill changes at once; only transform/opacity are ever animated. */
-  transition: none;
 }
 
 .nav-tabs [role=tab]::after {
   display: none;
+}
+
+/* The active tab's pill is one element under the triggers. TabPill (app/waste-app.tsx) measures the active trigger into
+   --pill-x/y/w/h and slides it with a transform; until it has measured, the active trigger keeps its own background. */
+.nav-tabs [role=tab] {
+  z-index: 1;
+}
+
+.tab-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: var(--pill-w, 0);
+  height: var(--pill-h, 0);
+  translate: var(--pill-x, 0) var(--pill-y, 0);
+  transform-origin: 0 50%;
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tab-pill[data-ready] {
+  opacity: 1;
 }
 
 /* The short tab label is for the phone tab bar only; the full label stays the accessible name. */
@@ -970,7 +999,7 @@ header {
 }
 
 .app-tabs > [role=tabpanel] {
-  animation: panel-enter var(--dur-base) var(--ease-out) both;
+  animation: panel-enter var(--dur-base) var(--ease-out) backwards;
 }
 
 /* Page intro and hero */
@@ -1029,7 +1058,7 @@ header {
   text-align: left;
   color: #173e31;
   min-width: 0;
-  transition: transform var(--dur-base) var(--ease-out);
+  transition: transform var(--dur-base) var(--ease-spring);
 }
 
 .capture-card-icon {
@@ -1115,6 +1144,7 @@ header {
 
 .searchbox input:focus-visible {
   outline: none;
+  box-shadow: none;
 }
 
 .searchbox button {
@@ -1183,16 +1213,25 @@ header {
   margin-top: 16px;
 }
 
+/* Rows reach 10px past the text on both sides, so the hover and pressed tints have room around the content. */
 .result-row {
   display: flex;
   align-items: center;
   gap: 13px;
-  width: 100%;
+  width: calc(100% + 20px);
+  margin-inline: -10px;
   text-align: left;
   border: 0;
   border-top: 1px solid #edf1ee;
-  background: #fff;
-  padding: 12px 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  padding: 12px 10px;
+}
+
+/* Search results arrive one after another, 30ms apart (at most 8 rows, so the last starts within a quarter second). */
+.search-results .result-row {
+  animation: row-appear var(--dur-base) var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0), 7) * var(--stagger));
 }
 
 .result-row > span:nth-child(2) {
@@ -1226,7 +1265,7 @@ header {
   padding: 18px 32px 18px 18px;
   align-items: center;
   border-radius: var(--r-lg);
-  transition: transform var(--dur-base) var(--ease-out);
+  transition: transform var(--dur-base) var(--ease-spring);
 }
 
 .item-card b {
@@ -1374,12 +1413,72 @@ header {
 }
 
 /* Classification result */
+/* The result heading and the question group take focus after a choice (tabIndex -1), so their rings get some room. */
+.classification h2 {
+  border-radius: var(--r-xs);
+}
+
+.classification h2:focus-visible {
+  outline-offset: 5px;
+}
+
+/* New content in the result card fades in and rises 8px. */
+.result-reveal {
+  animation: result-reveal var(--dur-slow) var(--ease-out) backwards;
+}
+
+/* Loading: the skeleton holds the place of one condition question (what usually comes first), outer margins included,
+   so nothing jumps when the question replaces it. */
+.result-skeleton {
+  min-height: 135px;
+  margin: 8px 0 14px;
+}
+
+.result-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.result-skeleton-shape {
+  display: grid;
+  gap: 10px;
+}
+
+.result-skeleton [data-slot=skeleton] {
+  background: var(--green-100);
+  border-radius: var(--r-xs);
+}
+
+.result-skeleton .skeleton-line {
+  height: 14px;
+  width: min(100%, 420px);
+}
+
+.result-skeleton .skeleton-line.is-short {
+  width: min(70%, 300px);
+}
+
+.skeleton-choices {
+  display: flex;
+  gap: 10px;
+}
+
+.skeleton-choices > [data-slot=skeleton] {
+  width: 80px;
+  height: 44px;
+  border-radius: var(--r-sm);
+}
+
 .classification {
   margin-top: 30px;
   padding: 28px;
   border-radius: var(--r-xl);
   scroll-margin-top: 24px;
-  animation: panel-enter var(--dur-base) var(--ease-out) both;
+  animation: panel-enter var(--dur-slow) var(--ease-out) backwards;
 }
 
 .result-grid {
@@ -1522,9 +1621,31 @@ header {
 }
 
 .question-panel fieldset {
-  margin: 22px 0;
+  margin: 14px -12px;
   border: 0;
-  padding: 0;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+}
+
+/* While an answer is checked the chosen button stays pressed with a spinner in it; the others wait. */
+.choices [aria-disabled=true] {
+  cursor: progress;
+}
+
+.choices .btn-outline[aria-disabled=true]:not([aria-pressed=true]) {
+  opacity: .55;
+}
+
+.choices .btn-outline[aria-pressed=true] {
+  border-color: var(--green-400);
+  background: var(--green-100);
+  color: var(--green-700);
+  box-shadow: var(--elev-pressed);
+}
+
+.choices .btn-outline .spin {
+  width: 16px;
+  height: 16px;
 }
 
 .question-panel legend {
@@ -1759,8 +1880,13 @@ textarea {
   border: 0;
 }
 
+/* The hover and pressed tints reach 10px past the text; the negative margins keep the text where it was. */
 .history-item {
   flex: 1;
+  min-width: 0;
+  margin: -8px 0 -8px -10px;
+  padding: 8px 10px;
+  border-radius: var(--r-xs);
   text-align: left;
   background: none;
   border: 0;
@@ -2094,7 +2220,6 @@ textarea {
   min-height: 210px;
   padding: 25px 15px;
   text-align: center;
-  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
   min-width: 0;
 }
 
@@ -2287,6 +2412,8 @@ textarea {
 .camera-stage {
   --hint-space: 56px;
   --shutter-space: 92px;
+  --focus-ring: var(--focus-ring-on-dark);
+  --focus-halo: var(--focus-halo-on-dark);
   position: relative;
   overflow: hidden;
   background: #122a22;
@@ -2500,6 +2627,20 @@ footer .text-button {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes row-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes result-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
 
@@ -2731,35 +2872,12 @@ footer .text-button {
     outline-offset: -4px;
   }
 
-  /* The active tab's indicator: a pill behind its icon that slides between the equal columns (transform only). */
-  .nav-tabs::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: max(4px, env(safe-area-inset-left));
-    width: calc((100% - max(4px, env(safe-area-inset-left)) - max(4px, env(safe-area-inset-right))) / 4);
+  /* The sliding pill (TabPill in app/waste-app.tsx) becomes a 60x30 lozenge behind the active tab's icon. */
+  .tab-pill {
     height: 30px;
+    translate: var(--pill-x, 0) 5px;
+    border-radius: 0;
     clip-path: inset(0 calc(50% - 30px) round 15px);
-    pointer-events: none;
-    display: none;
-  }
-
-  @supports selector(:has(*)) {
-    .nav-tabs::before {
-      display: block;
-    }
-
-    .nav-tabs:has(> [role=tab]:nth-child(2)[data-state=active])::before {
-      transform: translateX(100%);
-    }
-
-    .nav-tabs:has(> [role=tab]:nth-child(3)[data-state=active])::before {
-      transform: translateX(200%);
-    }
-
-    .nav-tabs:has(> [role=tab]:nth-child(4)[data-state=active])::before {
-      transform: translateX(300%);
-    }
   }
 
   /* Page intro and hero */
@@ -2972,6 +3090,11 @@ footer .text-button {
     padding: 20px;
   }
 
+  /* A question wraps to more lines on a phone, so its placeholder is taller too. */
+  .result-skeleton {
+    min-height: 184px;
+  }
+
   .source-panel {
     padding: 18px;
   }
@@ -3039,7 +3162,8 @@ footer .text-button {
   }
 
   /* Dialog containers: bottom sheets. Full width on the bottom edge, 24px top corners, at most the screen height less
-     24px, padded above the home indicator, sliding up instead of zooming. The content stays the one scroller. */
+     24px, padded above the home indicator, sliding up instead of zooming. The content stays the one scroller. The
+     timing comes from the components: in over --dur-slow easing out, away over --dur-base easing in. */
   [data-slot=dialog-content],
   [data-slot=alert-dialog-content] {
     inset: auto 0 0;
@@ -3054,8 +3178,6 @@ footer .text-button {
     --tw-exit-scale: 1;
     --tw-enter-translate-y: 100%;
     --tw-exit-translate-y: 100%;
-    --tw-duration: var(--dur-slow);
-    --tw-ease: var(--ease-out);
   }
 
   [data-slot=dialog-content] {

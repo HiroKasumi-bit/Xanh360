@@ -39,7 +39,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-(--scrim) backdrop-blur-[3px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-50 bg-(--scrim) backdrop-blur-[3px] duration-(--dur-base) ease-(--ease-out) data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         className
       )}
       {...props}
@@ -47,21 +47,48 @@ function DialogOverlay({
   )
 }
 
+// Where focus goes when a dialog closes. Radix returns it to a <DialogTrigger>, but most dialogs here are opened from
+// state (open={...}), and without a trigger focus fell to <body>. Each dialog remembers the element that had focus when
+// it opened, then the opener of the dialog that one sat in (for a dialog opened from a dialog that has since closed).
+const returnTargets = new WeakMap<Element, HTMLElement[]>()
+
 function DialogContent({
   className,
   children,
   showCloseButton = true,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
+  const returnTo = React.useRef<HTMLElement[]>([])
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
+        onOpenAutoFocus={(event) => {
+          const opener = document.activeElement
+          const chain = opener instanceof HTMLElement && opener !== document.body ? [opener] : []
+          const outer = opener?.closest("[data-slot=dialog-content]")
+          if (outer) chain.push(...(returnTargets.get(outer) ?? []))
+          returnTo.current = chain
+          if (event.currentTarget instanceof Element) returnTargets.set(event.currentTarget, chain)
+          onOpenAutoFocus?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          if (event.defaultPrevented) return
+          event.preventDefault()
+          // Focus already moved on purpose while the dialog was closing (to a result, say): leave it there.
+          const active = document.activeElement
+          const content = event.currentTarget instanceof Element ? event.currentTarget : null
+          if (active && active !== document.body && !content?.contains(active)) return
+          returnTo.current.find((element) => element.isConnected)?.focus()
+        }}
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-(--dialog-pad) pt-0 text-(--ink) shadow-(--elev-3) duration-200 outline-none [--dialog-pad:1.5rem] *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-(--dialog-pad) pt-0 text-(--ink) shadow-(--elev-3) duration-(--dur-slow) ease-(--ease-out) outline-none [--dialog-pad:1.5rem] *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-98 data-[state=closed]:duration-(--dur-base) data-[state=closed]:ease-(--ease-in) data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-97 data-[state=open]:slide-in-from-bottom-2 sm:max-w-lg",
           className
         )}
         {...props}

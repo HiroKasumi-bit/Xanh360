@@ -92,10 +92,20 @@ body {
   color: var(--ink-2);
 }
 
-.nav-tabs [role=tab][data-state=active] {
+.nav-tabs [role=tab][data-state=active],
+.tab-pill {
   background: var(--paper-raised);
-  color: var(--green-600);
   box-shadow: var(--edge-light), 0 1px 1px rgb(16 58 42 / .08), 0 2px 6px -1px rgb(16 58 42 / .12);
+}
+
+.nav-tabs [role=tab][data-state=active] {
+  color: var(--green-600);
+}
+
+/* Once the pill is in place it is the only raised surface; the active trigger only changes its colour. */
+.nav-tabs:has(> .tab-pill[data-ready]) [role=tab][data-state=active] {
+  background: transparent;
+  box-shadow: none;
 }
 
 /* The motion toggle is the last chip in the header, the same height as the location and weather chips. */
@@ -118,7 +128,6 @@ body {
   min-height: 46px;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: transform var(--dur-instant) var(--ease-press);
 }
 
 .motion-control svg {
@@ -126,10 +135,42 @@ body {
   height: 15px;
 }
 
-/* Under the system reduced-motion setting the control only explains the state, so its label stays fully readable. */
-.motion-control:disabled {
-  opacity: 1;
-  cursor: default;
+/* The label stays "Dừng hiệu ứng"; aria-pressed carries the state. Pressed, the chip sinks into the paper and takes the
+   brand tint, so the stopped state is seen as well as announced. */
+.motion-control[aria-pressed=true] {
+  background: var(--green-100);
+  border-color: var(--green-300);
+  color: var(--green-700);
+  box-shadow: var(--elev-pressed);
+}
+
+/* When the system asks for reduced motion there is nothing to switch, so a plain line explains why nothing moves
+   instead of a disabled button. html[data-motion-source] is set before the first paint (app/layout.tsx). */
+.motion-status {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  max-width: 172px;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.motion-status svg {
+  width: 15px;
+  height: 15px;
+  color: var(--green-600);
+}
+
+:root[data-motion-source=system] .motion-control {
+  display: none;
+}
+
+:root[data-motion-source=system] .motion-status {
+  display: inline-flex;
 }
 
 /* Hero: deep forest lit by one key light from the top right */
@@ -528,23 +569,23 @@ body {
 }
 
 .item-card:nth-child(2) {
-  animation-delay: 30ms;
+  animation-delay: calc(1 * var(--stagger));
 }
 
 .item-card:nth-child(3) {
-  animation-delay: 60ms;
+  animation-delay: calc(2 * var(--stagger));
 }
 
 .item-card:nth-child(4) {
-  animation-delay: 90ms;
+  animation-delay: calc(3 * var(--stagger));
 }
 
 .item-card:nth-child(5) {
-  animation-delay: 120ms;
+  animation-delay: calc(4 * var(--stagger));
 }
 
 .item-card:nth-child(n+6) {
-  animation-delay: 150ms;
+  animation-delay: calc(5 * var(--stagger));
 }
 
 /* Icon tiles are small pressed paper chips tinted by category. */
@@ -665,7 +706,8 @@ body {
   }
 }
 
-/* Lift on hover only where a real pointer can hover, so a tap never leaves a card stuck in the air. */
+/* Hover only where a real pointer can hover, so a tap never leaves anything stuck in its hover state. Cards lift 2px
+   and fade in a pre-drawn shadow; rows take a tint and nudge their arrow 3px; buttons and chips firm up their edge. */
 @media (hover: hover) and (pointer: fine) {
   .capture-card:hover,
   .item-card:hover {
@@ -689,29 +731,115 @@ body {
     transform: translateX(3px);
   }
 
-  .quick button:hover {
+  .result-row:not(:disabled):hover,
+  .history-item:hover {
+    background-color: var(--row-hover);
+  }
+
+  .result-row:not(:disabled):hover > svg:last-child {
+    translate: 3px 0;
+  }
+
+  .history-item:hover b {
+    color: var(--green-600);
+  }
+
+  .btn-outline:not(:disabled):hover {
+    border-color: var(--green-300);
+    background-color: #f8fbf4;
+  }
+
+  .btn-outline.danger:not(:disabled):hover {
+    border-color: var(--red-500);
+    background-color: var(--red-50);
+  }
+
+  .primary:not(:disabled):hover,
+  .searchbox button:not(:disabled):hover {
+    background: linear-gradient(180deg, var(--green-600), var(--green-700)) !important;
+  }
+
+  .quick button:not(:disabled):hover,
+  .location-button:hover,
+  .motion-control:hover {
     border-color: var(--green-300);
   }
 
-  .motion-control:hover {
-    border-color: var(--line);
+  .nav-tabs [role=tab][data-state=inactive]:hover {
+    color: var(--ink);
   }
 }
 
-/* Pressing sinks the surface: a slight scale and an inset shadow, shown at once rather than animated. */
-.capture-card:active,
-.item-card:active {
-  transform: scale(.97);
+/* Press: everything pressable sinks a little the moment it is pressed (--dur-instant, --ease-press) and springs back
+   on release (--dur-base, --ease-spring). Buttons, chips and rows use the `scale` property, so the press composes with
+   transforms used for lifts and centring (the camera shutter). Rows are wide, so they sink less and take a tint. */
+.primary,
+.btn-outline,
+.icon-button,
+.text-button,
+.quick button,
+.searchbox button,
+.location-button,
+.motion-control,
+.nav-tabs [role=tab],
+.area-option,
+.result-row,
+.history-item,
+.photo-dropzone,
+.shutter,
+.city-details summary,
+[data-slot=select-trigger],
+[data-slot=dialog-close] {
+  transition: scale var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.result-row > svg:last-child {
+  transition: translate var(--dur-base) var(--ease-spring);
+}
+
+.primary:not(:disabled):active,
+.btn-outline:not(:disabled):active,
+.icon-button:not(:disabled):active,
+.text-button:not(:disabled):active,
+.quick button:not(:disabled):active,
+.searchbox button:not(:disabled):active,
+.location-button:active,
+.motion-control:active,
+.nav-tabs [role=tab]:active,
+.photo-dropzone:active,
+.shutter:not(:disabled):active,
+.city-details summary:active,
+[data-slot=select-trigger]:not(:disabled):active,
+[data-slot=dialog-close]:active {
+  scale: var(--press-scale);
   transition-duration: var(--dur-instant);
+  transition-timing-function: var(--ease-press);
+}
+
+.area-option:active,
+.result-row:not(:disabled):active,
+.history-item:active {
+  scale: var(--press-scale-row);
+  background-color: var(--row-pressed);
+  transition-duration: var(--dur-instant);
+  transition-timing-function: var(--ease-press);
+}
+
+/* Cards sink further: a slight scale and an inset shadow instead of the lift. */
+.capture-card:active,
+.item-card:not(:disabled):active {
+  transform: scale(var(--press-scale));
+  transition-duration: var(--dur-instant);
+  transition-timing-function: var(--ease-press);
 }
 
 .capture-card:active::after,
-.item-card:active::after {
+.item-card:not(:disabled):active::after {
   opacity: 0;
 }
 
 .capture-card:not(.capture-primary):active,
-.item-card:active {
+.item-card:not(:disabled):active {
   box-shadow: var(--elev-pressed);
 }
 
@@ -719,8 +847,9 @@ body {
   box-shadow: inset 0 2px 4px rgb(0 0 0 / .25);
 }
 
-.motion-control:active {
-  transform: scale(.97);
+.motion-control:active,
+.btn-outline:not(:disabled):active {
+  box-shadow: var(--elev-pressed);
 }
 
 /* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. The header
@@ -765,6 +894,11 @@ body {
   .motion-control svg {
     width: 18px;
     height: 18px;
+  }
+
+  /* No room for the explanation, and nothing to switch: the system setting is already followed. */
+  :root[data-motion-source=system] .motion-status {
+    display: none;
   }
 }
 
@@ -855,10 +989,9 @@ body {
     box-shadow: none;
   }
 
-  .nav-tabs::before {
+  .tab-pill {
     background: linear-gradient(180deg, #dcebd6, var(--green-100));
     box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
-    transition: transform var(--dur-base) var(--ease-out);
   }
 
   .hero-intro {
@@ -939,44 +1072,47 @@ body {
   }
 }
 
-/* Motion controls: the pause choice stops decorative and entrance motion without stopping busy indicators. Pseudo-element loops are listed by name because `*` does not reach ::before/::after. Hidden pages pause the loops. */
-.effects-paused .eco-scene *,
-.effects-paused .hero-intro::after,
-.effects-paused .item-card,
-.effects-paused .app-tabs > [role=tabpanel],
-.effects-paused .classification {
+/* Decorative loops rest while nobody can see them: the hero is off screen or the page is hidden (EcoScene sets data-scene). */
+.hero-intro[data-scene=asleep]::after,
+.hero-intro[data-scene=asleep] .eco-scene * {
+  animation-play-state: paused;
+}
+
+/* Phones and slow displays: the sunlight pools are a large blended layer, so they stay still there. The globe keeps
+   its small, cheap turn and bob. */
+@media (max-width: 640px), (update: slow) {
+  .hero-intro::after {
+    animation: none;
+  }
+}
+
+/* Reduced motion, one switch. html[data-motion] is set before the first paint by the inline script in app/layout.tsx
+   (from the system setting and the saved "Dừng hiệu ứng" choice) and kept in sync by MotionControl. When it is
+   "reduced", nothing moves: loops, entrances, staggers, lifts, the tab pill, sheets and smooth scrolling all stop.
+   Busy spinners keep turning, because they carry information. Colour and opacity changes stay. `*` does not reach
+   pseudo-elements, so they are listed too. */
+:root[data-motion=reduced] {
+  scroll-behavior: auto;
+}
+
+:root[data-motion=reduced] *:not(.spin, .animate-spin),
+:root[data-motion=reduced] ::before,
+:root[data-motion=reduced] ::after {
   animation: none !important;
 }
 
-.effects-paused .nav-tabs::before,
-.effects-paused .capture-card,
-.effects-paused .capture-card::after,
-.effects-paused .capture-card > svg,
-.effects-paused .item-card,
-.effects-paused .item-card::after,
-.effects-paused .item-card > svg {
-  transition: none !important;
+:root[data-motion=reduced] *,
+:root[data-motion=reduced] ::before,
+:root[data-motion=reduced] ::after {
+  transition-property: color, background-color, border-color, opacity !important;
 }
 
-.effects-paused .capture-card:hover,
-.effects-paused .item-card:hover,
-.effects-paused .capture-card:hover > svg,
-.effects-paused .item-card:hover > svg {
-  transform: none !important;
+/* Hover lifts and arrow nudges stay put; presses still sink, since that is feedback rather than motion. */
+:root[data-motion=reduced] :is(.capture-card, .item-card):hover:not(:active),
+:root[data-motion=reduced] :is(.capture-card, .item-card):hover > svg {
+  transform: none;
 }
 
-.page-asleep .eco-scene *,
-.page-asleep .hero-intro::after {
-  animation-play-state: paused !important;
-}
-
-/* The system reduced-motion setting turns off all animation and transitions. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-    scroll-behavior: auto !important;
-  }
+:root[data-motion=reduced] .result-row:hover > svg:last-child {
+  translate: none;
 }
