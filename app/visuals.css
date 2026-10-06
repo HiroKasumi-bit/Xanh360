@@ -71,7 +71,7 @@ body {
 }
 
 .brand {
-  color: #124d3c;
+  color: var(--green-700);
 }
 
 .brand small {
@@ -108,7 +108,7 @@ body {
 
 .nav-tabs [role=tab][data-state=active] {
   background: linear-gradient(115deg, #fff, #f7ffed);
-  color: #14614a;
+  color: var(--green-600);
   box-shadow: 0 3px 12px #20584313;
 }
 
@@ -129,7 +129,7 @@ body {
   margin-left: auto;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background .2s ease, box-shadow .2s ease;
+  transition: background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 
 .motion-control svg {
@@ -586,7 +586,7 @@ body {
   background: linear-gradient(135deg, #cfc2f5, #e5d9fb);
   color: #64429b;
   box-shadow: inset 0 1px 0 #fff9, 0 4px 12px #694c9620;
-  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
 .capture-card:nth-child(3) .capture-card-icon {
@@ -598,7 +598,7 @@ body {
 .capture-card > svg {
   color: currentColor;
   opacity: .7;
-  transition: transform .25s ease;
+  transition: transform var(--dur-base) var(--ease-out);
 }
 
 .capture-card::before {
@@ -726,7 +726,7 @@ body {
   bottom: -40px;
   background: #daeede61;
   z-index: -1;
-  transition: transform .35s ease;
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
 .item-card:nth-child(3n+2)::after {
@@ -852,24 +852,18 @@ body {
 }
 
 /* Photo dialog and location card */
-.photo-dialog {
-  border-color: #fff !important;
-  background: linear-gradient(150deg, #fcfff9, #f0f7f1 68%, #f3f0f9) !important;
-  box-shadow: 0 24px 100px #0b32254d !important;
-}
-
 .photo-dropzone {
   background: linear-gradient(135deg, #edf7e6, #e6f3ee);
   border-color: #9fbfac;
 }
 
-.photo-actions .outline:first-child {
+.photo-actions .btn-outline:first-child {
   background: #e4f2e4;
   border-color: #c9dfca;
   color: #3b6f4a;
 }
 
-.photo-actions .outline:last-child {
+.photo-actions .btn-outline:last-child {
   background: #ede8f9;
   border-color: #dbd0ee;
   color: #71578b;
@@ -1372,11 +1366,6 @@ body {
   /* Section headings and panels */
   .how-grid {
     padding: 20px;
-  }
-
-  /* Photo dialog and location card */
-  .photo-dialog {
-    border-radius: 20px !important;
   }
 }
 

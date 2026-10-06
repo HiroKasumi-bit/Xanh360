@@ -124,11 +124,11 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
   function clearImage() { invalidate(); setProcessing(false); setImage(''); setFileName(''); setStatus(''); setError(''); setCandidates([]); setConsent(false); }
   const choices = manual.trim() ? searchItems(items, manual).slice(0, 5) : [];
   return <Dialog open onOpenChange={open => {if (!open) onClose();}}>
-    <DialogContent className="photo-dialog dialog-scroll">
+    <DialogContent className="photo-dialog">
       <div className="photo-title"><span className="feature-icon"><ScanLine/></span><div><DialogTitle>Nhìn rõ món đồ. Bỏ đúng nơi.</DialogTitle><DialogDescription>Chụp hoặc chọn ảnh, rồi xác nhận vật cần phân loại.</DialogDescription></div></div>
       <input ref={fileInput} className="sr-only" tabIndex={-1} aria-label="Chọn ảnh từ thiết bị" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" onChange={e => {const file=e.currentTarget.files?.[0]; e.currentTarget.value=''; void selectImage(file);}}/>
       <input ref={nativeCamera} className="sr-only" tabIndex={-1} aria-label="Chụp bằng camera thiết bị" type="file" accept="image/*" capture="environment" onChange={e => {const file=e.currentTarget.files?.[0]; e.currentTarget.value=''; void selectImage(file);}}/>
-      <div className="photo-actions"><button className="outline" onClick={() => {invalidate(); setProcessing(false); void startCamera();}} disabled={cameraState === 'requesting'}><Camera/>{cameraState === 'requesting' ? 'Đang xin quyền…' : 'Mở camera'}</button><button className="outline" onClick={() => fileInput.current?.click()}><ImagePlus/>Chọn ảnh</button></div>
+      <div className="photo-actions"><button className="btn-outline" onClick={() => {invalidate(); setProcessing(false); void startCamera();}} disabled={cameraState === 'requesting'}><Camera/>{cameraState === 'requesting' ? 'Đang xin quyền…' : 'Mở camera'}</button><button className="btn-outline" onClick={() => fileInput.current?.click()}><ImagePlus/>Chọn ảnh</button></div>
       {cameraState !== 'idle' ? <div className="camera-stage">
         {cameraState === 'live' ? <><video ref={video} autoPlay playsInline muted onLoadedMetadata={() => setCameraReady(true)} aria-label="Hình ảnh từ camera"/><div className="camera-guides" aria-hidden="true"/><span className="camera-hint">Đặt một món đồ trong khung, giữ máy ổn định</span></> : <div className="camera-wait"><Loader2 className="spin"/><b>Cho phép sử dụng camera</b><p>Xác nhận yêu cầu của trình duyệt để bắt đầu.</p></div>}
         <button className="camera-dismiss icon-button" aria-label="Dừng camera" onClick={stop}><X/></button>
