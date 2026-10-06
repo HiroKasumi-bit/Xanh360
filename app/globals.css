@@ -4,6 +4,16 @@
 
 /* Xanh360 base styles: tokens, elements, layout and components. Colour and motion overrides live in visuals.css. */
 
+/* Tailwind's hover: variant (used by the shadcn components) applies only where a real pointer can hover, like the
+   hand-written hover rules, so a tap on a touch screen never leaves a control stuck in its hover state. */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
 /* Be Vietnam Pro is loaded from app/layout.tsx. This local face matches its metrics so text does not jump when the web font swaps in. */
 @font-face {
   font-family: 'Be Vietnam Pro Fallback';
@@ -96,6 +106,9 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .14 0 0 0 .45 -.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
   --focus-ring: var(--green-500);
   --focus-ring-on-dark: var(--sprout);
+
+  /* Layout: the phone tab bar's height, before the safe-area inset is added. */
+  --tabbar-h: 56px;
 
   /* Corner radii */
   --r-xs: 8px;
@@ -320,11 +333,11 @@ svg {
   height: 20px;
 }
 
-/* Page shell */
+/* Page shell. With viewport-fit=cover the gutters also clear a landscape notch. */
 .shell {
   margin: auto;
   max-width: 1180px;
-  padding: 0 32px;
+  padding: 0 max(32px, env(safe-area-inset-right)) 0 max(32px, env(safe-area-inset-left));
 }
 
 /* Shared text, buttons and badges */
@@ -355,6 +368,7 @@ svg {
   background: none;
   border: 0;
   padding: 8px 0;
+  min-height: 44px;
   color: var(--green-600);
   font-weight: 600;
   font-size: var(--fs-small);
@@ -362,10 +376,6 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-}
-
-.text-button:hover {
-  text-decoration: underline;
 }
 
 button.primary,
@@ -392,10 +402,6 @@ button.primary,
   text-decoration: none;
   font-size: var(--fs-button);
   line-height: var(--lh-ui);
-}
-
-.primary:hover {
-  background: var(--green-700);
 }
 
 .btn-outline {
@@ -437,17 +443,15 @@ button.primary,
 }
 
 .icon-button {
+  display: inline-grid;
+  place-items: center;
   border: 0;
   background: transparent;
   padding: 8px;
   border-radius: var(--r-sm);
   color: var(--ink-3);
-  min-width: 38px;
-  min-height: 38px;
-}
-
-.icon-button:hover {
-  background: var(--green-100);
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .primary,
@@ -543,15 +547,31 @@ header {
   flex-wrap: wrap;
 }
 
+/* One row on wide screens: brand left; location, weather and the motion toggle right. When the row runs out of room,
+   the weather chip and the motion toggle wrap together to a second row, still right-aligned. */
 .site-header {
-  padding: 22px 0;
-  gap: 22px;
+  justify-content: flex-end;
+  padding: 16px 0;
+  gap: 12px;
+}
+
+.site-header > .brand {
+  margin-right: auto;
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .brand {
   display: flex;
   gap: 10px;
   align-items: center;
+  min-height: 46px;
   text-decoration: none;
   font-weight: 800;
   font-size: var(--fs-wordmark);
@@ -585,13 +605,14 @@ header {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 46px;
   border: 1px solid var(--border);
-  padding: 9px 13px;
+  padding: 7px 13px;
   border-radius: var(--r-pill);
   font-size: var(--fs-small);
   font-weight: 500;
   line-height: 1.35;
-  margin-left: auto;
+  text-align: left;
   max-width: 280px;
 }
 
@@ -721,7 +742,7 @@ header {
 .city-details summary {
   display: grid;
   place-items: center;
-  width: 40px;
+  width: 44px;
   height: 44px;
   min-width: 0;
   min-height: 0;
@@ -912,17 +933,16 @@ header {
   gap: 0;
 }
 
+/* These rules are unlayered, so they override the shadcn Tabs utilities without !important. */
 .nav-tabs {
-  height: auto !important;
-  justify-content: flex-start !important;
+  height: auto;
+  justify-content: flex-start;
   overflow-x: auto;
-  gap: 10px !important;
-  margin-top: 15px;
+  gap: 10px;
   border: 0;
-  background: #eaf0e8 !important;
-  border-radius: 16px !important;
-  padding: 5px !important;
-  width: max-content !important;
+  border-radius: 16px;
+  padding: 5px;
+  width: max-content;
   max-width: 100%;
 }
 
@@ -931,10 +951,9 @@ header {
   gap: 7px;
   font-size: var(--fs-tab);
   line-height: 1.3;
-  flex-shrink: 0;
   white-space: nowrap;
-  padding: 12px 18px !important;
-  border-radius: 12px !important;
+  padding: 12px 18px;
+  border-radius: 12px;
   min-height: 46px;
   font-weight: 600;
   /* The active pill changes at once; only transform/opacity are ever animated. */
@@ -942,9 +961,12 @@ header {
 }
 
 .nav-tabs [role=tab]::after {
-  bottom: 0 !important;
-  background: var(--green-600) !important;
-  display: none !important;
+  display: none;
+}
+
+/* The short tab label is for the phone tab bar only; the full label stays the accessible name. */
+.tab-label-short {
+  display: none;
 }
 
 .app-tabs > [role=tabpanel] {
@@ -994,6 +1016,8 @@ header {
 /* Capture actions */
 .capture-actions {
   display: grid;
+  grid-template-columns: 1.13fr 1fr 1fr;
+  gap: 16px;
   margin: 4px 0 23px;
 }
 
@@ -1079,6 +1103,7 @@ header {
 
 .searchbox input {
   width: 100%;
+  min-height: 44px;
   border: 0;
   background: transparent;
   outline: 0;
@@ -1093,13 +1118,14 @@ header {
 }
 
 .searchbox button {
+  min-height: 44px;
   border-radius: var(--r-sm);
 }
 
 .compact {
   background: white;
   flex: 1;
-  padding: 4px 14px;
+  padding: 0 14px;
 }
 
 .search-bottom,
@@ -1470,6 +1496,7 @@ header {
 /* Inline flow, not flex: the external-link icon rides on the last word (wrapped in .nowrap) instead of dropping to its own line. */
 .source-link {
   display: block;
+  min-height: 44px;
   font-size: var(--fs-meta);
   line-height: 1.5;
   margin-top: 14px;
@@ -1627,6 +1654,17 @@ header {
   margin: 0 0 16px;
 }
 
+/* Beside a long result list the filters stay in view. A filter card taller than the screen scrolls on its own. */
+@media (min-width: 801px) {
+  .filter-card {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
 .filter-card label {
   display: grid;
   gap: 7px;
@@ -1782,7 +1820,8 @@ textarea {
 }
 
 /* Dialog containers */
-/* The shell (paper surface, soft border, --elev-3, scrim, scrolling, sticky close button) lives in components/ui/dialog.tsx and alert-dialog.tsx. */
+/* The shell (paper surface, soft border, --elev-3, scrim, the one scroller, the sticky close strip, --dialog-pad) lives in
+   components/ui/dialog.tsx and alert-dialog.tsx. On phones the same shells become bottom sheets (see the 640px block). */
 /* shadcn titles use leading-none; stacked Vietnamese marks need room when a title wraps. */
 [data-slot=dialog-title],
 [data-slot=alert-dialog-title] {
@@ -1799,14 +1838,26 @@ textarea {
   margin-top: -10px;
 }
 
+/* The header stays put: under the 24px sticky close strip, the title is sticky on the same paper, so content scrolls
+   beneath both. It runs edge to edge to cover what passes under it, and its right padding keeps clear of the close button. */
+[data-slot=dialog-content] > [data-slot=dialog-title],
+[data-slot=dialog-content] > .photo-title {
+  position: sticky;
+  top: 24px;
+  z-index: 5;
+  margin-inline: calc(-1 * var(--dialog-pad));
+  padding: 0 calc(var(--dialog-pad) + 44px) 6px var(--dialog-pad);
+  background: var(--paper-raised);
+}
+
+/* The sticky title carries its own 6px, so its description sits right under it. */
+[data-slot=dialog-content] > [data-slot=dialog-title] + [data-slot=dialog-description] {
+  margin-top: -16px;
+}
+
 /* A section heading inside a dialog gets a little more air above it. */
 [data-slot=dialog-content] > h3 {
   margin-top: 8px;
-}
-
-/* Long titles wrap before they reach the 44px close button. */
-[data-slot=dialog-content] > [data-slot=dialog-title] {
-  padding-right: 40px;
 }
 
 [data-slot=alert-dialog-footer] {
@@ -1829,13 +1880,31 @@ textarea {
 }
 
 .photo-dialog {
-  max-width: min(620px, calc(100vw - 28px)) !important;
+  max-width: min(620px, calc(100vw - 28px));
 }
 
+/* Short landscape screens: only the close strip stays pinned, so the content keeps the room. */
+@media (max-height: 500px) {
+  [data-slot=dialog-content] > [data-slot=dialog-title],
+  [data-slot=dialog-content] > .photo-title {
+    position: static;
+  }
+}
+
+
 /* Location dialog and status */
-.area-options {
-  overflow: auto;
-  max-height: 30vh;
+/* The area list flows in the dialog's one scroller; the hint and the source sit under the search field, above the list. */
+.area-help {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  margin-top: -8px;
+}
+
+/* A 44px tap height; the negative margins keep the link text close to the hint and 16px above the list. */
+.area-help .source-link {
+  padding-block: 12px;
+  margin-block: -10px -12px;
 }
 
 .area-option {
@@ -1863,8 +1932,7 @@ textarea {
   min-width: 0;
 }
 
-.area-option.active,
-.area-option:hover {
+.area-option.active {
   background: var(--green-100);
 }
 
@@ -1979,7 +2047,6 @@ textarea {
   display: flex;
   align-items: center;
   gap: 13px;
-  padding-right: 40px;
 }
 
 .feature-icon {
@@ -2216,13 +2283,16 @@ textarea {
   font-size: var(--fs-caption);
 }
 
+/* The framing guide sits between two bands: the hint and the stop button above, the shutter below, so neither covers it. */
 .camera-stage {
+  --hint-space: 56px;
+  --shutter-space: 92px;
   position: relative;
   overflow: hidden;
   background: #122a22;
   border-radius: var(--r-lg);
   aspect-ratio: 4 / 3;
-  min-height: 220px;
+  min-height: 260px;
   color: white;
 }
 
@@ -2235,7 +2305,7 @@ textarea {
 
 .camera-guides {
   position: absolute;
-  inset: 12% 15% 24%;
+  inset: var(--hint-space) 14% var(--shutter-space);
   border: 1px solid #ffffff95;
   border-radius: var(--r-lg);
   pointer-events: none;
@@ -2244,10 +2314,11 @@ textarea {
 
 .camera-hint {
   position: absolute;
-  top: 12px;
+  top: 10px;
   left: 12px;
-  right: 45px;
+  right: 60px;
   text-align: center;
+  text-wrap: balance;
   padding: 5px 8px;
   border-radius: var(--r-xs);
   background: #09251bcc;
@@ -2257,8 +2328,8 @@ textarea {
 
 .camera-dismiss {
   position: absolute;
-  top: 9px;
-  right: 9px;
+  top: 6px;
+  right: 6px;
   background: #102e24b3 !important;
   color: white !important;
   border-radius: 50%;
@@ -2266,7 +2337,7 @@ textarea {
 
 .shutter {
   position: absolute;
-  bottom: 13px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   width: 60px;
@@ -2329,12 +2400,20 @@ footer > span {
 }
 
 footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   text-decoration: none;
+}
+
+footer .text-button {
+  min-width: 44px;
+  justify-content: center;
 }
 
 /* Admin */
 .admin-dialog {
-  max-width: 760px !important;
+  max-width: 760px;
 }
 
 .admin-fields {
@@ -2435,8 +2514,26 @@ footer a {
   }
 }
 
-/* Hover effects only on devices that can hover. Card lifts live in visuals.css. */
-@media (hover: hover) {
+/* Hover effects only where a real pointer can hover, so a tap never leaves a control stuck in its hover state. Card lifts live in visuals.css. */
+@media (hover: hover) and (pointer: fine) {
+  /* Shared text, buttons and badges */
+  .text-button:hover {
+    text-decoration: underline;
+  }
+
+  .primary:hover {
+    background: var(--green-700);
+  }
+
+  .icon-button:hover {
+    background: var(--green-100);
+  }
+
+  /* Location dialog and status */
+  .area-option:hover {
+    background: var(--green-100);
+  }
+
   /* Photo dialog and camera */
   .photo-dropzone:hover {
     background: #eaf2e2;
@@ -2444,15 +2541,24 @@ footer a {
   }
 }
 
-/* Tablets: tighter header gaps; the city chip wraps to its own row when the header runs out of room. */
+/* Touch screens: chips and list options grow to a 44px tap target. */
+@media (pointer: coarse) {
+  /* Search card */
+  .quick button {
+    min-height: 44px;
+  }
+
+  /* Selects */
+  [data-slot=select-item] {
+    min-height: 44px;
+  }
+}
+
+/* Tablets: tighter gaps. */
 @media (max-width: 850px) {
   /* Site header and brand */
   header {
     gap: 12px;
-  }
-
-  .site-header {
-    gap: 13px;
   }
 
   /* Capture actions */
@@ -2466,8 +2572,13 @@ footer a {
   }
 }
 
-/* Two-column grids. */
+/* Two-column grids; the capture cards share the row equally. */
 @media (max-width: 800px) {
+  /* Capture actions */
+  .capture-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   /* Section headings, popular items and catalog */
   .popular-grid,
   .catalog-grid {
@@ -2493,18 +2604,35 @@ footer a {
     --fs-wordmark: 1.375rem;
   }
 
-  /* Page shell */
-  .shell {
-    padding: 0 18px;
+  /* Page shell: 16px gutters, and room at the bottom for the fixed tab bar. */
+  html {
+    scroll-padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
   }
 
-  /* Site header and brand */
+  .shell {
+    padding: 0 max(16px, env(safe-area-inset-right)) calc(var(--tabbar-h) + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+
+  /* Site header and brand: two compact rows, brand and location first, then the weather chip with the motion toggle beside it. */
   header {
     padding: 18px 0;
   }
 
   .site-header {
-    padding: 18px 0 13px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    padding: max(10px, env(safe-area-inset-top)) 0 10px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .header-tools {
+    grid-column: 1 / -1;
+    gap: 8px;
   }
 
   .brand-symbol {
@@ -2517,9 +2645,10 @@ footer a {
   }
 
   .location-button {
-    max-width: 46%;
-    padding: 7px 10px;
-    gap: 5px;
+    justify-self: end;
+    max-width: 100%;
+    padding: 6px 12px 6px 10px;
+    gap: 6px;
     font-size: var(--fs-chip);
   }
 
@@ -2532,14 +2661,23 @@ footer a {
     display: none;
   }
 
-  /* City weather chip: its own full-width row under the brand, kept to one line; the level names move to the details. */
+  /* City weather chip: fills the second row beside the motion toggle, kept to one line; the level names move to the details. */
   .city-widget {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .city-readings {
     flex: 1;
     flex-wrap: nowrap;
+  }
+
+  /* The chip starts at the left gutter now, so its details open from its left edge across the screen. */
+  .city-details-body {
+    right: auto;
+    left: 0;
+    width: calc(100vw - 32px);
+    max-width: none;
   }
 
   .city-aqi-levels {
@@ -2551,36 +2689,82 @@ footer a {
     white-space: nowrap;
   }
 
-  /* Navigation tabs */
+  /* Navigation tabs: a bottom tab bar with four equal columns, the icon over a 12px label, 56px plus the home-indicator
+     inset. It is still the Radix tablist, so Tab reaches the active tab and the arrow keys, Home and End move between
+     tabs. The material lives in visuals.css. */
   .nav-tabs {
-    width: 100% !important;
-    gap: 0 !important;
-    padding: 4px !important;
-    margin-top: 12px;
-    justify-content: space-between !important;
-    border-radius: 13px !important;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0 max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
+    gap: 0;
+    border-radius: 0;
+    overflow: visible;
   }
 
-  /* Tabs share the row by content width; a label wraps rather than shrinking below 12px. */
   .nav-tabs [role=tab] {
-    padding: 9px 6px !important;
-    font-size: .78125rem;
-    line-height: 1.3;
-    min-height: 43px;
-    flex: 1 1 auto;
-    min-width: 0;
+    flex-direction: column;
     gap: 4px;
-    white-space: normal;
-    text-align: center;
+    height: var(--tabbar-h);
+    min-height: 0;
+    min-width: 0;
+    padding: 0 2px;
+    border-radius: var(--r-md);
+    font-size: var(--fs-caption);
+    line-height: 1.25;
   }
 
   .nav-tabs [role=tab] svg {
-    width: 14px;
+    width: 22px;
+    height: 22px;
+  }
+
+  /* An inset ring, so the bar's edges and the screen edge never clip it. */
+  .nav-tabs [role=tab]:focus-visible {
+    outline-offset: -4px;
+  }
+
+  /* The active tab's indicator: a pill behind its icon that slides between the equal columns (transform only). */
+  .nav-tabs::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: max(4px, env(safe-area-inset-left));
+    width: calc((100% - max(4px, env(safe-area-inset-left)) - max(4px, env(safe-area-inset-right))) / 4);
+    height: 30px;
+    clip-path: inset(0 calc(50% - 30px) round 15px);
+    pointer-events: none;
+    display: none;
+  }
+
+  @supports selector(:has(*)) {
+    .nav-tabs::before {
+      display: block;
+    }
+
+    .nav-tabs:has(> [role=tab]:nth-child(2)[data-state=active])::before {
+      transform: translateX(100%);
+    }
+
+    .nav-tabs:has(> [role=tab]:nth-child(3)[data-state=active])::before {
+      transform: translateX(200%);
+    }
+
+    .nav-tabs:has(> [role=tab]:nth-child(4)[data-state=active])::before {
+      transform: translateX(300%);
+    }
   }
 
   /* Page intro and hero */
   .intro {
-    padding-top: 28px;
+    padding-top: 16px;
   }
 
   .desktop-break {
@@ -2589,6 +2773,7 @@ footer a {
 
   /* Capture actions */
   .capture-actions {
+    gap: 9px;
     margin: 0 0 17px;
   }
 
@@ -2725,6 +2910,17 @@ footer a {
     font-size: var(--fs-caption);
   }
 
+  /* A long heading takes its own line; the point count stays in one piece. */
+  .point-results > .section-heading {
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 12px;
+  }
+
+  .point-results > .section-heading > .small {
+    white-space: nowrap;
+  }
+
   .popular-section {
     margin-top: 26px;
   }
@@ -2814,15 +3010,16 @@ footer a {
     grid-template-columns: 1fr;
   }
 
+  /* One column: every field gets the full width, so values stay on one line and left-aligned. */
   .filter-card {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px;
   }
 
-  .filter-card > h3,
-  .filter-card > p {
-    grid-column: 1 / -1;
+  .filter-card h3 {
+    margin: 0;
   }
 
   .filter-card label {
@@ -2841,14 +3038,46 @@ footer a {
     padding: 18px;
   }
 
-  .filter-card > .location-status {
-    grid-column: 1 / -1;
-  }
-
-  /* Dialog containers */
+  /* Dialog containers: bottom sheets. Full width on the bottom edge, 24px top corners, at most the screen height less
+     24px, padded above the home indicator, sliding up instead of zooming. The content stays the one scroller. */
   [data-slot=dialog-content],
   [data-slot=alert-dialog-content] {
-    padding: 20px;
+    inset: auto 0 0;
+    translate: none;
+    max-width: none;
+    max-height: calc(100dvh - 24px);
+    border-width: 1px 0 0;
+    border-radius: 24px 24px 0 0;
+    --tw-enter-opacity: 1;
+    --tw-exit-opacity: 1;
+    --tw-enter-scale: 1;
+    --tw-exit-scale: 1;
+    --tw-enter-translate-y: 100%;
+    --tw-exit-translate-y: 100%;
+    --tw-duration: var(--dur-slow);
+    --tw-ease: var(--ease-out);
+  }
+
+  [data-slot=dialog-content] {
+    --dialog-pad: 20px;
+    padding-bottom: calc(var(--dialog-pad) + env(safe-area-inset-bottom));
+  }
+
+  [data-slot=alert-dialog-content] {
+    padding: 24px 20px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  /* The grab handle, 36x4, centred in the sticky close strip. */
+  [data-slot=dialog-close-bar]::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 36px;
+    height: 4px;
+    margin-left: -18px;
+    border-radius: 2px;
+    background: rgb(13 42 31 / .2);
   }
 
   /* Location dialog and status */
@@ -2882,8 +3111,12 @@ footer a {
     min-height: 185px;
   }
 
+  /* Portrait phones: a taller stage, so the guide keeps a useful size between the hint and the shutter. */
   .camera-stage {
-    min-height: 220px;
+    --hint-space: 64px;
+    aspect-ratio: auto;
+    height: min(52dvh, 125vw);
+    min-height: 260px;
   }
 
   /* Footer */
@@ -2915,11 +3148,21 @@ footer a {
   }
 }
 
-/* Narrow phones: tab labels keep their size, so the tab icons go. */
-@media (max-width: 440px) {
+/* Narrow phones: "Điểm tiếp nhận" no longer fits a quarter of the tab bar at 12px, so it shows "Tiếp nhận". The full label
+   stays in the accessible name, which still contains the visible words. */
+@media (max-width: 385px) {
   /* Navigation tabs */
-  .nav-tabs [role=tab] svg {
-    display: none;
+  .tab-label-full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .tab-label-short {
+    display: inline;
   }
 }
 
@@ -2930,29 +3173,95 @@ footer a {
   }
 }
 
+/* Phones under 420px: "Chụp ảnh" becomes a full-width 64px primary row (icon, title and description side by side);
+   "Tải ảnh" and "Nhập tên" share the row below as two half-width cards, the icon beside the title. */
+@media (max-width: 419px) {
+  /* Capture actions */
+  .capture-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .capture-card.capture-primary {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: center;
+    align-items: center;
+    gap: 1px 14px;
+    min-height: 64px;
+    padding: 10px 44px 10px 12px;
+  }
+
+  .capture-primary .capture-card-icon {
+    grid-row: 1 / span 2;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+
+  .capture-primary > b,
+  .capture-primary > span:not(.capture-card-icon) {
+    grid-column: 2;
+  }
+
+  .capture-card.capture-primary > svg {
+    top: 50%;
+    right: 16px;
+    width: 18px;
+    height: 18px;
+    translate: 0 -50%;
+  }
+
+  .capture-card:not(.capture-primary) {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 10px;
+    padding: 12px 26px 14px 12px;
+  }
+
+  .capture-card:not(.capture-primary) .capture-card-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+  }
+
+  .capture-card:not(.capture-primary) > span:not(.capture-card-icon) {
+    grid-column: 1 / -1;
+  }
+
+  .capture-card:not(.capture-primary) > svg {
+    top: 14px;
+    right: 10px;
+  }
+}
+
 /* Very small phones. */
 @media (max-width: 360px) {
-  /* Page shell */
-  .shell {
-    padding: 0 12px;
-  }
-
-  /* Navigation tabs */
-  .nav-tabs [role=tab] {
-    padding: 9px 5px !important;
-  }
-
-  /* Capture actions */
-  .capture-card > svg {
-    display: none;
-  }
-
-  .capture-card > b {
-    font-size: var(--fs-small);
-  }
-
   /* Photo dialog and camera */
   .photo-title .feature-icon {
     display: none;
+  }
+}
+
+/* Phones in landscape: the camera stage fits the screen height and the shutter moves to a rail on the right, so it is on
+   screen together with the guide. Last, so it wins over the portrait phone rules on small landscape phones. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .camera-stage {
+    --hint-space: 48px;
+    --shutter-space: 14px;
+    aspect-ratio: auto;
+    height: max(170px, calc(100dvh - 190px));
+    min-height: 0;
+  }
+
+  .camera-guides {
+    right: 100px;
+  }
+
+  .shutter {
+    top: calc(50% + 22px);
+    right: 20px;
+    bottom: auto;
+    left: auto;
+    transform: translateY(-50%);
   }
 }

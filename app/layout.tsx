@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // Be Vietnam Pro, self-hosted: only the vietnamese + latin subsets for the weights in use (400–800).
 // These subset files carry no unicode-range, so the face declared last is tried first for every
 // character; latin goes last so plain text stays in one face and only Vietnamese letters (ạ, ệ, Đ, ơ…)
@@ -23,6 +23,15 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
+};
+
+// viewport-fit=cover lets the page run under notches and the home indicator; the bottom tab bar, sheets and page gutters
+// pad themselves with env(safe-area-inset-*). The theme colour is the paper background, so the browser chrome blends in.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#f6f5ef",
 };
 
 export default function RootLayout({

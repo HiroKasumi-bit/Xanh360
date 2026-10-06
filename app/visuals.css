@@ -83,7 +83,7 @@ body {
 
 .nav-line .nav-tabs {
   margin: 0;
-  background: var(--paper-sunken) !important;
+  background: var(--paper-sunken);
   border: 0;
   box-shadow: inset 0 1px 2px rgb(13 42 31 / .09), inset 0 0 0 1px rgb(13 42 31 / .05), 0 1px 0 rgb(255 255 255 / .8);
 }
@@ -98,7 +98,9 @@ body {
   box-shadow: var(--edge-light), 0 1px 1px rgb(16 58 42 / .08), 0 2px 6px -1px rgb(16 58 42 / .12);
 }
 
+/* The motion toggle is the last chip in the header, the same height as the location and weather chips. */
 .motion-control {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -108,20 +110,20 @@ body {
   background: var(--paper-raised);
   box-shadow: var(--elev-1);
   color: var(--ink-2);
-  padding: 8px 12px;
+  padding: 8px 14px;
   font-size: var(--fs-caption);
   font-weight: 500;
   line-height: 1.3;
-  min-height: 36px;
-  margin-left: auto;
+  min-width: 46px;
+  min-height: 46px;
   white-space: nowrap;
   flex-shrink: 0;
   transition: transform var(--dur-instant) var(--ease-press);
 }
 
 .motion-control svg {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
 }
 
 /* Under the system reduced-motion setting the control only explains the state, so its label stays fully readable. */
@@ -193,9 +195,12 @@ body {
   animation: leaf-sway 13s var(--ease-float) infinite alternate;
 }
 
+/* The scene comes first in the markup (so phones can float it beside the headline); the grid puts it back on the right. */
 .hero-copy {
   position: relative;
   z-index: 2;
+  grid-row: 1;
+  grid-column: 1;
 }
 
 /* Frosted glass is used only over the dark hero. */
@@ -263,6 +268,8 @@ body {
   --planet-x: 50%;
   --planet-top: 46%;
   --lift: -12px;
+  grid-row: 1;
+  grid-column: 2;
   position: relative;
   min-width: 0;
   height: 330px;
@@ -413,11 +420,6 @@ body {
 }
 
 /* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
-.capture-actions {
-  gap: 16px;
-  grid-template-columns: 1.13fr 1fr 1fr;
-}
-
 .capture-card {
   isolation: isolate;
   background: var(--paper-raised);
@@ -721,7 +723,8 @@ body {
   transform: scale(.97);
 }
 
-/* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. */
+/* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. The header
+   runs short of room too, so the motion toggle keeps only its icon. */
 @media (max-width: 1000px) {
   .hero-intro {
     padding: 33px 30px;
@@ -743,18 +746,45 @@ body {
   .label-leaf {
     display: none;
   }
+
+  /* The motion toggle shrinks to its icon; the label stays as its accessible name and title. */
+  .motion-control {
+    width: 46px;
+    padding: 0;
+  }
+
+  .motion-control span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .motion-control svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
-/* Tablets: the hero stacks and the scene becomes a wide band with a label either side of the globe. */
+/* Tablets and phones: the hero flows as a block and the globe floats beside the headline, a sharp object in the corner
+   rather than a band of its own. Its float area is the circle itself (shape-outside), so the headline and the paragraph
+   wrap around the globe instead of running under it. --globe-drop keeps the eyebrow's line clear; --globe-bleed lets the
+   globe run past the hero's edge. The glass labels and the ground shadow need the wide scene, so they go. */
 @media (max-width: 900px) {
   .hero-intro {
+    display: block;
     padding: 30px 26px;
-    grid-template-columns: 1fr;
     min-height: 0;
   }
 
-  .hero-copy {
-    max-width: 580px;
+  /* Inline rather than inline-block, so the second line wraps around the floating globe. The padding still covers the
+     stacked marks, and box-decoration-break gives each line its own copy of the sprout ramp. */
+  .hero-intro h1 em {
+    display: inline;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .hero-copy > p {
@@ -766,50 +796,28 @@ body {
   }
 
   .eco-scene {
-    --planet: 136px;
+    --planet: 184px;
     --planet-x: 50%;
-    --planet-top: 48%;
-    width: 100%;
-    max-width: 520px;
-    height: 210px;
-    margin: 10px auto -6px;
-    justify-self: center;
+    --planet-top: calc(100% - var(--planet) / 2);
+    --lift: -8px;
+    --globe-drop: 40px;
+    --globe-bleed: 40px;
+    float: right;
+    width: var(--planet);
+    max-width: none;
+    height: calc(var(--planet) + var(--globe-drop));
+    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
+    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
+    shape-margin: 12px;
   }
 
-  .label-recycle {
-    bottom: auto;
-    right: calc(100% - var(--planet-x) + var(--planet) / 2 + 18px);
-    top: calc(var(--planet-top) - var(--planet) * .44);
-  }
-
-  .label-leaf {
-    display: flex;
-    left: calc(var(--planet-x) + var(--planet) / 2 + 18px);
-    top: calc(var(--planet-top) - var(--planet) * .02);
-  }
-
-  .label-special {
+  .eco-scene .floating-label,
+  .eco-scene .planet-shadow {
     display: none;
   }
 }
 
-/* Tablets in portrait. */
-@media (max-width: 760px) {
-  .nav-line {
-    gap: 8px;
-  }
-
-  .motion-control {
-    padding: 5px 10px;
-    min-height: 30px;
-  }
-
-  .capture-actions {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* Phones: the globe is a small, sharp object tucked into the hero's top-right corner, clear of the text; the labels and ground shadow go. */
+/* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the floating globe shrinks to 156px. */
 @media (max-width: 640px) {
   .ambient-sun {
     width: 140vmax;
@@ -818,42 +826,45 @@ body {
     top: -90vmax;
   }
 
-  .site-header {
-    padding-bottom: 12px;
-  }
-
   .brand-symbol {
     border-radius: var(--r-sm);
   }
 
+  /* The tab list is fixed to the bottom, so its row in the flow is only a gap under the header. */
   .nav-line {
-    margin: 12px 0 13px;
-    justify-content: flex-end;
+    margin: 0 0 12px;
   }
 
+  /* Bottom tab bar: frosted paper over the page, a bright top edge and a soft shadow cast upwards. */
   .nav-line .nav-tabs {
-    width: 100% !important;
-    flex: 1 1 100%;
+    background: rgb(255 253 248 / .82);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    border-top: 1px solid var(--line-soft);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(16 58 42 / .22);
   }
 
-  .motion-control {
-    border-color: transparent;
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-line .nav-tabs {
+      background: rgb(255 253 248 / .97);
+    }
+  }
+
+  .nav-tabs [role=tab][data-state=active] {
     background: transparent;
     box-shadow: none;
-    padding: 0 3px;
-    min-height: 34px;
   }
 
-  .motion-control svg {
-    height: 11px;
-    width: 11px;
+  .nav-tabs::before {
+    background: linear-gradient(180deg, #dcebd6, var(--green-100));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
+    transition: transform var(--dur-base) var(--ease-out);
   }
 
   .hero-intro {
     border-radius: var(--r-xl);
-    margin: 0 0 17px;
-    gap: 0;
-    padding: 27px 22px;
+    margin: 0 0 14px;
+    padding: 20px;
   }
 
   .hero-intro::after {
@@ -865,7 +876,7 @@ body {
   }
 
   .hero-intro h1 {
-    margin: 15px 0 13px;
+    margin: 12px 0 10px;
   }
 
   .hero-copy > p {
@@ -874,30 +885,16 @@ body {
 
   .hero-meta {
     gap: 6px 14px;
-    margin-top: 16px;
+    margin-top: 12px;
   }
 
+  /* Phones: a 156px globe that runs a little further past the edge. */
   .eco-scene {
-    --planet: 112px;
-    --planet-x: 50%;
-    --planet-top: 50%;
+    --planet: 156px;
     --lift: -6px;
-    position: absolute;
-    top: 62px;
-    right: -26px;
-    width: 120px;
-    height: 120px;
-    margin: 0;
-    z-index: 0;
-  }
-
-  .eco-scene .floating-label,
-  .eco-scene .planet-shadow {
-    display: none;
-  }
-
-  .capture-actions {
-    gap: 9px;
+    --globe-drop: 50px;
+    --globe-bleed: 52px;
+    shape-margin: 10px;
   }
 
   .capture-card {
@@ -922,10 +919,23 @@ body {
   }
 }
 
-/* Very small phones. */
-@media (max-width: 380px) {
+/* Small phones: the hero's padding tightens, and the globe starts a little lower so the first headline line fits beside it. */
+@media (max-width: 389px) {
   .hero-intro {
-    padding: 23px 17px;
+    padding: 18px 17px;
+  }
+
+  .eco-scene {
+    --globe-drop: 62px;
+  }
+}
+
+/* Very small phones: a smaller globe beside the second and third headline lines. */
+@media (max-width: 359px) {
+  .eco-scene {
+    --planet: 132px;
+    --globe-drop: 96px;
+    --globe-bleed: 48px;
   }
 }
 
@@ -938,6 +948,7 @@ body {
   animation: none !important;
 }
 
+.effects-paused .nav-tabs::before,
 .effects-paused .capture-card,
 .effects-paused .capture-card::after,
 .effects-paused .capture-card > svg,

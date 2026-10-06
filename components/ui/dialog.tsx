@@ -61,22 +61,23 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-6 text-(--ink) shadow-(--elev-3) duration-200 outline-none *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          "fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col gap-4 overflow-y-auto overscroll-contain rounded-(--r-xl) border border-(--line-soft) bg-(--paper-raised) p-(--dialog-pad) pt-0 text-(--ink) shadow-(--elev-3) duration-200 outline-none [--dialog-pad:1.5rem] *:shrink-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
           className
         )}
         {...props}
       >
         {children}
-        {/* The content box is the only scroller. The close button sits in a zero-height sticky bar that is drawn
-            first (order-first) but stays last in focus order, so it remains in the top corner while content scrolls. */}
+        {/* The content box is the only scroller. Its top edge is a sticky paper strip, drawn first (order-first) but
+            last in focus order, that holds the 44px close button (and the grab handle on phone sheets, see globals.css).
+            The title below it is sticky too, so the header stays put while content scrolls under it. */}
         {showCloseButton && (
           <div
             data-slot="dialog-close-bar"
-            className="pointer-events-none sticky top-0 z-10 order-first -mb-4 flex h-0 justify-end"
+            className="sticky top-0 z-10 order-first -mx-(--dialog-pad) -mb-4 flex h-6 justify-end bg-(--paper-raised) px-3"
           >
             <DialogPrimitive.Close
               data-slot="dialog-close"
-              className="pointer-events-auto -mt-3 -mr-3 grid size-11 place-items-center rounded-full bg-(--paper) text-(--ink-2) ring-1 ring-(--line-soft) transition-colors hover:bg-(--green-100) hover:text-(--ink) disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5"
+              className="mt-3 grid size-11 place-items-center rounded-full bg-(--paper) text-(--ink-2) ring-1 ring-(--line-soft) transition-colors hover:bg-(--green-100) hover:text-(--ink) disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5"
             >
               <XIcon />
               <span className="sr-only">Đóng</span>
