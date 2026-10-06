@@ -3,7 +3,6 @@
 /* Page background and ambient colour */
 body {
   background: #f2f7f5;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .experience-color {
@@ -91,9 +90,10 @@ body {
   box-shadow: 0 4px 15px #1a627009;
 }
 
-/* Navigation line and motion control */
+/* Navigation line and motion control. The tabs keep their natural width; when the row is too narrow the motion control wraps below instead of clipping the last tab. */
 .nav-line {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -122,8 +122,11 @@ body {
   background: #ffffffc4;
   color: #557366;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
   min-height: 36px;
+  margin-left: auto;
   white-space: nowrap;
   flex-shrink: 0;
   transition: background .2s ease, box-shadow .2s ease;
@@ -190,13 +193,10 @@ body {
 .hero-intro .eyebrow {
   display: inline-flex;
   border: 1px solid #a8eaa52b;
-  border-radius: 30px;
+  border-radius: 16px;
   background: #aff2a00a;
-  padding: 6px 11px;
+  padding: 6px 12px;
   color: #c7eab7;
-  font-size: 9px;
-  letter-spacing: 1.3px;
-  white-space: nowrap;
 }
 
 .hero-intro .eyebrow svg {
@@ -205,14 +205,15 @@ body {
 }
 
 .hero-intro h1 {
-  font-size: clamp(36px, 4.3vw, 57px);
-  letter-spacing: -2.4px;
   margin: 20px 0 18px;
-  line-height: 1.16;
   color: #fff;
 }
 
+/* Gradient text only paints inside its own box, so the box is padded to hold stacked marks and descenders; the negative margin keeps the line spacing unchanged. */
 .hero-intro h1 em {
+  display: inline-block;
+  padding: .12em .04em .16em 0;
+  margin: -.12em -.04em -.16em 0;
   color: #c4ed8c;
   background: linear-gradient(90deg, #cdf784 5%, #99edc5 70%, #85e8dd);
   background-clip: text;
@@ -221,17 +222,14 @@ body {
 }
 
 .hero-copy > p {
-  font-size: 14px;
   color: #bdd6cc;
-  line-height: 1.85;
   max-width: 465px;
   margin: 0;
 }
 
 .hero-meta {
-  gap: 14px;
+  gap: 8px 16px;
   margin-top: 25px;
-  font-size: 10px;
   color: #d1e5d5;
 }
 
@@ -400,8 +398,7 @@ body {
   border: 1px solid #ffffff45;
   background: linear-gradient(115deg, #ffffffed, #effff1df);
   box-shadow: 0 12px 28px #061f292a, inset 0 1px 0 #fff;
-  padding: 10px 12px;
-  min-width: 138px;
+  padding: 10px 14px 10px 10px;
   color: #244d3c;
   animation: label-float 6.5s ease-in-out infinite;
 }
@@ -421,18 +418,11 @@ body {
   height: 19px;
 }
 
-.floating-label small {
-  display: block;
-  font-size: 6px;
-  letter-spacing: .7px;
-  line-height: 1.8;
-  color: #6a8369;
-  font-weight: 700;
-}
-
 .floating-label b {
-  font-size: 13px;
-  letter-spacing: -.2px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.01em;
 }
 
 .label-recycle {
@@ -475,9 +465,17 @@ body {
   align-items: center;
   gap: 6px;
   color: #a9c9b9;
-  font-size: 7px;
-  letter-spacing: 1.1px;
-  white-space: nowrap;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: var(--tr-label);
+  line-height: var(--lh-label);
+  text-align: center;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.scene-caption > span {
+  flex-shrink: 0;
 }
 
 .scene-caption > span {
@@ -782,7 +780,6 @@ body {
 /* Section headings and panels */
 .section-heading h2 {
   position: relative;
-  letter-spacing: -.6px;
 }
 
 .popular-section > .section-heading h2::before {
@@ -815,8 +812,6 @@ body {
   border-radius: 9px;
   background: #ffffffa1;
   color: #477663;
-  font-size: 11px;
-  font-weight: 800;
   box-shadow: 0 2px 7px #3c644407;
 }
 
@@ -1031,23 +1026,8 @@ body {
     gap: 12px;
   }
 
-  .hero-intro h1 {
-    font-size: 43px;
-    letter-spacing: -1.8px;
-  }
-
-  .hero-copy > p {
-    font-size: 13px;
-  }
-
   .hero-meta {
-    font-size: 9px;
-    gap: 10px;
-  }
-
-  .hero-intro .eyebrow {
-    font-size: 8px;
-    letter-spacing: .8px;
+    gap: 8px 12px;
   }
 
   /* Decorative eco scene */
@@ -1059,8 +1039,7 @@ body {
   }
 
   .floating-label {
-    min-width: 125px;
-    padding: 8px 10px;
+    padding: 8px 12px 8px 8px;
   }
 
   .label-leaf {
@@ -1072,19 +1051,12 @@ body {
 @media (max-width: 760px) {
   /* Navigation line and motion control */
   .nav-line {
-    flex-wrap: wrap;
     gap: 8px;
   }
 
   .motion-control {
-    margin-left: auto;
     padding: 5px 10px;
-    font-size: 10px;
     min-height: 30px;
-  }
-
-  .nav-line .nav-tabs {
-    flex: 1;
   }
 
   /* Hero */
@@ -1098,17 +1070,12 @@ body {
     max-width: 580px;
   }
 
-  .hero-intro h1 {
-    font-size: 44px;
-  }
-
   .hero-copy > p {
     max-width: 460px;
   }
 
   .hero-meta {
     margin-top: 18px;
-    font-size: 10px;
   }
 
   /* Decorative eco scene */
@@ -1147,8 +1114,7 @@ body {
   }
 
   .floating-label {
-    padding: 8px 9px;
-    min-width: 115px;
+    padding: 8px 11px 8px 8px;
     gap: 7px;
     border-radius: 12px;
   }
@@ -1165,11 +1131,7 @@ body {
   }
 
   .floating-label b {
-    font-size: 11px;
-  }
-
-  .floating-label small {
-    font-size: 5px;
+    font-size: var(--fs-caption);
   }
 
   .label-recycle {
@@ -1188,8 +1150,6 @@ body {
   }
 
   .scene-caption {
-    font-size: 6px;
-    letter-spacing: .6px;
     bottom: -5px;
   }
 
@@ -1255,7 +1215,6 @@ body {
     background: transparent;
     padding: 0 3px;
     min-height: 34px;
-    font-size: 10px;
   }
 
   .motion-control svg {
@@ -1272,27 +1231,20 @@ body {
   }
 
   .hero-intro .eyebrow {
-    padding: 5px 8px;
-    letter-spacing: .55px;
-    font-size: 7.5px;
+    padding: 5px 10px;
   }
 
   .hero-intro h1 {
-    font-size: clamp(32px, 8.5vw, 43px);
-    letter-spacing: -1.3px;
     margin: 15px 0 13px;
   }
 
   .hero-copy > p {
-    line-height: 1.8;
-    font-size: 13px;
     max-width: 330px;
   }
 
   .hero-meta {
-    gap: 8px;
+    gap: 6px 14px;
     margin-top: 16px;
-    font-size: 9px;
   }
 
   .hero-meta svg {
@@ -1343,7 +1295,6 @@ body {
 
   .scene-caption {
     bottom: -6px;
-    font-size: 5.5px;
   }
 
   .scene-dots i:nth-child(n+4) {
@@ -1404,7 +1355,7 @@ body {
   }
 
   .capture-card > span:not(.capture-card-icon) {
-    font-size: 11px;
+    font-size: var(--fs-caption);
   }
 
   /* Search card and quick picks */
@@ -1432,34 +1383,16 @@ body {
 /* Very small phones. */
 @media (max-width: 380px) {
   /* Hero */
-  .hero-intro .eyebrow {
-    letter-spacing: .45px;
-    font-size: 6.5px;
-  }
-
-  .hero-meta {
-    gap: 7px;
-    font-size: 8px;
-  }
-
   .hero-intro {
     padding: 23px 17px;
   }
 
   /* Decorative eco scene */
   .floating-label {
-    min-width: 101px;
-    padding: 7px;
+    padding: 7px 10px 7px 7px;
     gap: 5px;
   }
 
-  .floating-label b {
-    font-size: 10px;
-  }
-
-  .floating-label small {
-    font-size: 4.5px;
-  }
 
   .floating-label > span {
     width: 24px;

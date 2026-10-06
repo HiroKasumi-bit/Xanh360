@@ -11,10 +11,10 @@ export function EcoScene(){
   <div className="scene-dots"><i/><i/><i/><i/><i/><i/></div>
   <div className="orb-orbit orbit-one"/><div className="orb-orbit orbit-two"/>
   <div className="planet-float"><div className="eco-planet"><div className="planet-latitude latitude-one"/><div className="planet-latitude latitude-two"/><div className="planet-meridian"/><div className="planet-emblem"><Recycle strokeWidth={1.35}/></div><div className="planet-glint"/></div></div>
-  <div className="floating-label label-recycle"><span><Recycle/></span><div><small>MỘT VÒNG ĐỜI MỚI</small><b>Tái chế</b></div></div>
-  <div className="floating-label label-leaf"><span><Leaf/></span><div><small>TỪ VIỆC NHỎ MỖI NGÀY</small><b>Sống xanh</b></div></div>
-  <div className="floating-label label-special"><span><Battery/></span><div><small>ĐƯA VỀ ĐÚNG NƠI</small><b>Thu gom riêng</b></div></div>
-  <div className="scene-caption"><span/>CHỌN ĐÚNG HÔM NAY · XANH HƠN NGÀY MAI</div>
+  <div className="floating-label label-recycle"><span><Recycle/></span><b>Tái chế</b></div>
+  <div className="floating-label label-leaf"><span><Leaf/></span><b>Sống xanh</b></div>
+  <div className="floating-label label-special"><span><Battery/></span><b>Thu gom riêng</b></div>
+  <div className="scene-caption"><span/>Chọn đúng hôm nay · xanh hơn ngày mai</div>
  </div>;
 }
 export function MotionControl(){

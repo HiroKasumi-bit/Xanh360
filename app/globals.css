@@ -4,6 +4,16 @@
 
 /* Xanh360 base styles: tokens, elements, layout and components. Colour and motion overrides live in visuals.css. */
 
+/* Be Vietnam Pro is loaded from app/layout.tsx. This local face matches its metrics so text does not jump when the web font swaps in. */
+@font-face {
+  font-family: 'Be Vietnam Pro Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo');
+  ascent-override: 90.61%;
+  descent-override: 24.01%;
+  line-gap-override: 0%;
+  size-adjust: 110.36%;
+}
+
 /* Design tokens */
 :root {
   --background: #f5f8f4;
@@ -26,6 +36,43 @@
   --ring: #238664;
   --radius: .75rem;
   color-scheme: light;
+
+  /* Type scale (16px root). Readable text never goes below --fs-caption (12px); only uppercase 600 labels may use 11px. */
+  --fs-display: clamp(2rem, 1.3rem + 3.1vw, 3.5rem);
+  --fs-h1: clamp(1.75rem, 1.45rem + 1.3vw, 2.5rem);
+  --fs-h2: clamp(1.25rem, 1.12rem + .55vw, 1.5rem);
+  --fs-h3: clamp(1.0625rem, 1.03rem + .15vw, 1.125rem);
+  --fs-lead: clamp(.9375rem, .9rem + .2vw, 1.0625rem);
+  --fs-body: 1rem;
+  --fs-small: .875rem;
+  --fs-meta: .8125rem;
+  --fs-caption: .75rem;
+  --fs-label: .75rem;
+  --fs-button: .9375rem;
+  --fs-tab: .875rem;
+  --fs-chip: .8125rem;
+  --fs-badge: .75rem;
+  --fs-reading: 1.25rem;
+  --fs-wordmark: 1.5rem;
+
+  /* Line heights. Stacked Vietnamese marks (Ỗ reaches 1.16em) need at least 1.3 on multi-line uppercase. */
+  --lh-display: 1.15;
+  --lh-h1: 1.2;
+  --lh-h2: 1.3;
+  --lh-h3: 1.4;
+  --lh-body: 1.6;
+  --lh-lead: 1.65;
+  --lh-small: 1.55;
+  --lh-label: 1.4;
+  --lh-ui: 1.25;
+
+  /* Tracking, always in em so it scales with clamp() sizes. Uppercase labels stay at or below .08em. */
+  --tr-display: -.025em;
+  --tr-h1: -.02em;
+  --tr-h2: -.015em;
+  --tr-h3: -.005em;
+  --tr-wordmark: -.03em;
+  --tr-label: .06em;
 }
 
 /* Tailwind theme mapping for shadcn/ui utilities */
@@ -49,32 +96,84 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-lg: var(--radius);
-  --font-sans: Arial,Helvetica,sans-serif;
+  --font-sans: 'Be Vietnam Pro', 'Be Vietnam Pro Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Element defaults live in the base layer so Tailwind/shadcn utilities (text-sm, font-medium, leading-*) can override them. */
+@layer base {
+  html {
+    scroll-padding-top: 24px;
+  }
+
+  body {
+    margin: 0;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    min-height: 100vh;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* 16px or larger keeps iOS Safari from zooming in when a field gets focus. */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+    font-weight: 400;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--fs-h1);
+    font-weight: 700;
+    line-height: var(--lh-h1);
+    letter-spacing: var(--tr-h1);
+    margin: 13px 0;
+  }
+
+  h2 {
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: var(--lh-h2);
+    letter-spacing: var(--tr-h2);
+    margin: 8px 0 20px;
+  }
+
+  h3 {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: var(--lh-h3);
+    letter-spacing: var(--tr-h3);
+    margin: 14px 0 8px;
+  }
+
+  p {
+    margin: 8px 0;
+    color: #586c61;
+    text-wrap: pretty;
+  }
 }
 
 /* Base elements */
 * {
   box-sizing: border-box;
-}
-
-html {
-  scroll-padding-top: 24px;
-}
-
-body {
-  margin: 0;
-  color: var(--foreground);
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 100vh;
-}
-
-button,
-a,
-input,
-select,
-textarea {
-  font: inherit;
 }
 
 button,
@@ -97,42 +196,12 @@ button,
   touch-action: manipulation;
 }
 
-a {
-  color: inherit;
-}
-
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
   outline: 3px solid #95cbaa;
   outline-offset: 3px;
-}
-
-h1 {
-  font-size: clamp(30px, 4vw, 44px);
-  line-height: 1.2;
-  letter-spacing: -1.1px;
-  margin: 13px 0;
-}
-
-h2 {
-  font-size: 23px;
-  line-height: 1.3;
-  margin: 8px 0 20px;
-  letter-spacing: -.4px;
-}
-
-h3 {
-  font-size: 17px;
-  line-height: 1.4;
-  font-weight: 700;
-  margin: 14px 0 8px;
-}
-
-p {
-  margin: 8px 0;
-  color: #586c61;
 }
 
 svg {
@@ -150,12 +219,26 @@ svg {
 
 /* Shared text, buttons and badges */
 .small {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
 }
 
 .muted {
   color: #64796c;
+}
+
+/* Uppercase is applied here, not typed in the markup, so screen readers read words instead of spelling letters. */
+.eyebrow {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: var(--tr-label);
+  line-height: var(--lh-label);
+  text-transform: uppercase;
+  color: #4c725a;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 
 .text-button {
@@ -164,7 +247,8 @@ svg {
   padding: 8px 0;
   color: #266341;
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -181,7 +265,7 @@ button.primary,
   border: 0;
   border-radius: 9px;
   padding: 12px 22px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -194,9 +278,10 @@ button.primary,
   color: white;
   border-radius: 9px;
   padding: 12px 18px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
-  font-size: 14px;
+  font-size: var(--fs-button);
+  line-height: var(--lh-ui);
 }
 
 .primary:hover {
@@ -213,6 +298,9 @@ button.primary,
   background: #fff;
   padding: 10px 16px;
   color: #264c39;
+  font-size: var(--fs-button);
+  font-weight: 600;
+  line-height: var(--lh-ui);
 }
 
 .outline,
@@ -224,7 +312,7 @@ button.primary,
   width: 100%;
   justify-content: flex-start;
   text-align: left;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .block {
@@ -263,8 +351,8 @@ button.primary,
 .badge {
   display: inline-flex;
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-badge);
+  font-weight: 600;
   padding: 5px 10px;
   line-height: 1.4;
 }
@@ -277,7 +365,7 @@ button.primary,
   background: #eaf3ed;
   border-radius: 10px;
   margin: 15px 0;
-  font-size: 14px;
+  font-size: var(--fs-small);
   overflow-wrap: anywhere;
 }
 
@@ -289,7 +377,10 @@ button.primary,
 .select-control {
   height: auto !important;
   min-height: 44px;
-  font-size: 14px !important;
+  font-size: var(--fs-small) !important;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
   white-space: normal !important;
   background: white !important;
   border-radius: 9px !important;
@@ -323,8 +414,9 @@ header {
   align-items: center;
   text-decoration: none;
   font-weight: 800;
-  font-size: 24px;
-  letter-spacing: -.8px;
+  font-size: var(--fs-wordmark);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-wordmark);
 }
 
 .brand svg {
@@ -342,9 +434,11 @@ header {
 
 .brand small {
   display: block;
-  font-size: 9px;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
   margin-top: 1px;
-  letter-spacing: 1.5px;
+  letter-spacing: 0;
 }
 
 .location-button {
@@ -354,7 +448,9 @@ header {
   border: 1px solid var(--border);
   padding: 9px 13px;
   border-radius: 30px;
-  font-size: 14px;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1.35;
   margin-left: auto;
   max-width: 280px;
 }
@@ -367,7 +463,7 @@ header {
 .location-button small {
   display: block;
   color: #176344;
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 600;
 }
 
@@ -391,7 +487,7 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .city-widget-top button {
@@ -406,7 +502,7 @@ header {
 .city-readings {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: var(--fs-small);
   gap: 12px;
 }
 
@@ -418,7 +514,24 @@ header {
 
 .city-readings strong {
   color: #164955;
-  font-size: 19px;
+  font-size: var(--fs-reading);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+/* Units only appear next to a value, so an empty reading never reads as a minus sign. */
+.city-readings .unit {
+  margin-left: 1px;
+  font-size: .75em;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.city-readings .reading-empty {
+  color: #496970;
+  font-size: var(--fs-meta);
+  font-weight: 500;
 }
 
 .city-readings svg {
@@ -432,12 +545,12 @@ header {
   gap: 5px;
   margin-top: 5px;
   clear: both;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .city-aqi-label {
   width: 100%;
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .city-aqi-hint {
@@ -452,7 +565,8 @@ header {
 
 .city-caption,
 .city-aqi-hint {
-  font-size: 11px;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
 }
 
 .aqi-badge {
@@ -460,7 +574,7 @@ header {
   border-radius: 8px;
   padding: 6px 10px;
   background: #edf1ef;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .aqi-good .aqi-badge {
@@ -498,11 +612,11 @@ header {
   background: #fff2df;
   padding: 10px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .city-details summary {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   cursor: pointer;
   color: #315c65;
 }
@@ -524,7 +638,7 @@ header {
 }
 
 .city-details-body p {
-  font-size: 14px;
+  font-size: var(--fs-small);
   line-height: 1.5;
 }
 
@@ -537,11 +651,11 @@ header {
   gap: 2px;
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .city-point small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: #526c63;
 }
 
@@ -552,7 +666,7 @@ header {
 .city-aqi-status .aqi-badge,
 .city-point .aqi-badge {
   padding: 3px 7px;
-  font-size: 13px;
+  font-size: var(--fs-meta);
   line-height: 1.45;
 }
 
@@ -562,7 +676,7 @@ header {
 }
 
 .city-aqi-legend h3 {
-  font-size: 16px;
+  font-size: var(--fs-body);
   margin: 0 0 8px;
 }
 
@@ -572,20 +686,20 @@ header {
   gap: 8px;
   align-items: center;
   margin: 5px 0;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .city-aqi-legend .aqi-badge {
   padding: 4px 7px;
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 .city-aqi-legend > a {
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 .city-aqi-status .aqi-badge {
-  font-size: 11px;
+  font-size: var(--fs-caption);
 }
 
 /* Navigation tabs */
@@ -610,7 +724,8 @@ header {
 .nav-tabs [role=tab] {
   flex: none;
   gap: 7px;
-  font-size: 14px;
+  font-size: var(--fs-tab);
+  line-height: 1.3;
   flex-shrink: 0;
   white-space: nowrap;
   padding: 12px 18px !important;
@@ -635,37 +750,34 @@ header {
   padding: 44px 0 24px;
 }
 
-.eyebrow {
-  font-size: 12px;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: #4c725a;
-}
-
 .hero-intro .eyebrow {
   align-items: center;
   gap: 7px;
-  font-weight: 750;
 }
 
+/* The one display-size rule for the hero headline. */
 .hero-intro h1 {
+  font-size: var(--fs-display);
   font-weight: 800;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
 }
 
 .hero-intro h1 em {
   font-style: normal;
 }
 
-.hero-intro > p {
-  color: #61756b;
-  font-size: 17px;
-  line-height: 1.75;
-  max-width: 630px;
+.hero-copy > p {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
 }
 
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .hero-meta span {
@@ -705,13 +817,17 @@ header {
 }
 
 .capture-card > b {
-  font-size: 21px;
-  letter-spacing: -.4px;
+  font-size: 1.3125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.015em;
 }
 
 .capture-card > span:not(.capture-card-icon) {
-  font-size: 13px;
+  font-size: var(--fs-meta);
+  line-height: 1.45;
   color: #677b6b;
+  text-wrap: pretty;
 }
 
 .capture-card > svg {
@@ -760,6 +876,7 @@ header {
   padding: 8px 0;
   color: var(--foreground);
   min-width: 0;
+  text-overflow: ellipsis;
 }
 
 .searchbox input:focus-visible {
@@ -789,6 +906,11 @@ header {
   margin-top: 12px;
 }
 
+.section-heading > .text-button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .search-bottom > .small {
   display: flex;
   align-items: center;
@@ -805,7 +927,7 @@ header {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--fs-small);
   color: #6c7d73;
   border-top: 1px solid #edf1e9;
   margin-top: 16px;
@@ -817,6 +939,9 @@ header {
   color: #41664f;
   border-radius: 30px;
   border: 1px solid #e2e9dc;
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 .search-results {
@@ -839,10 +964,14 @@ header {
   flex: 1;
 }
 
+.result-row b {
+  font-weight: 600;
+}
+
 .result-row small {
   display: block;
   color: #79887f;
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 /* Section headings, popular items and catalog */
@@ -871,12 +1000,13 @@ header {
 }
 
 .item-card b {
-  font-size: 15px;
+  font-size: .9375rem;
+  font-weight: 600;
   line-height: 1.4;
 }
 
 .item-card > span:not(.item-icon) {
-  font-size: 13px;
+  font-size: var(--fs-meta);
   color: #6d7e72;
 }
 
@@ -915,11 +1045,7 @@ header {
   align-items: center;
   justify-content: center;
   margin-top: 26px;
-  font-size: 14px;
-}
-
-.point-results h2 {
-  font-size: 20px;
+  font-size: var(--fs-small);
 }
 
 .point-results > .section-heading {
@@ -928,7 +1054,6 @@ header {
 
 .section-heading h2 {
   margin-bottom: 14px;
-  font-size: 22px;
 }
 
 .popular-section {
@@ -972,10 +1097,10 @@ header {
 }
 
 .step-no {
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: var(--fs-caption);
+  letter-spacing: .04em;
   color: #668773;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .how-grid h3 {
@@ -983,7 +1108,7 @@ header {
 }
 
 .how-grid p {
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 /* Classification result */
@@ -1003,8 +1128,8 @@ header {
 }
 
 .where {
-  font-size: 21px;
-  font-weight: 700;
+  font-size: var(--fs-reading);
+  font-weight: 600;
   line-height: 1.4;
   color: #184f35;
   margin-bottom: 22px;
@@ -1022,7 +1147,7 @@ header {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 15px;
+  font-size: .9375rem;
 }
 
 .steps li span {
@@ -1033,7 +1158,7 @@ header {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   font-weight: 700;
 }
 
@@ -1053,27 +1178,31 @@ header {
   margin-top: 10px;
 }
 
+/* Inline flow, not flex: the external-link icon rides on the last word (wrapped in .nowrap) instead of dropping to its own line. */
 .source-link {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  font-size: 13px;
+  display: block;
+  font-size: var(--fs-meta);
   line-height: 1.5;
   margin-top: 14px;
   color: #286241;
   text-decoration: underline;
 }
 
+/* An atomic inline box does not inherit the link underline, so the check date reads as metadata. */
 .source-link small {
+  display: inline-block;
   width: 100%;
-  font-size: 12px;
-  text-decoration: none;
+  margin-top: 2px;
+  font-size: var(--fs-caption);
   color: #6c7e72;
 }
 
 .source-link svg {
+  display: inline-block;
   width: 13px;
   height: 13px;
+  margin-left: 4px;
+  vertical-align: -2px;
 }
 
 .question-panel fieldset {
@@ -1083,9 +1212,10 @@ header {
 }
 
 .question-panel legend {
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 12px;
-  font-size: 16px;
+  font-size: var(--fs-body);
+  line-height: 1.45;
 }
 
 .choices {
@@ -1126,18 +1256,22 @@ header {
 }
 
 .waste-sign small {
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  font-weight: 700;
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: var(--tr-label);
+  line-height: var(--lh-label);
+  text-transform: uppercase;
 }
 
 .waste-sign h3 {
-  font-size: 22px;
+  font-size: 1.375rem;
+  line-height: 1.3;
   margin: 3px 0 5px;
 }
 
 .waste-sign p {
-  font-size: 13px;
+  font-size: var(--fs-meta);
   color: #536852;
   margin: 0;
 }
@@ -1181,9 +1315,14 @@ header {
 .filter-card label {
   display: grid;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--fs-meta);
   font-weight: 600;
   margin: 16px 0;
+}
+
+/* The area picker shows a chosen value, like the selects around it, so it uses value weight. */
+.filter-card .outline.wide {
+  font-weight: 400;
 }
 
 .filter-card .select-control {
@@ -1226,7 +1365,7 @@ textarea {
 }
 
 .point-card > p {
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .point-actions {
@@ -1274,10 +1413,14 @@ textarea {
   border: 0;
 }
 
+.history-item b {
+  font-weight: 600;
+}
+
 .history-item small {
   display: block;
   color: #718478;
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 /* Empty states */
@@ -1324,6 +1467,12 @@ textarea {
 }
 
 /* Dialog containers */
+/* shadcn titles use leading-none; stacked Vietnamese marks need room when a title wraps. */
+[data-slot=dialog-title],
+[data-slot=alert-dialog-title] {
+  line-height: 1.3;
+}
+
 .dialog-scroll {
   max-height: 85vh;
   overflow-y: auto;
@@ -1355,7 +1504,7 @@ textarea {
   border-radius: 8px;
   text-align: left;
   background: white;
-  font-size: 14px;
+  font-size: var(--fs-small);
   min-height: 46px;
 }
 
@@ -1387,11 +1536,11 @@ textarea {
   border-radius: 12px;
   background: #fff3df;
   color: #805416;
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 .location-error .text-button {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   margin-top: 8px;
 }
 
@@ -1401,7 +1550,7 @@ textarea {
   padding: 15px;
   border: 1px solid #d0e5ce;
   border-radius: 13px;
-  font-size: 13px;
+  font-size: var(--fs-meta);
   overflow-wrap: anywhere;
 }
 
@@ -1423,8 +1572,8 @@ textarea {
 
 .position-card small {
   color: #60705e;
-  font-size: 11px;
-  line-height: 1.6;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
 }
 
 .position-actions {
@@ -1438,7 +1587,7 @@ textarea {
 
 .position-actions a,
 .position-actions button {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   text-decoration: underline;
 }
 
@@ -1446,7 +1595,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: #6a7b6d;
   margin: 2px 0;
 }
@@ -1463,7 +1612,7 @@ textarea {
 .consent {
   display: flex;
   gap: 10px;
-  font-size: 14px;
+  font-size: var(--fs-small);
 }
 
 .photo-title {
@@ -1484,13 +1633,14 @@ textarea {
 }
 
 .photo-title h2 {
-  line-height: 1.4 !important;
-  font-size: 20px !important;
-  letter-spacing: -.4px;
+  line-height: var(--lh-h2) !important;
+  font-size: var(--fs-h2) !important;
+  font-weight: 700;
+  letter-spacing: var(--tr-h2);
 }
 
 .photo-title p {
-  font-size: 13px;
+  font-size: var(--fs-meta);
   margin-top: 5px !important;
   color: #66776b;
 }
@@ -1533,16 +1683,17 @@ textarea {
 }
 
 .photo-dropzone > b {
-  font-size: 16px;
+  font-size: var(--fs-body);
+  font-weight: 600;
 }
 
 .photo-dropzone > span:not(.drop-icon) {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: #5a745b;
 }
 
 .photo-dropzone small {
-  font-size: 11px;
+  font-size: var(--fs-caption);
   color: #73866d;
 }
 
@@ -1564,7 +1715,7 @@ textarea {
 }
 
 .photo-loading span {
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .photo-preview {
@@ -1588,7 +1739,7 @@ textarea {
   justify-content: space-between;
   padding: 9px 14px;
   background: #fff;
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .photo-preview-caption > span {
@@ -1607,7 +1758,7 @@ textarea {
   align-items: flex-start;
   gap: 8px;
   color: #355e41;
-  font-size: 13px;
+  font-size: var(--fs-meta);
   margin: 0;
 }
 
@@ -1625,8 +1776,8 @@ textarea {
 
 .photo-manual > label {
   display: block;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-meta);
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
@@ -1653,7 +1804,7 @@ textarea {
 
 .recognition-controls .consent {
   align-items: flex-start;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: #607362;
 }
 
@@ -1673,7 +1824,7 @@ textarea {
   border-radius: 13px;
   padding: 13px 14px;
   color: #526a49;
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .local-photo-note > svg {
@@ -1684,12 +1835,13 @@ textarea {
 }
 
 .local-photo-note b {
-  font-size: 13px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
   color: #3b5c39;
 }
 
 .local-photo-note p {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   margin: 4px 0 0;
   line-height: 1.6;
 }
@@ -1701,7 +1853,7 @@ textarea {
 }
 
 .device-alternatives .text-button {
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .camera-stage {
@@ -1739,7 +1891,8 @@ textarea {
   padding: 5px 8px;
   border-radius: 8px;
   background: #09251bcc;
-  font-size: 11px;
+  font-size: var(--fs-caption);
+  line-height: 1.4;
 }
 
 .camera-dismiss {
@@ -1785,7 +1938,7 @@ textarea {
 }
 
 .camera-wait p {
-  font-size: 13px;
+  font-size: var(--fs-meta);
   color: #dce7dd;
   margin: 0;
 }
@@ -1802,7 +1955,7 @@ footer {
   align-items: center;
   gap: 20px;
   padding: 24px 0;
-  font-size: 13px;
+  font-size: var(--fs-meta);
   color: #6a7b70;
   margin-top: 38px;
   padding-bottom: 30px;
@@ -1833,7 +1986,7 @@ footer a {
 .admin-fields > label {
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: var(--fs-meta);
 }
 
 .admin-fields input,
@@ -1854,7 +2007,7 @@ footer a {
 }
 
 .admin-fields legend {
-  font-weight: 700;
+  font-weight: 600;
   padding: 0 7px;
 }
 
@@ -1862,7 +2015,7 @@ footer a {
   display: flex !important;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--fs-small);
   margin: 8px 0;
 }
 
@@ -1891,7 +2044,7 @@ footer a {
 .admin-row small {
   display: block;
   color: #62796b;
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .admin-search {
@@ -1962,7 +2115,7 @@ footer a {
   }
 
   .city-widget .city-widget-top {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   .city-widget-top button {
@@ -1974,7 +2127,7 @@ footer a {
   }
 
   .city-widget .city-readings strong {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
 
   .city-aqi-status {
@@ -1991,7 +2144,6 @@ footer a {
 
   .city-caption {
     clear: both;
-    font-size: 11px;
   }
 
   .city-details-body {
@@ -2005,7 +2157,7 @@ footer a {
   }
 
   .capture-card > span:not(.capture-card-icon) {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 }
 
@@ -2030,6 +2182,12 @@ footer a {
 
 /* Phones. */
 @media (max-width: 640px) {
+  /* Design tokens: uppercase 600 labels may drop to 11px on phones; nothing else goes below 12px. */
+  :root {
+    --fs-label: .6875rem;
+    --fs-wordmark: 1.375rem;
+  }
+
   /* Page shell */
   .shell {
     padding: 0 18px;
@@ -2044,10 +2202,6 @@ footer a {
     padding: 18px 0 13px;
   }
 
-  .brand {
-    font-size: 22px;
-  }
-
   .brand-symbol {
     height: 39px;
     width: 39px;
@@ -2057,15 +2211,11 @@ footer a {
     width: 27px;
   }
 
-  .brand small {
-    font-size: 8px;
-  }
-
   .location-button {
     max-width: 46%;
     padding: 7px 10px;
     gap: 5px;
-    font-size: 11px;
+    font-size: var(--fs-chip);
   }
 
   .location-button > svg {
@@ -2086,10 +2236,6 @@ footer a {
     display: none;
   }
 
-  .city-details summary {
-    font-size: 11px;
-  }
-
   /* Navigation tabs */
   .nav-tabs {
     width: 100% !important;
@@ -2100,13 +2246,17 @@ footer a {
     border-radius: 13px !important;
   }
 
+  /* Tabs share the row by content width; a label wraps rather than shrinking below 12px. */
   .nav-tabs [role=tab] {
-    padding: 9px 7px !important;
-    font-size: 11px;
+    padding: 9px 6px !important;
+    font-size: .78125rem;
+    line-height: 1.3;
     min-height: 43px;
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: 4px;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: center;
   }
 
   .nav-tabs [role=tab] svg {
@@ -2116,11 +2266,6 @@ footer a {
   /* Page intro and hero */
   .intro {
     padding-top: 28px;
-  }
-
-  .hero-intro > p {
-    font-size: 14px;
-    line-height: 1.7;
   }
 
   .desktop-break {
@@ -2149,7 +2294,7 @@ footer a {
   }
 
   .capture-card > b {
-    font-size: 16px;
+    font-size: var(--fs-body);
   }
 
   .capture-card > span:not(.capture-card-icon) {
@@ -2183,7 +2328,7 @@ footer a {
   }
 
   .searchbox button {
-    font-size: 12px;
+    font-size: var(--fs-meta);
     padding: 10px 12px;
   }
 
@@ -2195,23 +2340,22 @@ footer a {
   }
 
   .search-bottom .small {
-    font-size: 10px;
+    font-size: var(--fs-caption);
   }
 
   .search-bottom .text-button {
-    font-size: 11px;
+    font-size: var(--fs-caption);
   }
 
   .quick {
     gap: 6px;
-    font-size: 11px;
+    font-size: var(--fs-caption);
     margin-top: 12px;
     padding-top: 12px;
   }
 
   .quick button {
-    font-size: 11px;
-    padding: 6px 9px;
+    padding: 6px 10px;
   }
 
   /* Section headings, popular items and catalog */
@@ -2236,11 +2380,11 @@ footer a {
   }
 
   .item-card b {
-    font-size: 14px;
+    font-size: var(--fs-small);
   }
 
   .item-card > span:not(.item-icon) {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   .toolbar {
@@ -2254,20 +2398,16 @@ footer a {
 
   .pagination {
     gap: 8px;
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   .pagination button {
     padding: 8px 10px;
-    font-size: 12px;
-  }
-
-  .section-heading h2 {
-    font-size: 20px;
+    font-size: var(--fs-caption);
   }
 
   .section-heading > .text-button {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   .popular-section {
@@ -2297,12 +2437,12 @@ footer a {
   }
 
   .how-grid h3 {
-    font-size: 16px;
+    font-size: var(--fs-body);
     margin-bottom: 5px;
   }
 
   .how-grid p {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   /* Classification result */
@@ -2332,15 +2472,11 @@ footer a {
   }
 
   .waste-sign h3 {
-    font-size: 18px;
-  }
-
-  .waste-sign small {
-    font-size: 8px;
+    font-size: 1.125rem;
   }
 
   .waste-sign p {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   /* Collection points */
@@ -2392,7 +2528,7 @@ footer a {
 
   /* Location dialog and status */
   .location-status .small {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   /* Photo dialog and camera */
@@ -2400,12 +2536,8 @@ footer a {
     gap: 9px;
   }
 
-  .photo-title h2 {
-    font-size: 17px !important;
-  }
-
   .photo-title p {
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 
   .feature-icon {
@@ -2414,7 +2546,7 @@ footer a {
   }
 
   .photo-actions button {
-    font-size: 13px;
+    font-size: var(--fs-meta);
   }
 
   .photo-preview img {
@@ -2438,7 +2570,7 @@ footer a {
 
   footer > span {
     width: 100%;
-    font-size: 12px;
+    font-size: var(--fs-caption);
   }
 }
 
@@ -2458,6 +2590,14 @@ footer a {
   }
 }
 
+/* Narrow phones: tab labels keep their size, so the tab icons go. */
+@media (max-width: 440px) {
+  /* Navigation tabs */
+  .nav-tabs [role=tab] svg {
+    display: none;
+  }
+}
+
 /* Very small phones. */
 @media (max-width: 360px) {
   /* Page shell */
@@ -2467,12 +2607,7 @@ footer a {
 
   /* Navigation tabs */
   .nav-tabs [role=tab] {
-    font-size: 10px;
     padding: 9px 5px !important;
-  }
-
-  .nav-tabs [role=tab] svg {
-    display: none;
   }
 
   /* Capture actions */
@@ -2481,7 +2616,7 @@ footer a {
   }
 
   .capture-card > b {
-    font-size: 14px;
+    font-size: var(--fs-small);
   }
 
   /* Photo dialog and camera */
