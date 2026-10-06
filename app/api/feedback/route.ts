@@ -1,0 +1,3 @@
+import {z} from 'zod';import {db} from '@/lib/repository';import {handle,json,body,sameOrigin,rate} from '@/lib/http';
+const schema=z.object({target:z.string().min(1).max(120),type:z.enum(['classification','closed','rejected','address','suggestion']),message:z.string().trim().min(5).max(1500)});
+export const POST=(req:Request)=>handle(async()=>{sameOrigin(req);const b=schema.parse(await body(req));await rate(req,'feedback',20);const id=crypto.randomUUID();await db().prepare('INSERT INTO feedback (id,target,type,message,status,created_at) VALUES (?,?,?,?,?,?)').bind(id,b.target,b.type,b.message,'pending',new Date().toISOString()).run();return json({id,status:'pending'},201)});

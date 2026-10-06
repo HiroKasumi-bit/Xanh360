@@ -1,0 +1,16 @@
+Bạn tiếp tục phát triển website Xanh360 từ ZIP đính kèm.
+
+Đọc BAT_DAU_O_DAY.md trước, sau đó BAN_GIAO_CHO_AI.md và HUONG_DAN_CHAY.md. Mã nguồn nằm trong project/. Đọc các tệp liên quan trước khi sửa; giữ thương hiệu, dữ liệu và chức năng hiện tại, không viết lại toàn bộ khi không cần.
+
+Bản này có 120 vật dụng, bao gồm nhiệt kế thủy ngân nguyên/vỡ. Camera/tải ảnh/xem trước đã có; AI nhận diện cần endpoint, khóa và adapter thật. Không tạo kết quả AI hoặc địa điểm giả. Không suy diễn rằng điểm thu gom pin nhận thủy ngân, thuốc hay vật sắc nhọn.
+
+Giữ sự đồng ý trước khi gửi ảnh, quyền camera/GPS, hướng dẫn nguy hại theo nguồn, chống kết quả bất đồng bộ cũ, khả năng dùng trên điện thoại và reduced-motion.
+
+Website hiện tại: https://xanh360-ban-moi.dongnguyen-lienket.chatgpt.site
+Nhận dạng dự án nằm trong project/.openai/hosting.json. Chỉ cập nhật website này khi có công cụ và quyền phù hợp; không tự tạo website khác, đổi phạm vi truy cập hoặc mua dịch vụ.
+
+README bên trong project giữ lại từ bản chụp Git và có vài đoạn cũ; hiện trạng mới nhất nằm ở các tài liệu bàn giao ngoài project. ZIP không chứa khóa API, dữ liệu production hoặc quyền triển khai. Đừng giả định giải nén là đã có đủ những phần này.
+
+Trước tiên hãy tóm tắt hiện trạng, các phần chưa hoạt động và cách chạy theo môi trường của bạn. Nếu tôi đã kèm yêu cầu mới, thực hiện trong phạm vi đó và kiểm tra trước khi bàn giao. Nếu chưa có yêu cầu mới, hỏi tôi muốn làm phần nào tiếp theo.
+
+Khi bàn giao, nói rõ tệp đã đổi, kiểm tra thực sự đã chạy, phần chưa kiểm thử và cấu hình còn thiếu. Nếu không thể triển khai lên website hiện tại, trả mã nguồn/ZIP đã sửa cùng hướng dẫn để tôi đưa về môi trường có quyền triển khai.

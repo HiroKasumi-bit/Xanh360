@@ -1,0 +1,1533 @@
+[
+  {
+    "id": "hoa-binh",
+    "name": "Phường Hòa Bình",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-tho",
+    "name": "Phường Phú Thọ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dong-hung-thuan",
+    "name": "Phường Đông Hưng Thuận",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "trung-my-tay",
+    "name": "Phường Trung Mỹ Tây",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-thoi-hiep",
+    "name": "Phường Tân Thới Hiệp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thoi-an",
+    "name": "Phường Thới An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-phu-dong",
+    "name": "Phường An Phú Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-lac",
+    "name": "Phường An Lạc",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-tan",
+    "name": "Phường Bình Tân",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-tao",
+    "name": "Phường Tân Tạo",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-tri-dong",
+    "name": "Phường Bình Trị Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-hung-hoa",
+    "name": "Phường Bình Hưng Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "gia-dinh",
+    "name": "Phường Gia Định",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-thanh",
+    "name": "Phường Bình Thạnh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-loi-trung",
+    "name": "Phường Bình Lợi Trung",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thanh-my-tay",
+    "name": "Phường Thạnh Mỹ Tây",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-quoi",
+    "name": "Phường Bình Quới",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hanh-thong",
+    "name": "Phường Hạnh Thông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-nhon",
+    "name": "Phường An Nhơn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "go-vap",
+    "name": "Phường Gò Vấp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-hoi-dong",
+    "name": "Phường An Hội Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thong-tay-hoi",
+    "name": "Phường Thông Tây Hội",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-hoi-tay",
+    "name": "Phường An Hội Tây",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "duc-nhuan",
+    "name": "Phường Đức Nhuận",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cau-kieu",
+    "name": "Phường Cầu Kiệu",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-nhuan",
+    "name": "Phường Phú Nhuận",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-son-hoa",
+    "name": "Phường Tân Sơn Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-son-nhat",
+    "name": "Phường Tân Sơn Nhất",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-hoa",
+    "name": "Phường Tân Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "bay-hien",
+    "name": "Phường Bảy Hiền",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-binh",
+    "name": "Phường Tân Bình",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-son",
+    "name": "Phường Tân Sơn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tay-thanh",
+    "name": "Phường Tây Thạnh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-son-nhi",
+    "name": "Phường Tân Sơn Nhì",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-tho-hoa",
+    "name": "Phường Phú Thọ Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-phu",
+    "name": "Phường Tân Phú",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-thanh",
+    "name": "Phường Phú Thạnh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thuan-giao",
+    "name": "Phường Thuận Giao",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thu-dau-mot",
+    "name": "Phường Thủ Dầu Một",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-loi",
+    "name": "Phường Phú Lợi",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "chanh-hiep",
+    "name": "Phường Chánh Hiệp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-duong",
+    "name": "Phường Bình Dương",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hoa-loi",
+    "name": "Phường Hòa Lợi",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-an",
+    "name": "Phường Phú An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tay-nam",
+    "name": "Phường Tây Nam",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-nguyen",
+    "name": "Phường Long Nguyên",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ben-cat",
+    "name": "Phường Bến Cát",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "chanh-phu-hoa",
+    "name": "Phường Chánh Phú Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "vinh-tan",
+    "name": "Phường Vĩnh Tân",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-co",
+    "name": "Phường Bình Cơ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-uyen",
+    "name": "Phường Tân Uyên",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-hiep",
+    "name": "Phường Tân Hiệp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-khanh",
+    "name": "Phường Tân Khánh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "vung-tau",
+    "name": "Phường Vũng Tàu",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tam-thang",
+    "name": "Phường Tam Thắng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "rach-dua",
+    "name": "Phường Rạch Dừa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phuoc-thang",
+    "name": "Phường Phước Thắng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-huong",
+    "name": "Phường Long Hương",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ba-ria",
+    "name": "Phường Bà Rịa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tam-long",
+    "name": "Phường Tam Long",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-hai",
+    "name": "Phường Tân Hải",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-phuoc",
+    "name": "Phường Tân Phước",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-my",
+    "name": "Phường Phú Mỹ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-thanh",
+    "name": "Phường Tân Thành",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "vinh-loc",
+    "name": "Xã Vĩnh Lộc",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-vinh-loc",
+    "name": "Xã Tân Vĩnh Lộc",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-loi",
+    "name": "Xã Bình Lợi",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-nhut",
+    "name": "Xã Tân Nhựt",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-chanh",
+    "name": "Xã Bình Chánh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hung-long",
+    "name": "Xã Hưng Long",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-hung",
+    "name": "Xã Bình Hưng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-khanh",
+    "name": "Xã Bình Khánh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-thoi-dong",
+    "name": "Xã An Thới Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thuong-tan",
+    "name": "Xã Thường Tân",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "bac-tan-uyen",
+    "name": "Xã Bắc Tân Uyên",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-giao",
+    "name": "Xã Phú Giáo",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phuoc-hoa",
+    "name": "Xã Phước Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phuoc-thanh",
+    "name": "Xã Phước Thành",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-long",
+    "name": "Xã An Long",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tru-van-tho",
+    "name": "Xã Trừ Văn Thố",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "bau-bang",
+    "name": "Xã Bàu Bàng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-hoa",
+    "name": "Xã Long Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xa-thanh-an",
+    "name": "Xã Thanh An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dau-tieng",
+    "name": "Xã Dầu Tiếng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "minh-thanh",
+    "name": "Xã Minh Thạnh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "chau-pha",
+    "name": "Xã Châu Pha",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-hai",
+    "name": "Xã Long Hải",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-dien",
+    "name": "Xã Long Điền",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phuoc-hai",
+    "name": "Xã Phước Hải",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dat-do",
+    "name": "Xã Đất Đỏ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "nghia-thanh",
+    "name": "Xã Nghĩa Thành",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ngai-giao",
+    "name": "Xã Ngãi Giao",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "kim-long",
+    "name": "Xã Kim Long",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "chau-duc",
+    "name": "Xã Châu Đức",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-gia",
+    "name": "Xã Bình Giã",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xuan-son",
+    "name": "Xã Xuân Sơn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ho-tram",
+    "name": "Xã Hồ Tràm",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xuyen-moc",
+    "name": "Xã Xuyên Mộc",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hoa-hoi",
+    "name": "Xã Hòa Hội",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "bau-lam",
+    "name": "Xã Bàu Lâm",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "con-dao",
+    "name": "Đặc khu Côn Đảo",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "sai-gon",
+    "name": "Phường Sài Gòn",
+    "aliases": [
+      "Bến Nghé",
+      "Đa Kao",
+      "Nguyễn Thái Bình"
+    ],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-dinh",
+    "name": "Phường Tân Định",
+    "aliases": [
+      "Đa Kao"
+    ],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ben-thanh",
+    "name": "Phường Bến Thành",
+    "aliases": [
+      "Phạm Ngũ Lão",
+      "Nguyễn Thái Bình",
+      "Cầu Ông Lãnh"
+    ],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cau-ong-lanh",
+    "name": "Phường Cầu Ông Lãnh",
+    "aliases": [
+      "Nguyễn Cư Trinh",
+      "Cầu Kho",
+      "Cô Giang"
+    ],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ban-co",
+    "name": "Phường Bàn Cờ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xuan-hoa",
+    "name": "Phường Xuân Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "nhieu-loc",
+    "name": "Phường Nhiêu Lộc",
+    "aliases": [
+      "Phường 9 Quận 3",
+      "Phường 11 Quận 3",
+      "Phường 12 Quận 3",
+      "Phường 14 Quận 3"
+    ],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xom-chieu",
+    "name": "Phường Xóm Chiếu",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "khanh-hoi",
+    "name": "Phường Khánh Hội",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "vinh-hoi",
+    "name": "Phường Vĩnh Hội",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cho-quan",
+    "name": "Phường Chợ Quán",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-dong",
+    "name": "Phường An Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cho-lon",
+    "name": "Phường Chợ Lớn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-tay",
+    "name": "Phường Bình Tây",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-tien",
+    "name": "Phường Bình Tiên",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-phu",
+    "name": "Phường Bình Phú",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-lam",
+    "name": "Phường Phú Lâm",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-thuan",
+    "name": "Phường Tân Thuận",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-thuan",
+    "name": "Phường Phú Thuận",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-my",
+    "name": "Phường Tân Mỹ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-hung",
+    "name": "Phường Tân Hưng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "chanh-hung",
+    "name": "Phường Chánh Hưng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-dinh",
+    "name": "Phường Phú Định",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-dong",
+    "name": "Phường Bình Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dien-hong",
+    "name": "Phường Diên Hồng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hiep-binh",
+    "name": "Phường Hiệp Bình",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thu-duc",
+    "name": "Phường Thủ Đức",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tam-binh",
+    "name": "Phường Tam Bình",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "linh-xuan",
+    "name": "Phường Linh Xuân",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tang-nhon-phu",
+    "name": "Phường Tăng Nhơn Phú",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-binh",
+    "name": "Phường Long Bình",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-phuoc",
+    "name": "Phường Long Phước",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-truong",
+    "name": "Phường Long Trường",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cat-lai",
+    "name": "Phường Cát Lái",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-trung",
+    "name": "Phường Bình Trưng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phuoc-long",
+    "name": "Phường Phước Long",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-khanh",
+    "name": "Phường An Khánh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dong-hoa",
+    "name": "Phường Đông Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "di-an",
+    "name": "Phường Dĩ An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-dong-hiep",
+    "name": "Phường Tân Đông Hiệp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-phu",
+    "name": "Phường An Phú",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-hoa",
+    "name": "Phường Bình Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "lai-thieu",
+    "name": "Phường Lái Thiêu",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thuan-an",
+    "name": "Phường Thuận An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "can-gio",
+    "name": "Xã Cần Giờ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "cu-chi",
+    "name": "Xã Củ Chi",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "tan-an-hoi",
+    "name": "Xã Tân An Hội",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thai-my",
+    "name": "Xã Thái Mỹ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "an-nhon-tay",
+    "name": "Xã An Nhơn Tây",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "nhuan-duc",
+    "name": "Xã Nhuận Đức",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "phu-hoa-dong",
+    "name": "Xã Phú Hòa Đông",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-my",
+    "name": "Xã Bình Mỹ",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "dong-thanh",
+    "name": "Xã Đông Thạnh",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hoc-mon",
+    "name": "Xã Hóc Môn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xuan-thoi-son",
+    "name": "Xã Xuân Thới Sơn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "ba-diem",
+    "name": "Xã Bà Điểm",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "nha-be",
+    "name": "Xã Nhà Bè",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hiep-phuoc",
+    "name": "Xã Hiệp Phước",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "thoi-hoa",
+    "name": "Phường Thới Hòa",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "long-son",
+    "name": "Xã Long Sơn",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hoa-hiep",
+    "name": "Xã Hòa Hiệp",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-chau",
+    "name": "Xã Bình Châu",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "xa-thanh-an-2",
+    "name": "Xã Thạnh An",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "vuon-lai",
+    "name": "Phường Vườn Lài",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "hoa-hung",
+    "name": "Phường Hòa Hưng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "minh-phung",
+    "name": "Phường Minh Phụng",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  },
+  {
+    "id": "binh-thoi",
+    "name": "Phường Bình Thới",
+    "aliases": [],
+    "cityId": "hcm",
+    "sourceId": "hcm-admin",
+    "validFrom": "2025-07-01",
+    "validTo": null
+  }
+]
