@@ -19,7 +19,7 @@ Thiết lập một lần:
    - Tab *Variables*: `D1_DATABASE_ID`.
 6. Chạy lại workflow (**Actions → Kiểm tra và deploy lên Cloudflare → Run workflow**). Workflow áp dụng migration trong `drizzle/` rồi deploy Worker tên `xanh360`. Website có địa chỉ `https://xanh360.<tên-tài-khoản>.workers.dev`; có thể gắn tên miền riêng trong **Workers → xanh360 → Settings → Domains & Routes**.
 
-Biến tùy chọn (`VISION_ENDPOINT`, `VISION_API_KEY`, `ADMIN_EMAILS`) đặt ở **Workers → xanh360 → Settings → Variables and Secrets**, chọn loại *Secret* để lần deploy sau không xóa mất.
+Nhận diện ảnh dùng Workers AI miễn phí, không cần cấu hình thêm (xem mục "Nhận diện ảnh"). Biến tùy chọn (`VISION_ENDPOINT`, `VISION_API_KEY` cho adapter riêng, `ADMIN_EMAILS`) đặt ở **Workers → xanh360 → Settings → Variables and Secrets**, chọn loại *Secret* để lần deploy sau không xóa mất.
 
 **Quản trị:** trang `/admin` dựa vào đăng nhập ChatGPT do Sites cung cấp. Trên Cloudflare không có lớp đăng nhập này, nên Worker bỏ qua các header `oai-authenticated-user-*` do khách gửi và trang quản trị luôn yêu cầu đăng nhập (không ai vào được). Muốn dùng quản trị trên Cloudflare cần thêm cơ chế xác thực riêng, ví dụ Cloudflare Access. Chỉ đặt `TRUST_PLATFORM_AUTH_HEADERS=true` khi chạy sau một proxy đáng tin tự gắn các header đó (như ChatGPT Sites).
 
@@ -61,11 +61,18 @@ Danh mục seed được nạp từ `lib/seed.ts` và hợp nhất với phiên 
 
 Nháp chỉ lưu ở `drafts`, không ảnh hưởng tra cứu. Xuất bản dùng kiểm tra phiên bản để tránh ghi đè người khác, cùng nhật ký before/after. Khôi phục tạo nháp để rà soát trước khi xuất bản lại. Chỉ quản trị viên có thể nhập nguồn mới, đánh dấu xác nhận trực tiếp và xuất bản.
 
-## Nhận diện ảnh tùy chọn
+## Nhận diện ảnh
 
-Mặc định chưa cấu hình, tra cứu tên vẫn hoạt động. Không có kết quả AI giả.
+Khi deploy lên Cloudflare, ảnh được nhận diện bằng **Cloudflare Workers AI** (model `@cf/meta/llama-4-scout-17b-16e-instruct`, binding `AI` khai báo trong `vite.config.ts`, mã ở `lib/vision.ts`). Không cần API key. Gói Workers Free có hạn mức miễn phí mỗi ngày (reset 00:00 UTC, tức 7 giờ sáng giờ Việt Nam); hết hạn mức thì yêu cầu bị từ chối chứ không tính tiền, và app báo người dùng tra cứu bằng tên. Nếu nâng lên gói Workers Paid, phần vượt hạn mức sẽ tính phí theo Neurons, nên cần đặt giới hạn trước.
 
-Cấu hình `VISION_ENDPOINT` (HTTPS do người vận hành tin cậy) và `VISION_API_KEY`. Adapter phải nhận JSON:
+- Ảnh chỉ được gửi khi người dùng tích đồng ý và bấm "Nhận diện ảnh"; không lưu ảnh.
+- Mô hình chỉ chọn món trong danh mục (gửi kèm `id: tên` các vật dụng đang hoạt động). ID không có trong danh mục bị loại; hướng dẫn xử lý và điểm tiếp nhận luôn lấy từ quy tắc có nguồn.
+- Giới hạn 10 lần/IP/giờ, timeout 25 giây.
+- Khi chạy cục bộ (`pnpm run start`), Workers AI cần đăng nhập Cloudflare; không có thì nút nhận diện báo lỗi và tra cứu tên vẫn hoạt động.
+
+### Adapter HTTPS riêng (tùy chọn)
+
+Nếu cấu hình `VISION_ENDPOINT` (HTTPS do người vận hành tin cậy) và `VISION_API_KEY`, app dùng adapter này thay cho Workers AI. Adapter phải nhận JSON:
 
 ```json
 {"image":"BASE64_PNG","mimeType":"image/png","catalog":[{"id":"pin-aa","name":"Pin AA / AAA"}],"instruction":"..."}
