@@ -1466,6 +1466,7 @@ header {
 
 .result-skeleton-shape {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
@@ -1498,10 +1499,12 @@ header {
 .skeleton-choices {
   display: flex;
   gap: 10px;
+  min-width: 0;
 }
 
 .skeleton-choices > [data-slot=skeleton] {
-  width: 104px;
+  flex: 0 1 104px;
+  min-width: 0;
   height: 44px;
   border-radius: var(--r-sm);
 }
