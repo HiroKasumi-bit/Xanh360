@@ -771,12 +771,12 @@ body {
     color: var(--green-600);
   }
 
-  .btn-outline:not(:disabled):hover {
+  .btn-outline:not(:disabled, [aria-disabled=true]):hover {
     border-color: var(--green-300);
     background-color: #f8fbf4;
   }
 
-  .btn-outline.danger:not(:disabled):hover {
+  .btn-outline.danger:not(:disabled, [aria-disabled=true]):hover {
     border-color: var(--red-500);
     background-color: var(--red-50);
   }
@@ -827,7 +827,7 @@ body {
 }
 
 .primary:not(:disabled, [aria-disabled=true]):active,
-.btn-outline:not(:disabled):active,
+.btn-outline:not(:disabled, [aria-disabled=true]):active,
 .icon-button:not(:disabled):active,
 .text-button:not(:disabled):active,
 .quick button:not(:disabled):active,
@@ -879,7 +879,7 @@ body {
 }
 
 .motion-control:active,
-.btn-outline:not(:disabled):active {
+.btn-outline:not(:disabled, [aria-disabled=true]):active {
   box-shadow: var(--elev-pressed);
 }
 
@@ -927,9 +927,15 @@ body {
     height: 18px;
   }
 
-  /* No room for the explanation, and nothing to switch: the system setting is already followed. */
+  /* No room for the explanation, and nothing to switch: the system setting is already followed. The line stays for
+     screen readers, so the state is still discoverable. */
   :root[data-motion-source=system] .motion-status {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

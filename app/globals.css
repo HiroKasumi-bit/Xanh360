@@ -338,8 +338,10 @@ button {
   cursor: pointer;
 }
 
+/* The catalog pager's end buttons are aria-disabled (not disabled), so the button just pressed keeps focus. */
 button:disabled,
-button.primary[aria-disabled=true] {
+button.primary[aria-disabled=true],
+.pagination button[aria-disabled=true] {
   opacity: .55;
   cursor: not-allowed;
 }
@@ -402,6 +404,7 @@ svg {
   line-height: var(--lh-label);
   text-transform: uppercase;
   color: #3f604b;
+  text-wrap: balance;
 }
 
 .nowrap {
@@ -529,6 +532,12 @@ button.primary,
 .warning {
   background: var(--amber-50);
   color: var(--amber-700);
+}
+
+/* A "Thử lại" text button beside a notice's message keeps its 44px target, but reaches into the notice's padding so its
+   label sits on the message's first line (and the notice stays as short as one line of text). */
+.notice > .text-button {
+  margin-block: -12px;
 }
 
 /* Something is broken or leaking: earth red with a stripe, so it never reads as a calm green or amber note. */
@@ -733,6 +742,11 @@ header {
   white-space: nowrap;
 }
 
+/* The number stands out inside the 600-weight phone chip; preflight's "bolder" asked for 900, a weight that is not loaded. */
+.city-aqi-value strong {
+  font-weight: 700;
+}
+
 /* Wider screens show the level names as badges, so the range itself is plain text. Short landscape phones keep the
    compact phone chip (see the block after the phone rules). */
 @media (min-width: 641px) and (min-height: 501px), (min-width: 641px) and (orientation: portrait) {
@@ -893,6 +907,7 @@ header {
   background: #edf1ef;
   color: var(--ink-2);
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .aqi-good .aqi-badge {
@@ -1473,10 +1488,44 @@ header {
   animation: result-reveal var(--dur-slow) var(--ease-out) backwards;
 }
 
-/* Loading: the skeleton holds the place of one condition question (what usually comes first), outer margins included,
-   so nothing jumps when the question replaces it. */
+/* Loading. A question's placeholder is the question panel itself (ResultSkeleton): the same elements, the text
+   transparent and drawn as bars, so every line and every choice wraps where the real one will and nothing jumps when
+   the questions replace it. A result's placeholder (.result-skeleton) is a fixed shape. */
+.question-skeleton {
+  pointer-events: none;
+  user-select: none;
+}
+
+.question-skeleton-lead {
+  position: relative;
+}
+
+.question-skeleton-lead > p[aria-hidden] {
+  visibility: hidden;
+}
+
+/* "Đang kiểm tra hướng dẫn…" sits on the first line of the reserved prompt. */
+.question-skeleton-lead > .result-loading {
+  position: absolute;
+  inset: 0 0 auto;
+  margin: 0;
+}
+
+.question-skeleton .skeleton-text {
+  color: transparent;
+  background: linear-gradient(var(--green-100), var(--green-100)) center / 100% 14px no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.question-skeleton .choices .btn-outline {
+  color: transparent;
+  background: var(--green-100);
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .result-skeleton {
-  min-height: 135px;
   margin: 8px 0 14px;
 }
 
@@ -1519,19 +1568,6 @@ header {
   height: 112px;
   margin-bottom: 10px;
   border-radius: var(--r-lg);
-}
-
-.skeleton-choices {
-  display: flex;
-  gap: 10px;
-  min-width: 0;
-}
-
-.skeleton-choices > [data-slot=skeleton] {
-  flex: 0 1 104px;
-  min-width: 0;
-  height: 44px;
-  border-radius: var(--r-sm);
 }
 
 .classification {
@@ -1789,6 +1825,7 @@ header {
   letter-spacing: var(--tr-label);
   line-height: var(--lh-label);
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .waste-sign h3 {
@@ -1864,6 +1901,14 @@ header {
   }
 }
 
+/* Landscape phones wide enough for the sticky card also have the bottom tab bar: the card ends above it, so its last
+   lines and a focused select are never under the bar. */
+@media (min-width: 801px) and (orientation: landscape) and (max-height: 500px) {
+  .filter-card {
+    max-height: calc(100dvh - 32px - var(--tabbar-h) - env(safe-area-inset-bottom));
+  }
+}
+
 .filter-card label {
   display: grid;
   gap: 7px;
@@ -1904,7 +1949,10 @@ textarea {
   align-items: center;
 }
 
+/* The tile keeps its 44px square when the title wraps (it never shrinks) and lines up with the title's first line. */
 .pin-icon {
+  flex: none;
+  align-self: flex-start;
   width: 44px;
   height: 44px;
   border-radius: var(--r-md);
@@ -2045,6 +2093,16 @@ textarea {
 /* The content's flex/grid gap sets the rhythm, so element margins from the base layer are removed. Class rules further down still win. */
 :where([data-slot=dialog-content], [data-slot=alert-dialog-content]) :is(h2, h3, p) {
   margin: 0;
+}
+
+/* The feedback form's send button and its result. The status line is always on the page (an empty live region until a
+   result arrives, so screen readers announce it) and takes room only when it has something to say. */
+.feedback-send {
+  display: grid;
+}
+
+.feedback-send > [role=status]:not(:empty) {
+  margin-top: 12px;
 }
 
 /* A description belongs to its title: 6px apart instead of the 16px gap. */
@@ -2915,10 +2973,11 @@ footer .text-button {
     flex: 1;
   }
 
-  /* The chip starts at the left gutter now, so its details open from its left edge across the screen. */
+  /* The chip starts at the left gutter now, so its details open from its left edge across the screen (-1px: left is
+     measured inside the chip's border, and the popover lines up with the chip's outer edge and the hero below). */
   .city-details-body {
     right: auto;
-    left: 0;
+    left: -1px;
     width: calc(100vw - 32px);
     max-width: none;
   }
@@ -3133,11 +3192,18 @@ footer .text-button {
     padding: 20px;
   }
 
-  /* A question wraps to more lines on a phone, so its placeholder is taller too; a result stacks into one tall column. */
-  .result-skeleton {
-    min-height: 184px;
+  /* The item name (the h2, 20px here) stays the loudest line: the answer steps down to 18px, and a hazard callout, often
+     several lines long, to 17px with more leading, so it reads as a callout rather than a red block. */
+  .where {
+    font-size: 1.125rem;
   }
 
+  .is-hazard .where {
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+
+  /* A result stacks into one tall column, so its placeholder is taller too. */
   .result-skeleton.is-result {
     min-height: 800px;
   }
@@ -3384,9 +3450,11 @@ footer .text-button {
     height: 22px;
   }
 
-  /* An inset ring, so the bar's edges and the screen edge never clip it. */
+  /* An inset ring, so the bar's edges and the screen edge never clip it. It sits on the tab's edge (over shadcn's 1px
+     focus border, which is dropped so only one ring shows), clear of a label that fills the tab. */
   .nav-tabs [role=tab]:focus-visible {
-    outline-offset: -4px;
+    outline-offset: -2.5px;
+    border-color: transparent;
   }
 
   /* The sliding pill (TabPill in app/waste-app.tsx) becomes a 60x30 lozenge behind the active tab's icon. */
@@ -3691,4 +3759,13 @@ footer .text-button {
     left: auto;
     transform: translateY(-50%);
   }
+}
+
+/* 404: the intro block on its own, with room above and below. */
+.not-found {
+  padding-block: 48px 72px;
+}
+
+.not-found .primary {
+  margin-top: 12px;
 }

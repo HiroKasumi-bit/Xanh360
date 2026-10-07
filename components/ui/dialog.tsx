@@ -95,12 +95,16 @@ function DialogContent({
         data-slot="dialog-content"
         ref={trackStickyHeader}
         // Radix moves focus without scrolling when Tab wraps around the dialog, and keyboard scrolling alone can leave a
-        // control under the sticky header. Every control that takes focus is brought fully into view, clear of the header
-        // (scroll-padding-top); the close button lives in the header and is always visible.
+        // control under the sticky header. Every control that takes focus from inside the dialog is brought fully into
+        // view, clear of the header (scroll-padding-top); the close button lives in the header and is always visible.
+        // Focus arriving from outside (the dialog opening, a select list closing) leaves the scroll alone, so a dialog
+        // whose first control sits at its end still opens at its title.
         onFocus={(event) => {
           const target = event.target
           if (target === event.currentTarget || !(target instanceof HTMLElement)) return
           if (target.closest("[data-slot=dialog-close-bar]")) return
+          const from = event.relatedTarget
+          if (!(from instanceof Node) || !event.currentTarget.contains(from)) return
           target.scrollIntoView({ block: "nearest", inline: "nearest" })
         }}
         // Once content scrolls under the sticky header, the header draws a hairline and a soft shadow (globals.css).
