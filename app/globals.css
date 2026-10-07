@@ -61,6 +61,8 @@
   --ink: #153c32;
   --ink-2: #4a5d52;
   --ink-3: #4e6055;
+  /* Field placeholders: 4.8:1 or more on paper, white and the row tint. */
+  --ink-placeholder: #5f7067;
   --line: #dbe5dc;
   --line-soft: rgb(13 42 31 / .09);
   --line-strong: #c9d9cf;
@@ -264,16 +266,25 @@
     font-weight: 400;
   }
 
-  /* Underlines sit clear of the dot below (ạ, ụ, ị) so "dụng" never reads "dung". text-underline-offset is inherited, so
-     underlined text buttons (.text-button) and inline links in paragraphs get the same offset; thickness is not. */
+  /* Underlines sit clear of the dot below (ạ, ụ, ị) so "dụng" never reads "dung". In Be Vietnam Pro that dot reaches
+     .23-.25em under the baseline (400-700), so the line starts at .34em: 1px of air at 1x, 2-3 device px at 2x.
+     text-underline-offset is inherited, so underlined text buttons (.text-button) and inline links in paragraphs get the
+     same offset; thickness is not. */
   a,
   button {
-    text-underline-offset: .24em;
+    text-underline-offset: .34em;
     text-decoration-thickness: 1px;
   }
 
   a {
     color: inherit;
+  }
+
+  /* Placeholders carry the example query and the "no sensitive data" note, so they keep 4.5:1 on every field
+     (preflight's 50% currentColor gave 2.8:1) while staying lighter than typed text. */
+  ::placeholder {
+    color: var(--ink-placeholder);
+    opacity: 1;
   }
 
   h1,
@@ -833,6 +844,20 @@ header {
 .city-details-body p {
   font-size: var(--fs-small);
   line-height: 1.5;
+}
+
+/* More below: the last visible line fades into the paper instead of ending cut through its letters. At the end of the
+   list the fade rests on the bottom padding, under the last line. It never takes clicks from the links it covers. Sticky
+   offsets count from inside the 18px padding, so -18px puts it on the visible bottom edge. */
+.city-details-body::after {
+  content: '';
+  position: sticky;
+  bottom: -18px;
+  display: block;
+  height: 28px;
+  margin: 0 -18px -18px;
+  background: linear-gradient(rgb(255 253 248 / 0), var(--paper-raised));
+  pointer-events: none;
 }
 
 .city-details-body a {
@@ -1668,7 +1693,7 @@ header {
   cursor: progress;
 }
 
-.choices .btn-outline[aria-disabled=true]:not([aria-pressed=true]) {
+.choices :is(.btn-outline, .text-button)[aria-disabled=true]:not([aria-pressed=true]) {
   opacity: .55;
 }
 
@@ -1814,7 +1839,17 @@ header {
   border-radius: var(--r-lg);
 }
 
-.filter-card h3 {
+/* The filter card's title and empty-state titles sit right under the page's h1, so they are h2 in the outline but keep
+   the h3 step of the scale. */
+.filter-card > h2,
+.empty-card > h2 {
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+}
+
+.filter-card > h2 {
   margin: 0 0 16px;
 }
 
@@ -1971,7 +2006,7 @@ textarea {
   color: #83a38e;
 }
 
-.empty-card h3 {
+.empty-card > h2 {
   margin: 6px 0;
 }
 
@@ -2800,6 +2835,14 @@ footer .text-button {
   }
 }
 
+/* Below 720px the results column beside the filters is too narrow for "Chỉ đường Google Maps" on one line: one column,
+   as on phones. */
+@media (max-width: 720px) {
+  .point-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Phones. */
 @media (max-width: 640px) {
   /* Design tokens: uppercase 600 labels may drop to 11px on phones; nothing else goes below 12px. */
@@ -3145,7 +3188,7 @@ footer .text-button {
     padding: 18px;
   }
 
-  .filter-card h3 {
+  .filter-card > h2 {
     margin: 0;
   }
 
@@ -3193,8 +3236,9 @@ footer .text-button {
     padding: 24px 20px calc(20px + env(safe-area-inset-bottom));
   }
 
-  /* The grab handle, 36x4, centred in the sticky close strip. */
-  [data-slot=dialog-close-bar]::before {
+  /* The grab handle, 36x4, centred in the sticky close strip (in the top padding of the confirm sheet, which has no strip). */
+  [data-slot=dialog-close-bar]::before,
+  [data-slot=alert-dialog-content]::before {
     content: '';
     position: absolute;
     top: 8px;

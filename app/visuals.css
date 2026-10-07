@@ -816,7 +816,9 @@ body {
 .shutter,
 .city-details summary,
 [data-slot=select-trigger],
-[data-slot=dialog-close] {
+[data-slot=dialog-close],
+[data-slot=alert-dialog-action],
+[data-slot=alert-dialog-cancel] {
   transition: scale var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
@@ -837,7 +839,9 @@ body {
 .shutter:not(:disabled):active,
 .city-details summary:active,
 [data-slot=select-trigger]:not(:disabled):active,
-[data-slot=dialog-close]:active {
+[data-slot=dialog-close]:active,
+[data-slot=alert-dialog-action]:active,
+[data-slot=alert-dialog-cancel]:active {
   scale: var(--press-scale);
   transition-duration: var(--dur-instant);
   transition-timing-function: var(--ease-press);
