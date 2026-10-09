@@ -114,14 +114,17 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
     ctx.drawImage(element, 0, 0, canvas.width, canvas.height);
     canvas.toBlob(blob => {
       if (!alive.current || cameraSeq !== cameraGeneration.current) return;
-      if (blob) void selectImage(new File([blob], 'anh-chup-rac.png', {type: 'image/png'}));
+      if (blob) void selectImage(new File([blob], 'anh-chup-rac.jpg', {type: 'image/jpeg'}));
       else setCameraError('Chưa chụp được ảnh. Hãy thử lại.');
-    }, 'image/png');
+    }, 'image/jpeg', 0.92);
   }
   async function recognize() {
     if (!image || !consent || !canRecognize || recognizing || processing || cameraState !== 'idle') return;
     request.current?.abort(); const controller = new AbortController(); request.current = controller;
-    const seq = ++generation.current; const timer = setTimeout(() => controller.abort(), 35000);
+    const seq = ++generation.current; const timer = setTimeout(() => controller.abort(), 45000);
+    // The first recognition after a quiet spell can take much longer while the AI model starts; say so instead of
+    // leaving a bare spinner.
+    const slow = setTimeout(() => { if (alive.current && seq === generation.current) setStatus('AI vẫn đang xử lý… Lần đầu có thể mất đến 30 giây.'); }, 8000);
     setRecognizing(true); setCandidates([]); setError(''); setStatus('Đang nhận diện ảnh…');
     try {
       const result = await api<{status: string; candidates: Candidate[]}>('/api/recognize', {consent: true, image}, controller.signal);
@@ -130,7 +133,7 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
       setStatus(result.status === 'blurry' ? 'Ảnh chưa rõ. Hãy chụp gần hơn, đủ sáng và không rung.' : result.candidates.length ? 'Đã nhận diện. Chọn đúng vật để kiểm tra cách xử lý.' : 'Chưa xác định được vật trong ảnh. Thử ảnh khác hoặc tìm tên bên dưới.');
     } catch (e) {
       if (alive.current && seq === generation.current) { setStatus(''); setError(controller.signal.aborted ? 'Nhận diện quá lâu. Hãy thử lại hoặc tìm bằng tên.' : (e as Error).message); }
-    } finally { clearTimeout(timer); if (alive.current && seq === generation.current) setRecognizing(false); }
+    } finally { clearTimeout(timer); clearTimeout(slow); if (alive.current && seq === generation.current) setRecognizing(false); }
   }
   function clearImage() { invalidate(); setProcessing(false); setImage(''); setFileName(''); setStatus(''); setError(''); setCandidates([]); setConsent(false); }
   const choices = manual.trim() ? searchItems(items, manual).slice(0, 5) : [];

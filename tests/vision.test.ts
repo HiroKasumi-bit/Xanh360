@@ -9,6 +9,9 @@ import {WORKERS_AI_MODEL} from '../lib/vision';
 function chunk(type:string,data:number[]){const len=data.length;return [len>>>24,(len>>>16)&255,(len>>>8)&255,len&255,...[...type].map(c=>c.charCodeAt(0)),...data,0,0,0,0]}
 const png=Uint8Array.from([137,80,78,71,13,10,26,10,...chunk('IHDR',[0,0,0,1,0,0,0,1,8,2,0,0,0]),...chunk('IDAT',[120,156,99,248,15,0,1,1,1,0]),...chunk('IEND',[])]);
 const image=Buffer.from(png).toString('base64');
+// A structurally valid 672×504 JPEG: SOI, APP0 (JFIF), APP1 (EXIF metadata, must be dropped), DQT, SOF0, DHT, SOS, data, EOI.
+const seg=(marker:number,data:number[])=>[0xff,marker,(data.length+2)>>8,(data.length+2)&255,...data];
+const jpegBytes=(w=672,h=504,extra:number[]=[])=>Uint8Array.from([0xff,0xd8,...seg(0xe0,[74,70,73,70,0,1,1,0,0,1,0,1,0,0]),...seg(0xe1,[69,120,105,102,0,0,77,77]),...seg(0xdb,[0,...Array(64).fill(1)]),...seg(0xc0,[8,h>>8,h&255,w>>8,w&255,1,1,0x11,0]),...seg(0xc4,[0,...Array(16).fill(0)]),...seg(0xda,[1,1,0,0,63,0]),0x12,0x34,...extra,0xff,0xd9]);
 const req=(data:unknown)=>new Request('https://app.test/api/recognize',{method:'POST',headers:{'Content-Type':'application/json',origin:'https://app.test'},body:JSON.stringify(data)});
 type RunArgs={messages:{role:string;content:string|{type:string;text?:string;image_url?:{url:string}}[]}[];response_format:{type:string;json_schema:{properties:{candidates:{items:{properties:{itemId:{enum:string[]}}}}}}}};
 const run=vi.fn<(model:string,input:RunArgs,options?:{signal?:AbortSignal})=>Promise<unknown>>();
@@ -98,6 +101,22 @@ describe('Nhận diện ảnh qua Workers AI',()=>{
  });
  it('ảnh không phải PNG hợp lệ bị từ chối trước khi gọi AI',async()=>{
   expect((await recognize(req({consent:true,image:Buffer.from('not a png').toString('base64')}))).status).toBe(400);
+  expect(run).not.toHaveBeenCalled();
+ });
+ it('nhận ảnh JPEG, bỏ EXIF trước khi gửi AI',async()=>{
+  run.mockResolvedValue({response:{status:'empty',candidates:[]}});
+  const jpeg=Buffer.from(jpegBytes()).toString('base64');
+  expect((await recognize(req({consent:true,image:jpeg}))).status).toBe(200);
+  const user=run.mock.calls[0][1].messages.find(m=>m.role==='user')!.content as {type:string;image_url?:{url:string}}[];
+  const sent=user.find(p=>p.type==='image_url')!.image_url!.url;
+  expect(sent.startsWith('data:image/jpeg;base64,')).toBe(true);
+  const bytes=Buffer.from(sent.split(',')[1],'base64');
+  expect(bytes.includes(Buffer.from('Exif'))).toBe(false);
+  expect(bytes.includes(Buffer.from('JFIF'))).toBe(true);
+ });
+ it('từ chối JPEG quá lớn hoặc bị cắt cụt trước khi gọi AI',async()=>{
+  expect((await recognize(req({consent:true,image:Buffer.from(jpegBytes(2000,1500)).toString('base64')}))).status).toBe(400);
+  expect((await recognize(req({consent:true,image:Buffer.from(jpegBytes().slice(0,-2)).toString('base64')}))).status).toBe(400);
   expect(run).not.toHaveBeenCalled();
  });
  it('adapter HTTPS riêng được ưu tiên khi đã cấu hình',async()=>{

@@ -28,12 +28,12 @@ describe('Ảnh: kiểm tra tệp và chuẩn hóa cục bộ',()=>{
  it('từ chối HEIC với chỉ dẫn đổi sang JPEG',()=>{expect(()=>validateImageFile({name:'photo.heic',size:100,type:'image/heic'})).toThrow('JPEG')});
  it('không tin đuôi ảnh khi MIME là loại khác',()=>{expect(()=>validateImageFile({name:'photo.jpg',size:100,type:'text/html'})).toThrow('Định dạng')});
  it.each([0,16*1024*1024])('từ chối tệp có kích thước %s',size=>{expect(()=>validateImageFile({name:'photo.png',size,type:'image/png'})).toThrow()});
- it('giảm kích thước, xuất PNG và giải phóng bitmap sau xử lý',async()=>{
-  const close=vi.fn();const draw=vi.fn();const canvas={width:0,height:0,getContext:()=>({drawImage:draw}),toDataURL:vi.fn(()=> 'data:image/png;base64,YWJj')};
+ it('giảm kích thước, xuất JPEG và giải phóng bitmap sau xử lý',async()=>{
+  const close=vi.fn();const draw=vi.fn();const canvas={width:0,height:0,getContext:()=>({drawImage:draw,fillRect:vi.fn(),fillStyle:''}),toDataURL:vi.fn(()=> 'data:image/jpeg;base64,YWJj')};
   vi.stubGlobal('createImageBitmap',vi.fn(async()=>({width:4000,height:3000,close})));
   vi.stubGlobal('document',{createElement:()=>canvas});
   const result=await prepareImage(new File(['photo'],'photo.jpg',{type:'image/jpeg'}));
-  expect(result).toBe('YWJj');expect(canvas.width).toBe(672);expect(canvas.height).toBe(504);expect(draw).toHaveBeenCalledOnce();expect(close).toHaveBeenCalledOnce();
+  expect(result).toBe('YWJj');expect(canvas.toDataURL).toHaveBeenCalledWith('image/jpeg',0.85);expect(canvas.width).toBe(672);expect(canvas.height).toBe(504);expect(draw).toHaveBeenCalledOnce();expect(close).toHaveBeenCalledOnce();
  });
  it('giải phóng bitmap nếu ảnh vượt giới hạn giải mã',async()=>{const close=vi.fn();vi.stubGlobal('createImageBitmap',vi.fn(async()=>({width:10000,height:10000,close})));await expect(prepareImage(new File(['x'],'large.jpg',{type:'image/jpeg'}))).rejects.toThrow('48 triệu');expect(close).toHaveBeenCalledOnce()});
 });

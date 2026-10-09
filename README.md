@@ -77,7 +77,7 @@ Khi deploy lên Cloudflare, ảnh được nhận diện bằng **Cloudflare Wor
 Nếu cấu hình `VISION_ENDPOINT` (HTTPS do người vận hành tin cậy) và `VISION_API_KEY`, app dùng adapter này thay cho Workers AI. Adapter phải nhận JSON:
 
 ```json
-{"image":"BASE64_PNG","mimeType":"image/png","catalog":[{"id":"pin-aa","name":"Pin AA / AAA"}],"instruction":"..."}
+{"image":"BASE64_JPEG","mimeType":"image/jpeg","catalog":[{"id":"pin-aa","name":"Pin AA / AAA"}],"instruction":"..."}
 ```
 
 Trả JSON:
@@ -88,7 +88,7 @@ Trả JSON:
 
 `status` chỉ `ok`, `blurry`, `empty`. Tối đa 8 candidates. Chỉ itemId tồn tại được dùng. Không chấp nhận hướng dẫn xử lý hoặc URL từ mô hình. Kết nối nhà cung cấp AI cụ thể cần một adapter theo hợp đồng này; chưa kiểm thử với dịch vụ thật. Timeout 25 giây, tối đa 10 yêu cầu/IP/giờ. Cần bổ sung quota tổng nhà cung cấp trước khi mở công khai quy mô lớn.
 
-Browser giải mã JPEG/PNG/WebP, giới hạn 15 MB và 48 triệu pixel đầu vào, resize về cạnh dài 672px và xuất PNG để loại metadata. Server chỉ chấp nhận PNG cấu trúc được hỗ trợ, tối đa 0,6 triệu pixel và 1,5 MB, loại ancillary chunks. Không lưu file/R2. Bộ kiểm tra PNG hiện kiểm tra cấu trúc và kích thước, chưa thay thế bộ giải mã ảnh đầy đủ; cần harden thêm trước khi bật dịch vụ công khai.
+Browser giải mã JPEG/PNG/WebP, giới hạn 15 MB và 48 triệu pixel đầu vào, resize về cạnh dài 672px và xuất JPEG (chất lượng 0,85, thường 40–100 KB, tải nhanh trên mạng di động) để loại metadata. Server chấp nhận JPEG (bỏ EXIF/XMP/ICC) hoặc PNG cấu trúc được hỗ trợ, tối đa 0,6 triệu pixel và 1,5 MB, loại ancillary chunks. Không lưu file/R2. Bộ kiểm tra PNG hiện kiểm tra cấu trúc và kích thước, chưa thay thế bộ giải mã ảnh đầy đủ; cần harden thêm trước khi bật dịch vụ công khai.
 
 ## Google Maps và vị trí
 
