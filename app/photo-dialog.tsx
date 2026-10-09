@@ -4,7 +4,7 @@ import {Camera, ImagePlus, Upload, RefreshCw, Trash2, Loader2, CheckCircle2, Sea
 import {Dialog, DialogContent, DialogDescription, DialogTitle} from '@/components/ui/dialog';
 import {api} from '@/lib/client';
 import {composedValue} from '@/lib/utils';
-import {prepareImage} from '@/lib/image';
+import {IMAGE_MAX_EDGE, prepareImage} from '@/lib/image';
 import {cameraErrorMessage, featureAllowed, stopCamera} from '@/lib/device-access';
 import {type Item, searchItems} from '@/lib/domain';
 import {durationToken, motionReduced} from './motion';
@@ -107,7 +107,7 @@ export default function PhotoDialog({initialMode, canRecognize, catalogReady, it
     if (!element || !element.videoWidth || !cameraReady) return;
     const cameraSeq = cameraGeneration.current;
     const canvas = document.createElement('canvas');
-    const ratio = Math.min(1, 1400 / Math.max(element.videoWidth, element.videoHeight));
+    const ratio = Math.min(1, IMAGE_MAX_EDGE / Math.max(element.videoWidth, element.videoHeight));
     canvas.width = Math.max(1, Math.round(element.videoWidth * ratio)); canvas.height = Math.max(1, Math.round(element.videoHeight * ratio));
     const ctx = canvas.getContext('2d');
     if (!ctx) { setCameraError('Chưa chụp được hình. Hãy dùng camera của thiết bị.'); return; }

@@ -34,6 +34,8 @@ const localBindingConfig = {
         },
       ]
     : [],
+  // Workers AI for image recognition (lib/vision.ts). Free daily allocation; no key needed.
+  ai: { binding: "AI" },
   r2_buckets: r2
     ? [
         {

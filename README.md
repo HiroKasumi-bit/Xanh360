@@ -19,7 +19,7 @@ Thiết lập một lần:
    - Tab *Variables*: `D1_DATABASE_ID`.
 6. Chạy lại workflow (**Actions → Kiểm tra và deploy lên Cloudflare → Run workflow**). Workflow áp dụng migration trong `drizzle/` rồi deploy Worker tên `xanh360`. Website có địa chỉ `https://xanh360.<tên-tài-khoản>.workers.dev`; có thể gắn tên miền riêng trong **Workers → xanh360 → Settings → Domains & Routes**.
 
-Biến tùy chọn (`VISION_ENDPOINT`, `VISION_API_KEY`, `ADMIN_EMAILS`) đặt ở **Workers → xanh360 → Settings → Variables and Secrets**, chọn loại *Secret* để lần deploy sau không xóa mất.
+Nhận diện ảnh dùng Workers AI miễn phí, không cần cấu hình thêm (xem mục "Nhận diện ảnh"). Biến tùy chọn (`VISION_ENDPOINT`, `VISION_API_KEY` cho adapter riêng, `ADMIN_EMAILS`) đặt ở **Workers → xanh360 → Settings → Variables and Secrets**, chọn loại *Secret* để lần deploy sau không xóa mất.
 
 **Quản trị:** trang `/admin` dựa vào đăng nhập ChatGPT do Sites cung cấp. Trên Cloudflare không có lớp đăng nhập này, nên Worker bỏ qua các header `oai-authenticated-user-*` do khách gửi và trang quản trị luôn yêu cầu đăng nhập (không ai vào được). Muốn dùng quản trị trên Cloudflare cần thêm cơ chế xác thực riêng, ví dụ Cloudflare Access. Chỉ đặt `TRUST_PLATFORM_AUTH_HEADERS=true` khi chạy sau một proxy đáng tin tự gắn các header đó (như ChatGPT Sites).
 
@@ -61,11 +61,20 @@ Danh mục seed được nạp từ `lib/seed.ts` và hợp nhất với phiên 
 
 Nháp chỉ lưu ở `drafts`, không ảnh hưởng tra cứu. Xuất bản dùng kiểm tra phiên bản để tránh ghi đè người khác, cùng nhật ký before/after. Khôi phục tạo nháp để rà soát trước khi xuất bản lại. Chỉ quản trị viên có thể nhập nguồn mới, đánh dấu xác nhận trực tiếp và xuất bản.
 
-## Nhận diện ảnh tùy chọn
+## Nhận diện ảnh
 
-Mặc định chưa cấu hình, tra cứu tên vẫn hoạt động. Không có kết quả AI giả.
+Khi deploy lên Cloudflare, ảnh được nhận diện bằng **Cloudflare Workers AI** (model `@cf/meta/llama-4-scout-17b-16e-instruct`, binding `AI` khai báo trong `vite.config.ts`, mã ở `lib/vision.ts`). Không cần API key. Gói Workers Free có hạn mức miễn phí mỗi ngày (reset 00:00 UTC, tức 7 giờ sáng giờ Việt Nam); hết hạn mức thì yêu cầu bị từ chối chứ không tính tiền, và app báo người dùng tra cứu bằng tên. Nếu nâng lên gói Workers Paid, phần vượt hạn mức sẽ tính phí theo Neurons, nên cần đặt giới hạn trước.
 
-Cấu hình `VISION_ENDPOINT` (HTTPS do người vận hành tin cậy) và `VISION_API_KEY`. Adapter phải nhận JSON:
+- Ảnh chỉ được gửi khi người dùng tích đồng ý và bấm "Nhận diện ảnh"; không lưu ảnh.
+- Mô hình chỉ chọn món trong danh mục (gửi kèm `id: tên` các vật dụng đang hoạt động). ID không có trong danh mục bị loại; hướng dẫn xử lý và điểm tiếp nhận luôn lấy từ quy tắc có nguồn.
+- Giới hạn 10 lần/IP/giờ và tổng cộng 100 lần/ngày cho cả website (đặt biến `IMAGE_DAILY_LIMIT` để đổi), timeout 25 giây. Mỗi lần dùng khoảng 60–90 Neurons, nên 100 lần nằm trong hạn mức miễn phí 10.000 Neurons/ngày.
+- Ảnh được thu về cạnh dài 672px trên thiết bị trước khi gửi, để Worker xử lý trong giới hạn CPU khoảng 10 ms của gói Free.
+- Nếu bước deploy báo `Authentication error` sau khi thêm AI, thêm quyền **Account → Workers AI → Read** cho API token.
+- Khi chạy cục bộ (`pnpm run start`), Workers AI cần đăng nhập Cloudflare; không có thì nút nhận diện báo lỗi và tra cứu tên vẫn hoạt động.
+
+### Adapter HTTPS riêng (tùy chọn)
+
+Nếu cấu hình `VISION_ENDPOINT` (HTTPS do người vận hành tin cậy) và `VISION_API_KEY`, app dùng adapter này thay cho Workers AI. Adapter phải nhận JSON:
 
 ```json
 {"image":"BASE64_PNG","mimeType":"image/png","catalog":[{"id":"pin-aa","name":"Pin AA / AAA"}],"instruction":"..."}
@@ -79,7 +88,7 @@ Trả JSON:
 
 `status` chỉ `ok`, `blurry`, `empty`. Tối đa 8 candidates. Chỉ itemId tồn tại được dùng. Không chấp nhận hướng dẫn xử lý hoặc URL từ mô hình. Kết nối nhà cung cấp AI cụ thể cần một adapter theo hợp đồng này; chưa kiểm thử với dịch vụ thật. Timeout 25 giây, tối đa 10 yêu cầu/IP/giờ. Cần bổ sung quota tổng nhà cung cấp trước khi mở công khai quy mô lớn.
 
-Browser giải mã JPEG/PNG/WebP, giới hạn 15 MB và 48 triệu pixel đầu vào, resize về 1400px và xuất PNG để loại metadata. Server chỉ chấp nhận PNG cấu trúc được hỗ trợ, tối đa 4 triệu pixel và 6MB, loại ancillary chunks. Không lưu file/R2. Bộ kiểm tra PNG hiện kiểm tra cấu trúc và kích thước, chưa thay thế bộ giải mã ảnh đầy đủ; cần harden thêm trước khi bật dịch vụ công khai.
+Browser giải mã JPEG/PNG/WebP, giới hạn 15 MB và 48 triệu pixel đầu vào, resize về cạnh dài 672px và xuất PNG để loại metadata. Server chỉ chấp nhận PNG cấu trúc được hỗ trợ, tối đa 0,6 triệu pixel và 1,5 MB, loại ancillary chunks. Không lưu file/R2. Bộ kiểm tra PNG hiện kiểm tra cấu trúc và kích thước, chưa thay thế bộ giải mã ảnh đầy đủ; cần harden thêm trước khi bật dịch vụ công khai.
 
 ## Google Maps và vị trí
 
@@ -110,7 +119,7 @@ Nguồn và ngày kiểm tra nằm trong `lib/seed.ts`, hiển thị trong kết
 
 - Chưa có quy tắc thu gom riêng từng phường/xã hoặc nguồn pháp lý mới hơn được tự đồng bộ.
 - Chưa có tọa độ, lịch hay xác nhận trực tiếp của các điểm.
-- Nhận diện ảnh cần adapter và khóa thật.
+- Nhận diện ảnh dùng Workers AI miễn phí; độ chính xác với ảnh thật chưa được kiểm thử trên tài khoản Cloudflare thật.
 - Chưa có polygon kiểm tra vị trí hoặc Google Maps API.
 - Một số tên cũ có ánh xạ, chưa phải bộ chuyển đổi toàn bộ địa chỉ.
 - Bản riêng tư để chủ sở hữu kiểm tra; chưa mở công khai và chưa được chứng nhận sẵn sàng production.
@@ -139,4 +148,4 @@ Widget trên header tự gọi GET `/api/environment/city`, không GPS hoặc ch
 - `app/location-status.tsx`: hiển thị vị trí, độ chính xác ước tính, xóa vị trí và mở tab riêng nếu khung nhúng hạn chế quyền. Không vượt quyền của trình duyệt/khung cha. Chọn khu vực thủ công xóa tọa độ cũ và đặt lại phạm vi toàn khu vực.
 - Bộ giải mã ảnh có fallback HTMLImageElement cho trình duyệt không giải mã được bằng createImageBitmap. HEIC chưa hỗ trợ trực tiếp; UI hướng dẫn xuất JPEG.
 - Giao diện mới giữ tra cứu tên, nguồn hướng dẫn, phản hồi, lịch sử cục bộ, điểm tiếp nhận, quản trị và widget môi trường. Không thay schema hoặc danh mục dữ liệu.
-- Cấu hình còn thiếu: `VISION_ENDPOINT` và `VISION_API_KEY` cho nhận diện tự động; `ADMIN_EMAILS` nếu cần quyền quản trị. Không có khóa dịch vụ mới hoặc mua dịch vụ trong đợt nâng cấp này.
+- Cấu hình còn thiếu: `ADMIN_EMAILS` nếu cần quyền quản trị. Không có khóa dịch vụ mới hoặc mua dịch vụ trong đợt nâng cấp này.

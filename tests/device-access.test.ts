@@ -33,7 +33,7 @@ describe('Ảnh: kiểm tra tệp và chuẩn hóa cục bộ',()=>{
   vi.stubGlobal('createImageBitmap',vi.fn(async()=>({width:4000,height:3000,close})));
   vi.stubGlobal('document',{createElement:()=>canvas});
   const result=await prepareImage(new File(['photo'],'photo.jpg',{type:'image/jpeg'}));
-  expect(result).toBe('YWJj');expect(canvas.width).toBe(1400);expect(canvas.height).toBe(1050);expect(draw).toHaveBeenCalledOnce();expect(close).toHaveBeenCalledOnce();
+  expect(result).toBe('YWJj');expect(canvas.width).toBe(672);expect(canvas.height).toBe(504);expect(draw).toHaveBeenCalledOnce();expect(close).toHaveBeenCalledOnce();
  });
  it('giải phóng bitmap nếu ảnh vượt giới hạn giải mã',async()=>{const close=vi.fn();vi.stubGlobal('createImageBitmap',vi.fn(async()=>({width:10000,height:10000,close})));await expect(prepareImage(new File(['x'],'large.jpg',{type:'image/jpeg'}))).rejects.toThrow('48 triệu');expect(close).toHaveBeenCalledOnce()});
 });
