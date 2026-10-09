@@ -10,11 +10,12 @@ function chunk(type:string,data:number[]){const len=data.length;return [len>>>24
 const png=Uint8Array.from([137,80,78,71,13,10,26,10,...chunk('IHDR',[0,0,0,1,0,0,0,1,8,2,0,0,0]),...chunk('IDAT',[120,156,99,248,15,0,1,1,1,0]),...chunk('IEND',[])]);
 const image=Buffer.from(png).toString('base64');
 const req=(data:unknown)=>new Request('https://app.test/api/recognize',{method:'POST',headers:{'Content-Type':'application/json',origin:'https://app.test'},body:JSON.stringify(data)});
-type RunArgs={messages:{role:string;content:string|{type:string;text?:string;image_url?:{url:string}}[]}[];response_format:{type:string}};
-const run=vi.fn<(model:string,input:RunArgs)=>Promise<unknown>>();
+type RunArgs={messages:{role:string;content:string|{type:string;text?:string;image_url?:{url:string}}[]}[];response_format:{type:string;json_schema:{properties:{candidates:{items:{properties:{itemId:{enum:string[]}}}}}}}};
+const run=vi.fn<(model:string,input:RunArgs,options?:{signal?:AbortSignal})=>Promise<unknown>>();
 
 beforeEach(()=>{sqlite.exec('DELETE FROM rate_limits');run.mockReset();env.AI={run}});
-afterEach(()=>{delete env.AI;delete env.VISION_ENDPOINT;delete env.VISION_API_KEY;vi.unstubAllGlobals()});
+afterEach(()=>{delete env.AI;delete env.VISION_ENDPOINT;delete env.VISION_API_KEY;delete env.IMAGE_DAILY_LIMIT;sqlite.exec('DELETE FROM records');vi.unstubAllGlobals()});
+const names=(r:{candidates:{itemId:string;label:string}[]})=>r.candidates.map(c=>c.itemId);
 
 describe('Nhận diện ảnh qua Workers AI',()=>{
  it('catalog báo có nhận diện khi có Workers AI, không có thì báo tắt',async()=>{
@@ -26,17 +27,23 @@ describe('Nhận diện ảnh qua Workers AI',()=>{
   run.mockResolvedValue({response:{status:'ok',candidates:[{itemId:'pin-aa',label:'Pin tiểu'},{itemId:'khong-co-that',label:'Vật bịa'},{itemId:'pin-aa',label:'Pin tiểu'},{itemId:'chai-nhua',label:'Chai nhựa'}]}});
   const r=await recognize(req({consent:true,image}));
   expect(r.status).toBe(200);
-  expect(await r.json()).toEqual({status:'ok',candidates:[{itemId:'pin-aa',label:'Pin tiểu'},{itemId:'chai-nhua',label:'Chai nhựa'}]});
-  const [model,input]=run.mock.calls[0];
+  const body=await r.json() as {status:string;candidates:{itemId:string;label:string}[]};
+  expect(body.status).toBe('ok');
+  expect(names(body)).toEqual(['pin-aa','chai-nhua']);
+  // People see the catalog's name, not the model's wording.
+  expect(body.candidates[0].label).toBe('Pin AA / AAA');
+  const [model,input,options]=run.mock.calls[0];
   expect(model).toBe(WORKERS_AI_MODEL);
+  expect(options?.signal).toBeInstanceOf(AbortSignal);
   expect(input.response_format.type).toBe('json_schema');
+  expect(input.response_format.json_schema.properties.candidates.items.properties.itemId.enum).toContain('pin-aa');
   const user=input.messages.find(m=>m.role==='user')!.content as {type:string;text?:string;image_url?:{url:string}}[];
   expect(user.find(p=>p.type==='image_url')?.image_url?.url).toBe(`data:image/png;base64,${image}`);
   expect(user.find(p=>p.type==='text')?.text).toContain('pin-aa: Pin AA / AAA');
  });
  it('đọc được JSON trả về dạng chuỗi, kể cả trong code fence',async()=>{
   run.mockResolvedValue({response:'```json\n{"status":"ok","candidates":[{"itemId":"carton","label":"Thùng giấy"}]}\n```'});
-  expect(await (await recognize(req({consent:true,image}))).json()).toEqual({status:'ok',candidates:[{itemId:'carton',label:'Thùng giấy'}]});
+  expect(names(await (await recognize(req({consent:true,image}))).json() as {candidates:{itemId:string;label:string}[]})).toEqual(['carton']);
  });
  it('ảnh mờ không trả gợi ý',async()=>{
   run.mockResolvedValue({response:{status:'blurry',candidates:[{itemId:'pin-aa',label:'Pin'}]}});
@@ -48,11 +55,42 @@ describe('Nhận diện ảnh qua Workers AI',()=>{
   expect(r.status).toBe(502);
   expect(await r.json()).toHaveProperty('error');
  });
- it('Workers AI lỗi hoặc hết lượt miễn phí trả 502 có hướng dẫn tra cứu tên',async()=>{
-  run.mockRejectedValue(new Error('4006: you have used up your daily free allocation'));
+ it('hết lượt miễn phí của Workers AI trả 429 và hẹn giờ mở lại',async()=>{
+  run.mockRejectedValue(new Error('AiError: 4006: you have used up your daily free allocation of 10,000 neurons'));
+  const r=await recognize(req({consent:true,image}));
+  expect(r.status).toBe(429);
+  expect(((await r.json()) as {error:string}).error).toContain('7 giờ sáng');
+ });
+ it('lỗi khác của Workers AI trả 502 có hướng dẫn tra cứu tên',async()=>{
+  run.mockRejectedValue(new Error('JSON Mode couldn\'t be met'));
   const r=await recognize(req({consent:true,image}));
   expect(r.status).toBe(502);
   expect(((await r.json()) as {error:string}).error).toContain('tra cứu bằng tên');
+ });
+ it('nhãn dài hoặc quá nhiều gợi ý được cắt bớt, không làm hỏng cả kết quả',async()=>{
+  const many=['pin-aa','chai-nhua','carton','giay','vo-trai-cay','dien-thoai','chai-thuy-tinh','pin-9v','pin-aa'].map(itemId=>({itemId,label:'x'.repeat(300)}));
+  run.mockResolvedValue({response:{status:'ok',candidates:many}});
+  const r=await recognize(req({consent:true,image}));
+  expect(r.status).toBe(200);
+  expect(names(await r.json() as {candidates:{itemId:string;label:string}[]}).length).toBeLessThanOrEqual(8);
+ });
+ it('giới hạn chung mỗi ngày giữ trong lượt miễn phí, không gọi AI khi đã hết',async()=>{
+  env.IMAGE_DAILY_LIMIT='2';
+  run.mockResolvedValue({response:{status:'empty',candidates:[]}});
+  const ip=(n:number)=>{const r=req({consent:true,image});r.headers.set('cf-connecting-ip','203.0.113.'+n);return r};
+  expect((await recognize(ip(1))).status).toBe(200);
+  expect((await recognize(ip(2))).status).toBe(200);
+  const third=await recognize(ip(3));
+  expect(third.status).toBe(429);
+  expect(run).toHaveBeenCalledTimes(2);
+ });
+ it('chỉ gửi vật dụng đang hoạt động trong danh mục cho AI',async()=>{
+  const item=(await (await catalog()).json() as {items:{id:string;name:string;active:boolean}[]}).items.find(i=>i.id==='pin-aa')!;
+  sqlite.prepare("INSERT INTO records (kind,id,payload,version,updated_at) VALUES ('items',?,?,1,?)").run(item.id,JSON.stringify({...item,active:false}),new Date().toISOString());
+  run.mockResolvedValue({response:{status:'empty',candidates:[]}});
+  await recognize(req({consent:true,image}));
+  const user=run.mock.calls[0][1].messages.find(m=>m.role==='user')!.content as {type:string;text?:string}[];
+  expect(user.find(p=>p.type==='text')?.text).not.toContain('pin-aa:');
  });
  it('không đồng ý gửi ảnh thì không gọi AI',async()=>{
   expect((await recognize(req({consent:false,image}))).status).toBe(400);
@@ -66,7 +104,7 @@ describe('Nhận diện ảnh qua Workers AI',()=>{
   env.VISION_ENDPOINT='https://vision.example.invalid/recognize';env.VISION_API_KEY='test-key';
   const fetchMock=vi.fn(async()=>new Response(JSON.stringify({status:'ok',candidates:[{itemId:'giay',label:'Giấy'}]})));
   vi.stubGlobal('fetch',fetchMock);
-  expect(await (await recognize(req({consent:true,image}))).json()).toEqual({status:'ok',candidates:[{itemId:'giay',label:'Giấy'}]});
+  expect(names(await (await recognize(req({consent:true,image}))).json() as {candidates:{itemId:string;label:string}[]})).toEqual(['giay']);
   expect(fetchMock).toHaveBeenCalledOnce();
   expect(run).not.toHaveBeenCalled();
  });
