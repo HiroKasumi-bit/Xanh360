@@ -13,12 +13,17 @@
       "skillPath": "skills/shadcn/SKILL.md",
       "computedHash": "da388f632cd83783c02967446e21941c9ee8291ccb43ba74c23f7d4e9b7c298c"
     },
-    "vibe-to-ui": {
-      "source": "MonkeyUI-dev/vibe-to-ui",
-      "ref": "v0.6.0",
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "skillPath": "SKILL.md",
-      "computedHash": "cfb62a5f0a9fbb93a68a478f14a9652cf028bc7d661548ec3e2d71a5d7938fbc"
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "webapp-testing": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/webapp-testing/SKILL.md",
+      "computedHash": "ad5b1fc52807e9afa4635e59218a026b164dc58b6c3f41b0f7c644dcd6ccf572"
     }
   }
 }
