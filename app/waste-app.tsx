@@ -7,7 +7,7 @@ import LocationStatus from './location-status';
 import {durationToken,easingToken,motionReduced} from './motion';
 import {useLocation} from '@/hooks/use-location';
 import {useCallback,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
-import {Recycle,Search,MapPin,Camera,BookOpen,History,Navigation,Leaf,Trash2,CheckCircle2,ShieldCheck,Info,ExternalLink,Loader2,LocateFixed,MessageSquare,ChevronRight,X,ImagePlus,ArrowUpRight,PackageCheck,Thermometer,Pill,Syringe,AlertTriangle,CupSoda,Newspaper,Cylinder,GlassWater,Apple,BatteryMedium,Plug,Sofa,Shapes,Smartphone,Laptop,Package,Lightbulb,Refrigerator,Flashlight,Bike} from 'lucide-react';
+import {Recycle,Search,MapPin,Camera,BookOpen,History,Navigation,Leaf,Trash2,CheckCircle2,ShieldCheck,Info,ExternalLink,Loader2,LocateFixed,MessageSquare,ChevronRight,X,ImagePlus,ArrowUpRight,PackageCheck,Thermometer,Pill,Syringe,AlertTriangle,CupSoda,Newspaper,Cylinder,GlassWater,Apple,BatteryMedium,Plug,Sofa,Shapes,Smartphone,Laptop,Package,Lightbulb,Refrigerator,Flashlight,Bike,Pen,Pencil,Watch,HardDrive,Umbrella,Backpack,ToyBrick,Droplet,Calculator,Flower2} from 'lucide-react';
 import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
@@ -21,7 +21,7 @@ const icons={recycle:Recycle,organic:Leaf,special:PackageCheck,residual:Trash2,u
 const groupCategories:Record<string,Category>={plastic:'recycle',paper:'recycle',metal:'recycle',glass:'recycle',organic:'organic',battery:'special',electronic:'special',chemical:'special',bulky:'unknown',other:'unknown'};
 // Item glyphs show what the thing is (by material group), and the tile colour shows how it is handled. Only the chemical group, which can hold hazardous substances, carries the warning triangle; everyday items such as phones or batteries get their own glyph.
 const groupIcons:Record<Item['group'],typeof Recycle>={plastic:CupSoda,paper:Newspaper,metal:Cylinder,glass:GlassWater,organic:Apple,battery:BatteryMedium,electronic:Plug,chemical:AlertTriangle,bulky:Sofa,other:Shapes};
-const itemIcons:Record<string,typeof Recycle>={'dien-thoai':Smartphone,'may-tinh-bang':Smartphone,laptop:Laptop,carton:Package,'hop-pizza':Package,la:Leaf,'co-cat':Leaf,'den-led':Lightbulb,'den-pin':Flashlight,'tu-lanh':Refrigerator,'xe-dap':Bike};
+const itemIcons:Record<string,typeof Recycle>={'dien-thoai':Smartphone,'may-tinh-bang':Smartphone,laptop:Laptop,carton:Package,'hop-pizza':Package,la:Leaf,'co-cat':Leaf,'den-led':Lightbulb,'den-pin':Flashlight,'tu-lanh':Refrigerator,'xe-dap':Bike,'but-bi':Pen,'but-da':Pen,'but-chi':Pencil,'dong-ho':Watch,'usb-the-nho':HardDrive,'o-du':Umbrella,'tui-xach':Backpack,'do-choi':ToyBrick,'dau-an-thai':Droplet,'may-tinh-cam-tay':Calculator,'hoa-tuoi':Flower2};
 function ItemGlyph({item}:{item:Item}){const C=item.id.startsWith('nhiet-ke')?Thermometer:['thuoc-het-han','vi-thuoc','lo-thuoc'].includes(item.id)?Pill:['kim-tiem','but-tiem-insulin','kim-chich-mau'].includes(item.id)?Syringe:itemIcons[item.id]??groupIcons[item.group];return <C/>}
 function ItemIcon({item}:{item:Item}){const category=item.special?'special':groupCategories[item.group];return <span className={'item-icon '+category}><ItemGlyph item={item}/></span>}
 function LinkText({text}:{text:string}){const i=text.trimEnd().lastIndexOf(' ');return <>{text.slice(0,i+1)}<span className="nowrap">{text.slice(i+1).trim()}<ExternalLink aria-hidden="true"/></span></>}
