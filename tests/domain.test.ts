@@ -21,7 +21,7 @@ it('Không có nguồn thì không áp dụng',()=>{const c=structuredClone(seed
 });
 describe('Điểm tiếp nhận',()=>{
 it('Nguồn website không phải xác nhận trực tiếp',()=>{const r=findPoints(seed,query,now);expect(r.verified.length).toBe(0);expect(r.confirm.length).toBeGreaterThan(0)});
-it('Không gán khoảng cách khi thiếu tọa độ',()=>expect(findPoints(seed,{...query,position:{lat:10.8,lng:106.7}},now).confirm.every(p=>p.km===null)).toBe(true));
+it('Không gán khoảng cách khi thiếu tọa độ',()=>expect(findPoints(seed,{...query,position:{lat:10.8,lng:106.7}},now).confirm.filter(p=>p.point.latitude===null).every(p=>p.km===null)).toBe(true));
 it('Không suy từ pin ra mọi loại rác',()=>expect(findPoints(seed,{...query,itemId:'kim-tiem'},now).confirm).toHaveLength(0));
 it('Vật hỏng và doanh nghiệp không vượt điều kiện',()=>{expect(findPoints(seed,{...query,intact:false},now).confirm).toHaveLength(0);expect(findPoints(seed,{...query,audience:'business'},now).confirm).toHaveLength(0)});
 it('Điểm ngoài địa bàn, tạm dừng, hết hạn, demo bị loại',()=>{for(const patch of [{areaId:'outside'},{status:'paused' as const},{validTo:'2025-01-01'},{demo:true}]){const c=structuredClone(seed);c.points=c.points.map(p=>({...p,...patch}));expect(findPoints(c,query,now).confirm).toHaveLength(0)}});
@@ -29,7 +29,7 @@ it('Giới hạn số lượng',()=>{const c=structuredClone(seed);c.points.forE
 it('Loại từ chối và tiếp nhận hết hạn',()=>{const c=structuredClone(seed);c.points.forEach(p=>p.acceptance.forEach(a=>a.status='rejected'));expect(findPoints(c,query,now).confirm).toHaveLength(0)});
 it('Điểm gần không nhận vẫn bị loại',()=>{const c=structuredClone(seed);c.points[0].latitude=10.8;c.points[0].longitude=106.7;c.points[0].acceptance[0].status='rejected';expect(findPoints(c,{...query,position:{lat:10.8,lng:106.7}},now).confirm.some(x=>x.point.id===c.points[0].id)).toBe(false)});
 it('Dịch vụ đến lấy xét vùng phục vụ',()=>{const c=structuredClone(seed);c.points=[{...c.points[0],kind:'pickup',serviceAreaIds:['sai-gon']}];expect(findPoints(c,{...query,areaId:'sai-gon'},now).confirm).toHaveLength(1);expect(findPoints(c,{...query,areaId:'con-dao'},now).confirm).toHaveLength(0)});
-it('Mở Google Maps đúng đích và API',()=>{const p=seed.points[0];const u=new URL(mapsDirection(p));expect(u.searchParams.get('api')).toBe('1');expect(u.searchParams.get('destination')).toContain(p.address)});
+it('Mở Google Maps đúng đích và API',()=>{const p=seed.points.find(x=>x.id==='phu-nhuan')!;const u=new URL(mapsDirection(p));expect(u.searchParams.get('api')).toBe('1');expect(u.searchParams.get('destination')).toContain('145/9 Nguyễn Văn Trỗi')});
 it('Đường chim bay hợp lý',()=>{expect(haversine({lat:0,lng:0},{lat:0,lng:1})).toBeCloseTo(111.2,0)});
 });
 describe('Ảnh',()=>{it('Chặn file giả',()=>expect(()=>sanitizePng(new Uint8Array(100))).toThrow());it('Chặn dung lượng quá lớn',()=>expect(()=>sanitizePng(new Uint8Array(7*1024*1024))).toThrow())});
