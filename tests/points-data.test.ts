@@ -23,30 +23,35 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
     }
   });
 
-  it('điểm có nguồn chính thức + tọa độ khớp thì đã xác nhận; điểm thiếu tọa độ vẫn hiện kèm số điện thoại', () => {
+  it('cả 4 điểm có nguồn chính thức + tọa độ khớp nên đã xác nhận, kèm hotline', () => {
     const r = findPoints(seed, query, now);
-    expect(r.verified.map(x => x.point.id).sort()).toEqual(['mega-an-phu', 'mega-binh-phu', 'nhieu-loc']);
-    for (const x of r.verified) expect(x.point.coordinateSource, x.point.id).toMatch(/^OpenStreetMap (way|node) \d+/);
-    expect(r.confirm.map(x => x.point.id)).toEqual(['phu-nhuan']);
-    for (const x of [...r.verified, ...r.confirm]) expect(x.point.phone).toBe('0933 882 205');
+    expect(r.verified.map(x => x.point.id).sort()).toEqual(['mega-an-phu', 'mega-binh-phu', 'nhieu-loc', 'phu-nhuan']);
+    for (const x of r.verified) {
+      expect(x.point.coordinateSource, x.point.id).toMatch(/^OpenStreetMap/);
+      expect(x.point.phone).toBe('0933 882 205');
+    }
+    expect(r.confirm).toHaveLength(0);
   });
 
-  it('link Maps dùng tọa độ khi có, nếu không thì địa chỉ đầy đủ; không theo tên chương trình', () => {
+  it('link Maps tìm theo tên hoặc địa chỉ đầy đủ để Google hiện đúng thẻ địa điểm; không theo tên chương trình', () => {
     for (const p of seed.points) {
       const u = new URL(mapsPlace(p));
       expect(u.origin + u.pathname).toBe('https://www.google.com/maps/search/');
       expect(u.searchParams.get('api')).toBe('1');
       const q = u.searchParams.get('query')!;
       expect(q, p.id).not.toMatch(/VNTC|Việt Nam Tái Chế/);
-      expect(q, p.id).toBe(p.latitude !== null ? `${p.latitude},${p.longitude}` : p.mapsQuery);
+      expect(q, p.id).toBe(p.mapsQuery);
+      expect(q, p.id).toMatch(/Thành phố Hồ Chí Minh$/);
     }
-    const phuNhuan = new URL(mapsPlace(seed.points.find(p => p.id === 'phu-nhuan')!));
-    expect(phuNhuan.searchParams.get('query')).toBe('145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, Thành phố Hồ Chí Minh');
+    expect(new URL(mapsPlace(seed.points.find(p => p.id === 'nhieu-loc')!)).searchParams.get('query')).toBe(
+      'UBND Phường Nhiêu Lộc, 82 Bà Huyện Thanh Quan, Thành phố Hồ Chí Minh',
+    );
   });
 
-  it('có tọa độ thì link Maps dùng tọa độ', () => {
-    const p = {...seed.points[0], latitude: 10.8, longitude: 106.75};
-    expect(new URL(mapsPlace(p)).searchParams.get('query')).toBe('10.8,106.75');
+  it('không có tên/địa chỉ tìm kiếm thì link Maps dùng tọa độ, rồi tới địa chỉ', () => {
+    const p = {...seed.points[0], mapsQuery: undefined};
+    expect(new URL(mapsPlace({...p, latitude: 10.8, longitude: 106.75})).searchParams.get('query')).toBe('10.8,106.75');
+    expect(new URL(mapsPlace({...p, latitude: null, longitude: null})).searchParams.get('query')).toBe(p.address);
   });
 
   it('nguồn chính thức + tọa độ + đang hoạt động thì được xác nhận; thiếu một điều kiện thì không', () => {
@@ -66,7 +71,7 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
   it('điểm Phú Nhuận theo danh sách hiện hành (145/9), không dùng địa chỉ cũ 22 Nguyễn Văn Trỗi', () => {
     const p = seed.points.find(x => x.id === 'phu-nhuan')!;
     expect(p.address).toMatch(/^145\/9 Nguyễn Văn Trỗi/);
-    expect(p.status).toBe('unconfirmed');
+    expect(p.note).toMatch(/22 Nguyễn Văn Trỗi/);
   });
 
   it('bản ghi điểm cũ trong D1 (không có trường mới) vẫn hợp lệ', () => {

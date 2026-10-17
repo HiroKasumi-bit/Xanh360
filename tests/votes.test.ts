@@ -109,6 +109,8 @@ describe('API xác nhận cộng đồng', () => {
   });
 
   it('điểm chưa có tọa độ kiểm chứng chưa nhận xác nhận; điểm không tồn tại trả 404', async () => {
+    const p = {...seed.points.find(x => x.id === 'phu-nhuan')!, latitude: null, longitude: null};
+    sqlite.prepare('INSERT INTO records (kind,id,payload,version,updated_at) VALUES (?,?,?,?,?)').run('points', p.id, JSON.stringify(p), 1, new Date().toISOString());
     expect((await post(vote({targetId: 'phu-nhuan'}))).status).toBe(409);
     expect((await post(vote({targetId: 'khong-ton-tai'}))).status).toBe(404);
   });
