@@ -8,6 +8,13 @@
       "when": 1791100550984,
       "tag": "0000_worried_puma",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1792251556701,
+      "tag": "0001_point_votes",
+      "breakpoints": true
     }
   ]
 }

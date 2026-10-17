@@ -1,5 +1,6 @@
 'use client';
 import {ExternalLink, Gift, Landmark, Navigation, Phone, PhoneCall, Recycle, Search, Tag} from 'lucide-react';
+import CommunityVotes from './community-votes';
 import {type PlaceType, type ReusePlace, placeMapsUrl, placesFor, scrapYardSearchUrl} from '@/lib/reuse-places';
 
 const typeIcons: Record<PlaceType, typeof Recycle> = {state: Landmark, brand: Tag, charity: Gift, scrap: Recycle};
@@ -93,6 +94,13 @@ function PlaceCard({place: p}: {place: ReusePlace}) {
           </a>
         )}
       </div>
+      {p.kind === 'fixed' && (
+        <CommunityVotes
+          kind="place"
+          targetId={p.id}
+          target={p.latitude != null && p.longitude != null ? {lat: p.latitude, lng: p.longitude} : null}
+        />
+      )}
       <p className="small reuse-sources">
         Nguồn:{' '}
         {p.sources.map((s, i) => (
