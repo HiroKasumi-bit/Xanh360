@@ -8,7 +8,7 @@ import PointCard from './point-card';
 import {durationToken,easingToken,motionReduced} from './motion';
 import {useLocation} from '@/hooks/use-location';
 import {useCallback,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
-import {Recycle,Search,MapPin,Camera,BookOpen,History,Leaf,Trash2,CheckCircle2,ShieldCheck,Info,ExternalLink,Loader2,LocateFixed,MessageSquare,ChevronRight,X,ImagePlus,ArrowUpRight,PackageCheck,Thermometer,Pill,Syringe,AlertTriangle,CupSoda,Newspaper,Cylinder,GlassWater,Apple,BatteryMedium,Plug,Sofa,Shapes,Smartphone,Laptop,Package,Lightbulb,Refrigerator,Flashlight,Bike} from 'lucide-react';
+import {Recycle,Search,MapPin,Camera,BookOpen,History,Navigation,Leaf,Trash2,CheckCircle2,ShieldCheck,Info,ExternalLink,Loader2,LocateFixed,MessageSquare,ChevronRight,X,ImagePlus,ArrowUpRight,PackageCheck,Thermometer,Pill,Syringe,AlertTriangle,CupSoda,Newspaper,Cylinder,GlassWater,Apple,BatteryMedium,Plug,Sofa,Shapes,Smartphone,Laptop,Package,Lightbulb,Refrigerator,Flashlight,Bike} from 'lucide-react';
 import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
