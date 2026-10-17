@@ -1,6 +1,7 @@
 import areaData from './areas.json';
 import {additionalItemDefs,additionalRules,additionalSources,materialDetails} from './catalog-expansion';
 import type {Catalog,Item,Rule,Source,Area,Point} from './domain';
+import {hcmPoints,pointSources} from './points-hcm';
 export const sources:Source[]=[
 ...additionalSources,
 {id:'epa-recycle',name:'US EPA · Vật liệu tái chế thông dụng',url:'https://www.epa.gov/recycle/how-do-i-recycle-common-recyclables',checkedAt:'2026-10-06',scope:'Nguyên tắc vật liệu; không phải quy định thu gom tại TP.HCM.'},
@@ -10,7 +11,8 @@ export const sources:Source[]=[
 {id:'vntc',name:'Việt Nam Tái Chế · Điểm thu hồi công bố',url:'https://vietnamrecycles.com/',checkedAt:'2026-10-04',scope:'Địa chỉ công bố trên website; chưa xác nhận trực tiếp giờ hoạt động.'},
 {id:'vntc-faq',name:'Việt Nam Tái Chế · Danh mục tiếp nhận',url:'https://vietnamrecycles.com/faq-vn',checkedAt:'2026-10-04',scope:'Danh mục điện tử và pin; phải liên hệ xác nhận tình trạng và số lượng.'},
 {id:'vntc-home',name:'Việt Nam Tái Chế · Dành cho hộ gia đình',url:'https://vietnamrecycles.com/cho-ho-gia-dinh',checkedAt:'2026-10-04',scope:'Hướng dẫn bàn giao điện tử và dữ liệu cá nhân.'},
-{id:'hcm-admin',name:'Cổng thông tin Chính phủ · Đơn vị hành chính TP.HCM',url:'https://xaydungchinhsach.chinhphu.vn/sap-xep-dvhc-danh-sach-168-xa-phuong-dac-khu-cua-thanh-pho-ho-chi-minh-119250623085031865.htm',checkedAt:'2026-10-04',scope:'Phạm vi hành chính theo Nghị quyết 1685/NQ-UBTVQH15; tên cũ chỉ hỗ trợ tra cứu.'}
+{id:'hcm-admin',name:'Cổng thông tin Chính phủ · Đơn vị hành chính TP.HCM',url:'https://xaydungchinhsach.chinhphu.vn/sap-xep-dvhc-danh-sach-168-xa-phuong-dac-khu-cua-thanh-pho-ho-chi-minh-119250623085031865.htm',checkedAt:'2026-10-04',scope:'Phạm vi hành chính theo Nghị quyết 1685/NQ-UBTVQH15; tên cũ chỉ hỗ trợ tra cứu.'},
+...pointSources,
 ];
 const defs:[string,string,Item['group'],string[],Item['questions'],boolean][]=[
 ...additionalItemDefs,
@@ -35,6 +37,5 @@ rule('electronic','electronic','special','Chương trình thu hồi thiết bị
 rule('chemical','chemical','special','Liên hệ đơn vị xử lý chuyên trách',['Giữ nhãn để đơn vị tiếp nhận xác định thành phần.','Hỏi hướng dẫn trước khi vận chuyển.'],['epa-hazard'],{},10,true,'Không trộn hóa chất, đổ xuống cống hoặc đốt.')
 ];
 export const areas:Area[]=[{id:'all',name:'Toàn TP. Hồ Chí Minh',aliases:['TP.HCM','Sài Gòn'],cityId:'hcm',sourceId:'hcm-admin',validFrom:'2025-07-01',validTo:null},...(areaData as Area[])];
-const accepted=['pin-aa','pin-cuc','pin-sac','dien-thoai','laptop','may-in','man-hinh','tivi','may-anh'];
-export const points:Point[]=[['mega-an-phu','MM Mega Market An Phú','Khu B, KĐT An Phú – An Khánh, Phường An Phú, TP.HCM','all'],['mega-binh-phu','MM Mega Market Bình Phú','Số 10 đường Bình Phú, Phường Bình Phú, TP.HCM','binh-phu'],['nhieu-loc','Điểm VNTC tại UBND Phường Nhiêu Lộc','82 Bà Huyện Thanh Quan, Phường Nhiêu Lộc, TP.HCM','nhieu-loc'],['phu-nhuan','Điểm VNTC tại KDC Phường Phú Nhuận','145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, TP.HCM','phu-nhuan']].map(([id,name,address,areaId])=>({id,name,address,originalAddress:address,areaId,scopeSourceId:'vntc',latitude:null,longitude:null,coordinateSource:'',placeId:'',phone:'',website:'https://vietnamrecycles.com/',kind:'fixed',serviceAreaIds:[],status:'unconfirmed',validTo:null,hours:'Chưa có giờ tiếp nhận được xác nhận.',fee:'Liên hệ xác nhận điều kiện tiếp nhận.',demo:false,acceptance:[{itemIds:accepted,status:'accepted',condition:'Website chương trình công bố tiếp nhận pin và các thiết bị điện tử trong danh mục. Cần xác nhận với chương trình trước khi mang tới, đặc biệt với thiết bị hỏng hoặc số lượng lớn.',sourceId:'vntc-faq',checkedAt:'2026-10-04',validTo:null,verification:'published',audience:'household',maxQuantity:null,intactOnly:true}]}));
+export const points:Point[]=hcmPoints;
 export const seed:Catalog={items,rules,points,sources,areas};

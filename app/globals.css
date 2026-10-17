@@ -1975,6 +1975,47 @@ textarea {
   margin-top: 18px;
 }
 
+/* Unconfirmed points: the call-ahead line is amber (collect-separately colours, 4.5:1 or more on its tint), with the
+   number right in it, so it reads before the buttons. */
+.call-ahead {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--amber-300);
+  border-radius: var(--r-md);
+  background: var(--amber-50);
+  color: var(--amber-700);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.call-ahead svg {
+  margin-top: 1px;
+  color: var(--amber-700);
+}
+
+.call-ahead b {
+  display: block;
+  color: var(--amber-700);
+  font-size: var(--fs-body);
+  font-weight: 700;
+}
+
+.call-ahead span {
+  color: #5f3a12;
+}
+
+.point-source {
+  margin: 12px 0 0;
+  color: var(--ink-3);
+}
+
+.point-source a {
+  text-decoration-line: underline;
+}
+
 .maps-fallback {
   padding: 20px 0;
   border-top: 1px solid var(--border);

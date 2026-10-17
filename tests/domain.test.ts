@@ -29,7 +29,7 @@ it('Giới hạn số lượng',()=>{const c=structuredClone(seed);c.points.forE
 it('Loại từ chối và tiếp nhận hết hạn',()=>{const c=structuredClone(seed);c.points.forEach(p=>p.acceptance.forEach(a=>a.status='rejected'));expect(findPoints(c,query,now).confirm).toHaveLength(0)});
 it('Điểm gần không nhận vẫn bị loại',()=>{const c=structuredClone(seed);c.points[0].latitude=10.8;c.points[0].longitude=106.7;c.points[0].acceptance[0].status='rejected';expect(findPoints(c,{...query,position:{lat:10.8,lng:106.7}},now).confirm.some(x=>x.point.id===c.points[0].id)).toBe(false)});
 it('Dịch vụ đến lấy xét vùng phục vụ',()=>{const c=structuredClone(seed);c.points=[{...c.points[0],kind:'pickup',serviceAreaIds:['sai-gon']}];expect(findPoints(c,{...query,areaId:'sai-gon'},now).confirm).toHaveLength(1);expect(findPoints(c,{...query,areaId:'con-dao'},now).confirm).toHaveLength(0)});
-it('Mở Google Maps đúng đích và API',()=>{const p=seed.points[0];const u=new URL(mapsDirection(p));expect(u.searchParams.get('api')).toBe('1');expect(u.searchParams.get('destination')).toContain(p.address)});
+it('Mở Google Maps đúng đích và API',()=>{const p=seed.points.find(x=>x.id==='nhieu-loc')!;const u=new URL(mapsDirection(p));expect(u.searchParams.get('api')).toBe('1');expect(u.searchParams.get('destination')).toContain('82 Bà Huyện Thanh Quan')});
 it('Đường chim bay hợp lý',()=>{expect(haversine({lat:0,lng:0},{lat:0,lng:1})).toBeCloseTo(111.2,0)});
 });
 describe('Ảnh',()=>{it('Chặn file giả',()=>expect(()=>sanitizePng(new Uint8Array(100))).toThrow());it('Chặn dung lượng quá lớn',()=>expect(()=>sanitizePng(new Uint8Array(7*1024*1024))).toThrow())});
