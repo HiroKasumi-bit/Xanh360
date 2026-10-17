@@ -49,7 +49,9 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
       <p className="small">
         {data.km !== null
           ? `${data.km.toFixed(1)} km theo đường chim bay`
-          : 'Chưa có tọa độ kiểm chứng nên chưa tính khoảng cách.'}
+          : p.latitude !== null
+            ? 'Bật vị trí để xem khoảng cách.'
+            : 'Chưa có tọa độ kiểm chứng nên chưa tính khoảng cách.'}
       </p>
       {!data.verified && (
         <div className="call-ahead" role="note">
@@ -114,7 +116,7 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
           <p>{p.fee}</p>
           <p className="small">
             {data.verified
-              ? `Đã đối chiếu nguồn chính thức và tọa độ${p.sourceCheckedAt ? ` (kiểm tra ${day(p.sourceCheckedAt)})` : ''}.`
+              ? `Đã đối chiếu danh sách chính thức và vị trí trên bản đồ${p.sourceCheckedAt ? ` (kiểm tra ${day(p.sourceCheckedAt)})` : ''}${p.coordinateSource ? `: ${p.coordinateSource}` : ''}. Giờ nhận tại điểm có thể thay đổi; gọi hỏi nếu mang nhiều đồ.`
               : `Chưa xác nhận trực tiếp: điểm có trong danh sách công bố nhưng chưa có tọa độ kiểm chứng hoặc xác nhận tại chỗ. Danh mục tiếp nhận kiểm tra ${day(data.acceptance.checkedAt)}.`}
           </p>
           {p.phone && (

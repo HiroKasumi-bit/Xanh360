@@ -23,27 +23,25 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
     }
   });
 
-  it('điểm không có tọa độ kiểm chứng thì không được ghi là đã xác nhận, nhưng vẫn hiện kèm số điện thoại', () => {
+  it('điểm có nguồn chính thức + tọa độ khớp thì đã xác nhận; điểm thiếu tọa độ vẫn hiện kèm số điện thoại', () => {
     const r = findPoints(seed, query, now);
-    expect(r.verified).toHaveLength(0);
-    expect(r.confirm).toHaveLength(seed.points.length);
-    for (const x of r.confirm) {
-      expect(x.point.latitude).toBeNull();
-      expect(x.point.phone).toMatch(/\d{3}/);
-    }
+    expect(r.verified.map(x => x.point.id).sort()).toEqual(['mega-an-phu', 'mega-binh-phu', 'nhieu-loc']);
+    for (const x of r.verified) expect(x.point.coordinateSource, x.point.id).toMatch(/^OpenStreetMap (way|node) \d+/);
+    expect(r.confirm.map(x => x.point.id)).toEqual(['phu-nhuan']);
+    for (const x of [...r.verified, ...r.confirm]) expect(x.point.phone).toBe('0933 882 205');
   });
 
-  it('link Maps tìm theo địa chỉ đầy đủ hoặc tên cửa hàng, không theo tên chương trình', () => {
+  it('link Maps dùng tọa độ khi có, nếu không thì địa chỉ đầy đủ; không theo tên chương trình', () => {
     for (const p of seed.points) {
       const u = new URL(mapsPlace(p));
       expect(u.origin + u.pathname).toBe('https://www.google.com/maps/search/');
       expect(u.searchParams.get('api')).toBe('1');
       const q = u.searchParams.get('query')!;
       expect(q, p.id).not.toMatch(/VNTC|Việt Nam Tái Chế/);
-      expect(q, p.id).toMatch(/Thành phố Hồ Chí Minh$/);
+      expect(q, p.id).toBe(p.latitude !== null ? `${p.latitude},${p.longitude}` : p.mapsQuery);
     }
-    const binhPhu = new URL(mapsPlace(seed.points.find(p => p.id === 'mega-binh-phu')!));
-    expect(binhPhu.searchParams.get('query')).toBe('MM Mega Market Bình Phú, 10 Bình Phú, Thành phố Hồ Chí Minh');
+    const phuNhuan = new URL(mapsPlace(seed.points.find(p => p.id === 'phu-nhuan')!));
+    expect(phuNhuan.searchParams.get('query')).toBe('145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, Thành phố Hồ Chí Minh');
   });
 
   it('có tọa độ thì link Maps dùng tọa độ', () => {
@@ -65,8 +63,10 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
     expect(make({...ok, sourceCheckedAt: '2025-01-01'}).verified).toHaveLength(0);
   });
 
-  it('các điểm nguồn mâu thuẫn hoặc chưa rõ tình trạng đã được bỏ ra', () => {
-    for (const id of ['mega-an-phu', 'nhieu-loc', 'phu-nhuan']) expect(seed.points.some(p => p.id === id), id).toBe(false);
+  it('điểm Phú Nhuận theo danh sách hiện hành (145/9), không dùng địa chỉ cũ 22 Nguyễn Văn Trỗi', () => {
+    const p = seed.points.find(x => x.id === 'phu-nhuan')!;
+    expect(p.address).toMatch(/^145\/9 Nguyễn Văn Trỗi/);
+    expect(p.status).toBe('unconfirmed');
   });
 
   it('bản ghi điểm cũ trong D1 (không có trường mới) vẫn hợp lệ', () => {
