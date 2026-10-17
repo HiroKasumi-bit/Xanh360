@@ -5,11 +5,12 @@ import type { Point, Source } from './domain';
 // - The current list is the "Địa điểm thu hồi" page, which already uses the ward names in force since 1 July 2025. The
 //   FAQ page still shows an older list (old district names, the District 4 point closed in March 2025, 22 Nguyễn Văn
 //   Trỗi for Phú Nhuận); where they differ, the "Địa điểm thu hồi" page wins.
-// - A point is confirmed only when its place on OpenStreetMap matches the name and address on that page; the OSM
-//   object is recorded in coordinateSource. 145/9 Nguyễn Văn Trỗi has no house number on the map (only the alley
-//   145), so that point keeps no coordinates and shows its phone number with the call-ahead line.
-// - The Maps link searches the coordinates, the full address or the store name, never the programme name, which is
-//   what sent "Điểm VNTC tại KDC Phường Phú Nhuận" to the wrong place.
+// - A point is confirmed only when its place on OpenStreetMap matches the name and address on that page and Google
+//   Maps opens the same place from the Maps link (checked 2026-10-17, all within about 100 m); the OSM object is
+//   recorded in coordinateSource. OSM has no house number 145/9 Nguyễn Văn Trỗi, so that point uses the mouth of
+//   alley 145, about 50 m from where Google Maps places 145/9.
+// - The Maps link searches the store name or full address (mapsQuery), so Google shows the place with its name, never
+//   the programme name, which is what sent "Điểm VNTC tại KDC Phường Phú Nhuận" to the wrong place.
 export const VNTC_HOTLINE = '0933 882 205';
 const LIST_URL = 'https://vietnamrecycles.com/gioi-thieu/dia-diem-thu-hoi';
 const CONTACT_URL = 'https://vietnamrecycles.com/lien-he';
@@ -112,7 +113,7 @@ const entries: Entry[] = [
     longitude: 106.6821931,
     coordinateSource: osm('way 987255743', 'Ủy ban nhân dân phường Nhiêu Lộc, 82 Bà Huyện Thanh Quan'),
     status: 'active',
-    mapsQuery: '82 Bà Huyện Thanh Quan, Phường Nhiêu Lộc, Thành phố Hồ Chí Minh',
+    mapsQuery: 'UBND Phường Nhiêu Lộc, 82 Bà Huyện Thanh Quan, Thành phố Hồ Chí Minh',
     note: '',
   },
   {
@@ -121,12 +122,12 @@ const entries: Entry[] = [
     address: '145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, TP.HCM',
     originalAddress: 'Trước đây: UBND Phường 17, 22 Nguyễn Văn Trỗi, Quận Phú Nhuận',
     areaId: 'phu-nhuan',
-    latitude: null,
-    longitude: null,
-    coordinateSource: '',
-    status: 'unconfirmed',
+    latitude: 10.7944225,
+    longitude: 106.6762581,
+    coordinateSource: `OpenStreetMap: đầu hẻm 145 Nguyễn Văn Trỗi (bản đồ chưa có số nhà 145/9); Google Maps đặt 145/9 cách đó khoảng 50 m, kiểm tra ${CHECKED}`,
+    status: 'active',
     mapsQuery: '145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, Thành phố Hồ Chí Minh',
-    note: 'Bản đồ chưa có số nhà 145/9 (trong hẻm 145 Nguyễn Văn Trỗi). Trang FAQ cũ của VNTC còn ghi 22 Nguyễn Văn Trỗi; địa chỉ hiện hành là 145/9.',
+    note: 'Trang FAQ cũ của VNTC còn ghi 22 Nguyễn Văn Trỗi; địa chỉ hiện hành là 145/9.',
   },
 ];
 

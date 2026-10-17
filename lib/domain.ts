@@ -45,9 +45,10 @@ export function classify(c:Catalog,itemId:string,areaId:string,answers:Answers,n
 }
 export function rulesOverlap(a:Rule,b:Rule){return a.id!==b.id&&a.status==='published'&&b.status==='published'&&a.areaId===b.areaId&&a.priority===b.priority&&((a.itemIds.length&&b.itemIds.length)?a.itemIds.some(x=>b.itemIds.includes(x)):a.group===b.group)&&!Object.keys({...a.conditions,...b.conditions}).some(k=>a.conditions[k as keyof Answers]!==undefined&&b.conditions[k as keyof Answers]!==undefined&&a.conditions[k as keyof Answers]!==b.conditions[k as keyof Answers])&&(!a.validTo||!b.validFrom||a.validTo>=b.validFrom)&&(!b.validTo||!a.validFrom||b.validTo>=a.validFrom)}
 export function haversine(a:{lat:number;lng:number},b:{lat:number;lng:number}){const rad=(n:number)=>n*Math.PI/180;const dlat=rad(b.lat-a.lat),dlng=rad(b.lng-a.lng);return 6371*2*Math.asin(Math.sqrt(Math.sin(dlat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dlng/2)**2))}
-// Maps links search the coordinates, else the full address or a store name (mapsQuery), never the programme's own label
-// ("Điểm VNTC tại …"), which Google matched to unrelated places.
-const mapsTarget=(p:Point)=>p.latitude!==null&&p.longitude!==null?`${p.latitude},${p.longitude}`:p.mapsQuery||p.address;
+// Maps links search the place's name or full address (mapsQuery) first, so Google opens its place card with the name
+// and details; then the coordinates; then the address. Never the programme's own label ("Điểm VNTC tại …"), which
+// Google matched to unrelated places. Coordinates still drive distance and the 200 m community check.
+const mapsTarget=(p:Point)=>p.mapsQuery||(p.latitude!==null&&p.longitude!==null?`${p.latitude},${p.longitude}`:p.address);
 export function mapsPlace(p:Point){const u=new URL('https://www.google.com/maps/search/');u.searchParams.set('api','1');u.searchParams.set('query',mapsTarget(p));if(p.placeId)u.searchParams.set('query_place_id',p.placeId);return u.toString()}
 export function mapsDirection(p:Point){const u=new URL('https://www.google.com/maps/dir/');u.searchParams.set('api','1');u.searchParams.set('destination',mapsTarget(p));if(p.placeId)u.searchParams.set('destination_place_id',p.placeId);return u.toString()}
 export function mapsSearch(item:string,area:string){const u=new URL('https://www.google.com/maps/search/');u.searchParams.set('api','1');u.searchParams.set('query',`điểm thu gom ${item} ${area} TP Hồ Chí Minh`);return u.toString()}
