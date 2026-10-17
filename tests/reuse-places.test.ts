@@ -25,25 +25,25 @@ describe('Điểm tái chế và quyên góp', () => {
     for (const p of reusePlaces.filter(p => p.phone)) expect(p.phone.replace(/\D/g, ''), p.id).toMatch(/^0\d{9,10}$/);
   });
 
-  it('chai nhựa có cả điểm nhà nước và ứng dụng ve chai, xếp theo thứ tự loại', () => {
-    const groups = placesFor('chai-nhua', reusePlaces, now);
-    expect(groups.map(g => g.type)).toEqual(['state', 'scrap']);
-    expect(groups[0].places.map(p => p.id)).toContain('mrf-tan-my');
+  it('chai nhựa có ứng dụng ve chai; sách có chương trình nhà nước; xếp theo thứ tự loại', () => {
+    expect(placesFor('chai-nhua', reusePlaces, now).map(g => g.type)).toEqual(['scrap']);
+    expect(placesFor('sach', reusePlaces, now).map(g => g.type)).toEqual(['state', 'scrap']);
   });
 
-  it('quần áo cũ có thương hiệu thu hồi và tổ chức quyên góp', () => {
-    const types = placesFor('quan-ao', reusePlaces, now).map(g => g.type);
-    expect(types).toEqual(['brand', 'charity']);
-  });
-
-  it('pin và đồ điện tử có chương trình thu hồi', () => {
-    expect(placesFor('pin-aa', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toContain('bitis-pin');
+  it('quần áo cũ có tổ chức quyên góp; đồ điện tử có thương hiệu thu hồi', () => {
+    expect(placesFor('quan-ao', reusePlaces, now).map(g => g.type)).toEqual(['charity']);
     expect(placesFor('laptop', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toContain('vntc-pickup');
   });
 
+  it('các mục địa chỉ, lịch hoặc tình trạng chưa rõ đã được bỏ ra', () => {
+    for (const id of ['mrf-tan-my', 'doi-rac-binh-tan', 're-uniqlo', 'bitis-pin', 'goodwill-vn'])
+      expect(reusePlaces.some(p => p.id === id), id).toBe(false);
+  });
+
   it('chương trình hết hạn không còn hiện', () => {
-    const later = new Date('2027-01-02T05:00:00Z');
-    expect(placesFor('chai-nhua', reusePlaces, later).flatMap(g => g.places.map(p => p.id))).not.toContain('mrf-tan-my');
+    const ended = [{...reusePlaces[0], validTo: '2026-12-31'}];
+    expect(placesFor('sach', ended, now)).toHaveLength(1);
+    expect(placesFor('sach', ended, new Date('2027-01-02T05:00:00Z'))).toHaveLength(0);
   });
 
   it('vật nguy hại hoặc rác còn lại không được gợi ý quyên góp', () => {
