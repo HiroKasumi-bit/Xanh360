@@ -724,6 +724,68 @@ header {
   color: var(--ink-3);
 }
 
+/* Which place the reading is for: "Vị trí của bạn" or "TP.HCM (chung)", a small line above the values. */
+.city-stack {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 5px 0;
+}
+
+.city-stack .city-readings {
+  padding: 0;
+}
+
+.city-scope {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.city-pm {
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+}
+
+.city-pm strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.city-scope-title,
+.local-overview h3 {
+  margin: 0 0 6px;
+  font-size: var(--fs-body);
+}
+
+.local-overview .city-point {
+  padding-top: 0;
+  border-bottom: 0;
+}
+
+.local-overview .text-button {
+  min-height: 44px;
+}
+
+/* At a single spot the AQI value and its level wrap one by one, so the phone chip stays at three short lines. */
+.city-widget.is-local .city-aqi {
+  display: contents;
+}
+
+/* Phones: the PM2.5 unit is read out but not drawn, so the level and PM2.5 share one line. */
+@media (max-width: 640px) {
+  .city-pm .unit {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
 .city-aqi {
   display: inline-flex;
   flex-wrap: wrap;
@@ -1975,6 +2037,47 @@ textarea {
   margin-top: 18px;
 }
 
+/* Unconfirmed points: the call-ahead line is amber (collect-separately colours, 4.5:1 or more on its tint), with the
+   number right in it, so it reads before the buttons. */
+.call-ahead {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--amber-300);
+  border-radius: var(--r-md);
+  background: var(--amber-50);
+  color: var(--amber-700);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.call-ahead svg {
+  margin-top: 1px;
+  color: var(--amber-700);
+}
+
+.call-ahead b {
+  display: block;
+  color: var(--amber-700);
+  font-size: var(--fs-body);
+  font-weight: 700;
+}
+
+.call-ahead span {
+  color: #5f3a12;
+}
+
+.point-source {
+  margin: 12px 0 0;
+  color: var(--ink-3);
+}
+
+.point-source a {
+  text-decoration-line: underline;
+}
+
 .maps-fallback {
   padding: 20px 0;
   border-top: 1px solid var(--border);
@@ -1984,6 +2087,163 @@ textarea {
 .maps-fallback a {
   margin-top: 10px;
   text-decoration: none;
+}
+
+/* Recycling and donation places under a result: one group per kind of organisation, each card with its call-ahead
+   line in the amber of "collect separately" (6.3:1 and more on its tint). */
+.reuse-places {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.reuse-places > h3 {
+  margin: 4px 0 6px;
+}
+
+.reuse-group h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 8px;
+  font-size: var(--fs-body);
+  color: var(--green-700);
+}
+
+.reuse-group h4 svg {
+  width: 18px;
+  height: 18px;
+}
+
+.reuse-card {
+  padding: 16px 18px;
+  margin: 10px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--paper-raised);
+}
+
+.reuse-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.reuse-kind {
+  color: var(--ink-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
+.reuse-card h5 {
+  margin: 8px 0 4px;
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+}
+
+.reuse-card > p {
+  margin: 4px 0;
+  font-size: var(--fs-small);
+}
+
+.reuse-call {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--amber-300);
+  border-radius: var(--r-md);
+  background: var(--amber-50);
+  color: #5f3a12;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.reuse-call svg {
+  margin-top: 1px;
+  color: var(--amber-700);
+}
+
+.reuse-call b {
+  display: block;
+  color: var(--amber-700);
+  font-size: var(--fs-body);
+}
+
+.reuse-sources {
+  margin-top: 12px;
+  color: var(--ink-3);
+}
+
+.reuse-sources a {
+  text-decoration-line: underline;
+}
+
+/* Community confirmation on a point card: status, last confirmation, and the two vote buttons (44px targets). */
+.community {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.community-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.community-status svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green-600);
+}
+
+.community > p {
+  margin: 6px 0 0;
+}
+
+.community-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.community-actions .btn-outline {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+.community-actions .btn-outline[aria-disabled=true] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.community-actions .btn-outline[aria-busy=true] {
+  cursor: progress;
+}
+
+.community-help {
+  color: var(--ink-3);
+}
+
+.community-message:empty {
+  display: none;
+}
+
+.community-message {
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.community-message.is-error {
+  color: var(--red-700);
 }
 
 /* History */
@@ -2506,6 +2766,79 @@ textarea {
   justify-content: center;
 }
 
+/* A recognised item is a full-width row whose right end is the call to action: a solid green pill (white on
+   --green-600 is 6.6:1) with an arrow, so "Xem hướng dẫn" reads as the next step, not as a faint caption. The whole
+   row is the button and stays at least 56px tall, well past the 44px touch target. */
+.recognition-controls .candidate-row {
+  width: 100%;
+  margin-inline: 0;
+  min-height: 56px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--cat-recycle-line);
+  border-radius: var(--r-md);
+  background: var(--paper-raised);
+}
+
+.recognition-controls .candidate-row + .candidate-row {
+  margin-top: -4px;
+}
+
+.candidate-row .candidate-check {
+  color: var(--green-500);
+}
+
+.candidate-row > span:nth-child(2) {
+  min-width: 0;
+}
+
+.candidate-row b {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.candidate-row small {
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.candidate-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 12px 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--green-600);
+  color: #fff;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.candidate-cta svg {
+  width: 18px;
+  height: 18px;
+  transition: translate var(--dur-base) var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .candidate-row:not(:disabled):hover .candidate-cta {
+    background: var(--green-700);
+  }
+
+  .candidate-row:not(:disabled):hover .candidate-cta svg {
+    translate: 3px 0;
+  }
+}
+
+.candidate-row:not(:disabled):active .candidate-cta {
+  background: var(--green-800);
+}
+
+
 .recognition-controls .consent {
   align-items: flex-start;
   font-size: var(--fs-caption);
@@ -2970,6 +3303,10 @@ footer .text-button {
   }
 
   .city-readings {
+    flex: 1;
+  }
+
+  .city-stack {
     flex: 1;
   }
 

@@ -1209,6 +1209,7 @@ body {
   transform: none;
 }
 
-:root[data-motion=reduced] .result-row:hover > svg:last-child {
+:root[data-motion=reduced] .result-row:hover > svg:last-child,
+:root[data-motion=reduced] .candidate-row:hover .candidate-cta svg {
   translate: none;
 }

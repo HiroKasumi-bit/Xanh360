@@ -10,7 +10,7 @@ const pointQuery = {itemId:'nhiet-ke-thuy-ngan',areaId:'all',quantity:1,audience
 describe('Danh mục mở rộng có thể tra cứu và có hướng dẫn', () => {
   it('thêm 72 món, không trùng mã hoặc tên với 48 món đang có', () => {
     expect(additionalItemDefs).toHaveLength(72);
-    expect(seed.items).toHaveLength(120);
+    expect(seed.items).toHaveLength(160);
     expect(new Set(seed.items.map(i=>i.id)).size).toBe(seed.items.length);
     expect(new Set(seed.items.map(i=>normalize(i.name))).size).toBe(seed.items.length);
   });

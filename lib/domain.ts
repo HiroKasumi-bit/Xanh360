@@ -14,7 +14,9 @@ export type Area=z.infer<typeof areaSchema>;
 export const ruleSchema=z.object({id:idSchema,name:txt.min(2),itemIds:z.array(idSchema).max(100),group:txt,areaId:txt.default('all'),conditions:z.record(z.enum(['clean','empty','intact']),z.boolean()),category:z.enum(categories),where:txt.min(3),steps:z.array(txt).min(1).max(8),avoid:txt,sourceIds:z.array(idSchema).min(1),priority:z.number().int().min(0).max(1000),version:z.number().int().min(1),status:z.enum(['draft','published','retired']),validFrom:z.string(),validTo:z.string().nullable(),special:z.boolean(),hazard:z.boolean().optional()}).refine(r=>!r.hazard||(r.special&&r.category==='special'&&r.itemIds.length>0&&r.conditions.intact===false),'Hướng dẫn sự cố phải gắn vật dụng cụ thể, thu gom riêng và tình trạng không nguyên vẹn.');
 export type Rule=z.infer<typeof ruleSchema>;
 export const acceptanceSchema=z.object({itemIds:z.array(idSchema).min(1),status:z.enum(['accepted','rejected','unknown']),condition:txt,sourceId:idSchema,checkedAt:z.string(),validTo:z.string().nullable(),verification:z.enum(['published','direct','unverified']),audience:z.enum(['household','business','both']),maxQuantity:z.number().positive().nullable(),intactOnly:z.boolean()});
-export const pointSchema=z.object({id:idSchema,name:txt.min(2),address:txt.min(3),originalAddress:txt,areaId:idSchema,scopeSourceId:idSchema,latitude:z.number().min(-90).max(90).nullable(),longitude:z.number().min(-180).max(180).nullable(),coordinateSource:txt,placeId:txt,phone:z.string().regex(/^[+0-9 ()-]*$/).max(30),website:url,kind:z.enum(['fixed','event','pickup']),serviceAreaIds:z.array(idSchema),status:z.enum(['active','unconfirmed','paused']),validTo:z.string().nullable(),hours:txt,fee:txt,acceptance:z.array(acceptanceSchema).max(100),demo:z.boolean().default(false)}).refine(p=>(p.latitude===null)===(p.longitude===null),'Cần đủ cả vĩ độ và kinh độ');
+export const pointSchema=z.object({id:idSchema,name:txt.min(2),address:txt.min(3),originalAddress:txt,areaId:idSchema,scopeSourceId:idSchema,latitude:z.number().min(-90).max(90).nullable(),longitude:z.number().min(-180).max(180).nullable(),coordinateSource:txt,placeId:txt,phone:z.string().regex(/^[+0-9 ()-]*$/).max(30),website:url,kind:z.enum(['fixed','event','pickup']),serviceAreaIds:z.array(idSchema),status:z.enum(['active','unconfirmed','paused']),validTo:z.string().nullable(),hours:txt,fee:txt,acceptance:z.array(acceptanceSchema).max(100),demo:z.boolean().default(false),
+ // Added in the 2026-10 data review; optional so records already saved in D1 stay valid.
+ mapsQuery:txt.optional(),sourceUrl:url.optional(),sourceCheckedAt:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),phoneSourceUrl:url.optional(),note:txt.optional()}).refine(p=>(p.latitude===null)===(p.longitude===null),'Cần đủ cả vĩ độ và kinh độ');
 export type Point=z.infer<typeof pointSchema>;
 export type Catalog={items:Item[];rules:Rule[];points:Point[];sources:Source[];areas:Area[]};
 export type Answers=Partial<Record<'clean'|'empty'|'intact',boolean>>;
@@ -43,7 +45,11 @@ export function classify(c:Catalog,itemId:string,areaId:string,answers:Answers,n
 }
 export function rulesOverlap(a:Rule,b:Rule){return a.id!==b.id&&a.status==='published'&&b.status==='published'&&a.areaId===b.areaId&&a.priority===b.priority&&((a.itemIds.length&&b.itemIds.length)?a.itemIds.some(x=>b.itemIds.includes(x)):a.group===b.group)&&!Object.keys({...a.conditions,...b.conditions}).some(k=>a.conditions[k as keyof Answers]!==undefined&&b.conditions[k as keyof Answers]!==undefined&&a.conditions[k as keyof Answers]!==b.conditions[k as keyof Answers])&&(!a.validTo||!b.validFrom||a.validTo>=b.validFrom)&&(!b.validTo||!a.validFrom||b.validTo>=a.validFrom)}
 export function haversine(a:{lat:number;lng:number},b:{lat:number;lng:number}){const rad=(n:number)=>n*Math.PI/180;const dlat=rad(b.lat-a.lat),dlng=rad(b.lng-a.lng);return 6371*2*Math.asin(Math.sqrt(Math.sin(dlat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dlng/2)**2))}
-export function mapsDirection(p:Point){const u=new URL('https://www.google.com/maps/dir/');u.searchParams.set('api','1');u.searchParams.set('destination',p.latitude!==null&&p.longitude!==null?`${p.latitude},${p.longitude}`:`${p.name}, ${p.address}`);if(p.placeId)u.searchParams.set('destination_place_id',p.placeId);return u.toString()}
+// Maps links search the coordinates, else the full address or a store name (mapsQuery), never the programme's own label
+// ("Điểm VNTC tại …"), which Google matched to unrelated places.
+const mapsTarget=(p:Point)=>p.latitude!==null&&p.longitude!==null?`${p.latitude},${p.longitude}`:p.mapsQuery||p.address;
+export function mapsPlace(p:Point){const u=new URL('https://www.google.com/maps/search/');u.searchParams.set('api','1');u.searchParams.set('query',mapsTarget(p));if(p.placeId)u.searchParams.set('query_place_id',p.placeId);return u.toString()}
+export function mapsDirection(p:Point){const u=new URL('https://www.google.com/maps/dir/');u.searchParams.set('api','1');u.searchParams.set('destination',mapsTarget(p));if(p.placeId)u.searchParams.set('destination_place_id',p.placeId);return u.toString()}
 export function mapsSearch(item:string,area:string){const u=new URL('https://www.google.com/maps/search/');u.searchParams.set('api','1');u.searchParams.set('query',`điểm thu gom ${item} ${area} TP Hồ Chí Minh`);return u.toString()}
 export type PointQuery={itemId:string;areaId:string;quantity:number;audience:'household'|'business';intact:boolean;radius:number;position?:{lat:number;lng:number}};
 export function findPoints(c:Catalog,q:PointQuery,now=new Date()){
@@ -54,8 +60,11 @@ export function findPoints(c:Catalog,q:PointQuery,now=new Date()){
  const km=q.position&&p.latitude!==null&&p.longitude!==null&&p.kind!=='pickup'?haversine(q.position,{lat:p.latitude,lng:p.longitude}):null;
  if(km!==null&&q.radius>0&&km>q.radius)return[];
  const fresh=Date.parse(accept.checkedAt)<=now.getTime()&&(now.getTime()-Date.parse(accept.checkedAt))/86400000<=90;
- const verified=accept.verification==='direct'&&fresh&&p.status==='active';
- return[{point:p,acceptance:accept,km,verified,directions:p.kind==='pickup'?null:mapsDirection(p)}];});
+ // Confirmed: checked directly within 90 days, or listed by an official source checked within 180 days and placed by
+ // coordinates that match the address. Everything else shows its phone number and asks people to call first.
+ const official=!!p.sourceUrl&&!!p.sourceCheckedAt&&p.latitude!==null&&Date.parse(p.sourceCheckedAt)<=now.getTime()&&(now.getTime()-Date.parse(p.sourceCheckedAt))/86400000<=180;
+ const verified=p.status==='active'&&((accept.verification==='direct'&&fresh)||official);
+ return[{point:p,acceptance:accept,km,verified,directions:p.kind==='pickup'?null:mapsPlace(p)}];});
  found.sort((a,b)=>Number(b.verified)-Number(a.verified)||(a.km??Infinity)-(b.km??Infinity)||a.point.name.localeCompare(b.point.name,'vi'));
  return{verified:found.filter(x=>x.verified).slice(0,5),confirm:found.filter(x=>!x.verified).slice(0,5)};
 }
