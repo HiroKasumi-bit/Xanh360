@@ -724,6 +724,68 @@ header {
   color: var(--ink-3);
 }
 
+/* Which place the reading is for: "Vị trí của bạn" or "TP.HCM (chung)", a small line above the values. */
+.city-stack {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 5px 0;
+}
+
+.city-stack .city-readings {
+  padding: 0;
+}
+
+.city-scope {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.city-pm {
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+}
+
+.city-pm strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.city-scope-title,
+.local-overview h3 {
+  margin: 0 0 6px;
+  font-size: var(--fs-body);
+}
+
+.local-overview .city-point {
+  padding-top: 0;
+  border-bottom: 0;
+}
+
+.local-overview .text-button {
+  min-height: 44px;
+}
+
+/* At a single spot the AQI value and its level wrap one by one, so the phone chip stays at three short lines. */
+.city-widget.is-local .city-aqi {
+  display: contents;
+}
+
+/* Phones: the PM2.5 unit is read out but not drawn, so the level and PM2.5 share one line. */
+@media (max-width: 640px) {
+  .city-pm .unit {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
 .city-aqi {
   display: inline-flex;
   flex-wrap: wrap;
@@ -2970,6 +3032,10 @@ footer .text-button {
   }
 
   .city-readings {
+    flex: 1;
+  }
+
+  .city-stack {
     flex: 1;
   }
 
