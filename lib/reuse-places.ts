@@ -1,14 +1,13 @@
 import { z } from 'zod';
 import { activeDate, idSchema } from './domain';
 
-// Places that give a reusable or recyclable item a second life, shown under the disposal guidance: public programmes,
-// brand take-back schemes, charities and scrap-buying apps in Ho Chi Minh City. Reviewed 2026-10-17 through search
-// results (the organisations' own pages could not be opened from the review environment), so none is marked confirmed
-// and every card asks people to call first. Only entries backed by the organisation's own page or a newspaper report
-// are listed; directory and listicle sites were not used on their own. Entries whose address, schedule or current
-// status could not be pinned down were removed (Tân Mỹ MRF station, Bình Tân "đổi rác lấy quà", RE.UNIQLO, Biti's
-// batteries, Goodwill Vietnam); add them back once confirmed. No coordinates were added: they could not be checked
-// against the address.
+// Places that give a reusable or recyclable item a second life, shown under the disposal guidance: brand take-back
+// schemes, charities and scrap-buying apps in Ho Chi Minh City. Every entry was checked on 2026-10-17 against the
+// organisation's own page; directory and listicle sites were not used. Entries whose address, schedule or current
+// status could not be pinned down were left out: the Tân Mỹ MRF station (two different addresses, neither matching the
+// map), Bình Tân "đổi rác lấy quà" (one launch day, no schedule), "Sách trao tay" (latest report from 2019) and
+// Biti's batteries (the 2026 drive ran 5–25 June). Public programmes ('state') stay a supported type for when one can
+// be confirmed. No coordinates were added; none of these is a single fixed place yet.
 export const placeTypes = ['state', 'brand', 'charity', 'scrap'] as const;
 export type PlaceType = (typeof placeTypes)[number];
 export const placeTypeLabels: Record<PlaceType, string> = {
@@ -46,43 +45,44 @@ const metals = ['lon', 'hop-thiec', 'noi-chao', 'nap-chai-kim-loai'];
 
 export const reusePlaces: ReusePlace[] = [
   {
-    id: 'sach-trao-tay',
-    type: 'state',
-    name: 'Sách trao tay – Cầu nối yêu thương',
-    operator: 'Sở Giáo dục và Đào tạo TP.HCM, qua các trường học',
-    kind: 'event',
-    address: '',
-    mapsQuery: '',
-    phone: '',
-    website: '',
-    itemIds: ['sach', 'tap-vo'],
-    accepts: 'Sách giáo khoa, sách tham khảo và dụng cụ học tập còn nguyên vẹn, sạch đẹp, tặng học sinh khó khăn.',
-    schedule: 'Hoạt động thường niên dịp hè; nhận qua trường học.',
-    note: 'Hỏi trường học gần nhà thời gian nhận sách năm nay.',
-    validTo: null,
-    sources: [
-      { name: 'Báo Văn Hóa · TP.HCM quyên góp gần 20.000 bộ sách giáo khoa tặng học sinh nghèo', url: 'https://baovanhoa.vn/giao-duc/tphcm-quyen-gop-duoc-gan-20000-bo-sach-giao-khoa-tang-hoc-sinh-ngheo-60826.html', checkedAt: checked },
-    ],
-  },
-  {
     id: 'vntc-pickup',
     type: 'brand',
     name: 'Việt Nam Tái Chế · thu gom đồ điện tử tận nhà',
-    operator: 'Việt Nam Tái Chế (liên minh nhà sản xuất thu hồi rác thải điện tử)',
+    operator: 'Việt Nam Tái Chế (liên minh nhà sản xuất điện tử, do HP và Apple thành lập)',
     kind: 'pickup',
     address: '',
     mapsQuery: '',
     phone: '0933 882 205',
     website: 'https://vietnamrecycles.com/',
-    itemIds: ['dien-thoai', 'laptop', 'may-in', 'man-hinh', 'tivi', 'may-anh'],
+    itemIds: ['dien-thoai', 'may-tinh-bang', 'laptop', 'may-in', 'man-hinh', 'tivi', 'may-anh'],
     accepts:
-      'Thu gom miễn phí tại nhà cho hộ gia đình khi có ít nhất 1 thiết bị lớn (tivi, màn hình, máy tính, máy in) hoặc 10 thiết bị nhỏ. Không đến lấy riêng pin.',
-    schedule: 'Hotline thứ Hai–thứ Sáu, 8:30–17:00.',
-    note: 'Khu vực phục vụ công bố theo tên quận cũ; hỏi lại sau sáp nhập 2025.',
+      'Thu gom miễn phí tại nhà khi hộ gia đình có ít nhất 1 thiết bị lớn (tivi, màn hình, máy tính, máy in, máy fax, máy scan, máy photocopy) hoặc 10 thiết bị điện tử nhỏ. Pin các loại chỉ tính là 1 thiết bị; mỗi đợt tối đa 50 sản phẩm nhỏ.',
+    schedule: 'Tình nguyện viên thường thu gom cuối tuần; hotline thứ Hai–thứ Sáu, 8h30–17h00.',
+    note: 'Khu vực phục vụ trên website còn ghi theo tên quận cũ; hỏi lại khi gọi.',
     validTo: null,
     sources: [
-      { name: 'Việt Nam Tái Chế · Câu hỏi thường gặp', url: 'https://vietnamrecycles.com/en/faq-en', checkedAt: checked },
-      { name: 'Việt Nam Tái Chế · Dịch vụ thu gom tại hộ gia đình', url: 'https://vietnamrecycles.com/en/vietnam-recycles-kicks-off-household-e-waste-collection-service.html', checkedAt: checked },
+      { name: 'Việt Nam Tái Chế · Câu hỏi thường gặp', url: 'https://vietnamrecycles.com/faq-vn', checkedAt: checked },
+      { name: 'Việt Nam Tái Chế · Liên hệ', url: 'https://vietnamrecycles.com/lien-he', checkedAt: checked },
+    ],
+  },
+  {
+    id: 're-uniqlo',
+    type: 'brand',
+    name: 'RE.UNIQLO · hộp tái chế tại cửa hàng UNIQLO',
+    operator: 'UNIQLO Việt Nam',
+    kind: 'network',
+    address: 'Mọi cửa hàng UNIQLO tại TP.HCM',
+    mapsQuery: 'UNIQLO, Thành phố Hồ Chí Minh',
+    phone: '',
+    website: 'https://faq-vn.uniqlo.com/articles/vi/FAQ/UQVN-Gi%E1%BB%9Bi-thi%E1%BB%87u-v%E1%BB%81-Ch%C6%B0%C6%A1ng-tr%C3%ACnh-t%C3%A1i-ch%E1%BA%BF-UNIQLO',
+    itemIds: ['quan-ao'],
+    accepts:
+      'Nhận mọi sản phẩm hiệu UNIQLO đã qua sử dụng: bỏ vào Hộp tái chế hoặc đưa nhân viên cửa hàng. Đồ dùng cá nhân không thuộc diện quyên góp.',
+    schedule: 'Trong giờ mở cửa của cửa hàng.',
+    note: 'Chỉ nhận đồ hiệu UNIQLO.',
+    validTo: null,
+    sources: [
+      { name: 'UNIQLO Việt Nam · Giới thiệu về Chương trình tái chế UNIQLO', url: 'https://faq-vn.uniqlo.com/articles/vi/FAQ/UQVN-Gi%E1%BB%9Bi-thi%E1%BB%87u-v%E1%BB%81-Ch%C6%B0%C6%A1ng-tr%C3%ACnh-t%C3%A1i-ch%E1%BA%BF-UNIQLO', checkedAt: checked },
     ],
   },
   {
@@ -106,6 +106,24 @@ export const reusePlaces: ReusePlace[] = [
     ],
   },
   {
+    id: 'goodwill-vn',
+    type: 'charity',
+    name: 'Goodwill Vietnam · quyên góp quần áo cũ',
+    operator: 'Goodwill Vietnam',
+    kind: 'pickup',
+    address: '',
+    mapsQuery: '',
+    phone: '0974 00 11 33',
+    website: 'https://goodwill.org.vn/',
+    itemIds: ['quan-ao'],
+    accepts:
+      'Nhận quyên góp quần áo cũ: gọi Donation Center để được thu gom tận nhà, hoặc mang tới các trạm quyên góp của Goodwill (xem trên website).',
+    schedule: 'Gọi hotline để hẹn thu gom.',
+    note: '11 Nguyễn Văn Nghi (Gò Vấp cũ) là trụ sở chính, không phải trạm nhận đồ.',
+    validTo: null,
+    sources: [{ name: 'Goodwill Vietnam · Trang chủ', url: 'https://goodwill.org.vn/pages/trang-chu', checkedAt: checked }],
+  },
+  {
     id: 'veca-app',
     type: 'scrap',
     name: 'VECA · ứng dụng hẹn thu mua ve chai tại nhà',
@@ -114,15 +132,15 @@ export const reusePlaces: ReusePlace[] = [
     address: '',
     mapsQuery: '',
     phone: '028 6682 7889',
-    website: 'https://apps.apple.com/us/app/veca/id1499754021?l=vi',
+    website: 'https://veca.app/',
     itemIds: [...plastics, ...papers, ...metals],
     accepts: 'Đặt lịch người thu mua ve chai, phế liệu đến tận nhà; giá theo thị trường.',
     schedule: 'Đặt lịch trong ứng dụng.',
-    note: 'Khu vực phục vụ hiện tại chưa có nguồn mới; kiểm tra trong ứng dụng.',
+    note: 'Khu vực phục vụ xem trong ứng dụng.',
     validTo: null,
     sources: [
+      { name: 'Google Play · VECA (cập nhật 25/05/2026)', url: 'https://play.google.com/store/apps/details?id=veca.di4l.vn.veca_customer', checkedAt: checked },
       { name: 'App Store · VECA', url: 'https://apps.apple.com/us/app/veca/id1499754021?l=vi', checkedAt: checked },
-      { name: 'VietNamNet · Thu mua đồng nát theo mô hình app gọi xe công nghệ', url: 'https://vietnamnet.vn/thu-mua-dong-nat-sat-vun-theo-mo-hinh-app-goi-xe-cong-nghe-2047233.html', checkedAt: checked },
     ],
   },
   {
