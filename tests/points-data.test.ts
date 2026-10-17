@@ -26,7 +26,7 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
   it('điểm không có tọa độ kiểm chứng thì không được ghi là đã xác nhận, nhưng vẫn hiện kèm số điện thoại', () => {
     const r = findPoints(seed, query, now);
     expect(r.verified).toHaveLength(0);
-    expect(r.confirm).toHaveLength(4);
+    expect(r.confirm).toHaveLength(seed.points.length);
     for (const x of r.confirm) {
       expect(x.point.latitude).toBeNull();
       expect(x.point.phone).toMatch(/\d{3}/);
@@ -42,8 +42,8 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
       expect(q, p.id).not.toMatch(/VNTC|Việt Nam Tái Chế/);
       expect(q, p.id).toMatch(/Thành phố Hồ Chí Minh$/);
     }
-    const phuNhuan = new URL(mapsPlace(seed.points.find(p => p.id === 'phu-nhuan')!));
-    expect(phuNhuan.searchParams.get('query')).toBe('145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, Thành phố Hồ Chí Minh');
+    const binhPhu = new URL(mapsPlace(seed.points.find(p => p.id === 'mega-binh-phu')!));
+    expect(binhPhu.searchParams.get('query')).toBe('MM Mega Market Bình Phú, 10 Bình Phú, Thành phố Hồ Chí Minh');
   });
 
   it('có tọa độ thì link Maps dùng tọa độ', () => {
@@ -54,7 +54,7 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
   it('nguồn chính thức + tọa độ + đang hoạt động thì được xác nhận; thiếu một điều kiện thì không', () => {
     const make = (patch: Partial<(typeof seed.points)[number]>) => {
       const c = structuredClone(seed);
-      c.points = [{...c.points[1], ...patch}];
+      c.points = [{...c.points[0], ...patch}];
       return findPoints(c, query, now);
     };
     const ok = {status: 'active' as const, latitude: 10.75, longitude: 106.63};
@@ -63,6 +63,10 @@ describe('Dữ liệu điểm tiếp nhận TP.HCM', () => {
     expect(make({...ok, latitude: null, longitude: null}).verified).toHaveLength(0);
     expect(make({...ok, sourceUrl: undefined}).verified).toHaveLength(0);
     expect(make({...ok, sourceCheckedAt: '2025-01-01'}).verified).toHaveLength(0);
+  });
+
+  it('các điểm nguồn mâu thuẫn hoặc chưa rõ tình trạng đã được bỏ ra', () => {
+    for (const id of ['mega-an-phu', 'nhieu-loc', 'phu-nhuan']) expect(seed.points.some(p => p.id === id), id).toBe(false);
   });
 
   it('bản ghi điểm cũ trong D1 (không có trường mới) vẫn hợp lệ', () => {

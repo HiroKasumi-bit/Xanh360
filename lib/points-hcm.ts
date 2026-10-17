@@ -10,7 +10,9 @@ import type { Point, Source } from './domain';
 // - No coordinates: they could not be geocoded and checked against the address, and a guessed coordinate is worse
 //   than none (it would rank the point by a wrong distance). The Maps link searches the full address or the store
 //   name, never the programme name, which is what sent "Điểm VNTC tại KDC Phường Phú Nhuận" to the wrong place.
-// - Where sources disagree the card says so and asks people to call first.
+// - Points whose sources disagree or whose current status could not be pinned down were removed rather than shown
+//   with a caveat: An Phú (new ward unsettled), 82 Bà Huyện Thanh Quan (former ward office, may no longer host the
+//   point) and Phú Nhuận (145/9 vs 22 Nguyễn Văn Trỗi). Add them back once confirmed by phone or on site.
 export const VNTC_HOTLINE = '0933 882 205';
 
 export const pointSources: Source[] = [
@@ -52,17 +54,6 @@ type Entry = Pick<Point, 'id' | 'name' | 'address' | 'originalAddress' | 'areaId
 
 const entries: Entry[] = [
   {
-    id: 'mega-an-phu',
-    name: 'MM Mega Market An Phú · điểm Việt Nam Tái Chế',
-    address: 'Khu B, Khu đô thị mới An Phú – An Khánh, TP.HCM',
-    originalAddress: 'Khu B, KĐT mới An Phú – An Khánh, Phường An Phú, TP. Thủ Đức (trước 01/07/2025)',
-    // Phường An Phú (Thủ Đức) was split between Phường Bình Trưng and Phường An Khánh; the store's ward is not settled
-    // by the sources found, and today's Phường An Phú is a different place, so the point stays city-wide.
-    areaId: 'all',
-    mapsQuery: 'MM Mega Market An Phú, Thành phố Hồ Chí Minh',
-    note: 'Phường mới sau sáp nhập chưa đối chiếu được: dữ liệu đăng ký doanh nghiệp ghi Phường Bình Trưng. Không nhầm với Phường An Phú (Thuận An cũ).',
-  },
-  {
     id: 'mega-binh-phu',
     name: 'MM Mega Market Bình Phú · điểm Việt Nam Tái Chế',
     address: '10 Bình Phú, Phường Bình Phú, TP.HCM',
@@ -70,24 +61,6 @@ const entries: Entry[] = [
     areaId: 'binh-phu',
     mapsQuery: 'MM Mega Market Bình Phú, 10 Bình Phú, Thành phố Hồ Chí Minh',
     note: '',
-  },
-  {
-    id: 'nhieu-loc',
-    name: 'Điểm Việt Nam Tái Chế · 82 Bà Huyện Thanh Quan',
-    address: '82 Bà Huyện Thanh Quan, Phường Nhiêu Lộc, TP.HCM',
-    originalAddress: 'UBND Phường 9, Quận 3, 82 Bà Huyện Thanh Quan (trước 01/07/2025)',
-    areaId: 'nhieu-loc',
-    mapsQuery: '82 Bà Huyện Thanh Quan, Phường Nhiêu Lộc, Thành phố Hồ Chí Minh',
-    note: 'Điểm đặt tại trụ sở UBND Phường 9 (Quận 3) cũ. Sau sáp nhập trụ sở có thể đổi công năng.',
-  },
-  {
-    id: 'phu-nhuan',
-    name: 'Điểm Việt Nam Tái Chế · Phú Nhuận',
-    address: '145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, TP.HCM',
-    originalAddress: '145/9 Nguyễn Văn Trỗi, Phú Nhuận (theo website VNTC, ghi nhận 04/10/2026)',
-    areaId: 'phu-nhuan',
-    mapsQuery: '145/9 Nguyễn Văn Trỗi, Phường Phú Nhuận, Thành phố Hồ Chí Minh',
-    note: 'Nguồn chưa thống nhất: website VNTC (04/10/2026) ghi 145/9 Nguyễn Văn Trỗi, còn thông báo 03/2025 và báo chí ghi UBND Phường 17 cũ, 22 Nguyễn Văn Trỗi. Hãy gọi hỏi địa chỉ đang nhận trước khi đi.',
   },
 ];
 
