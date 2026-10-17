@@ -5,8 +5,10 @@ import { activeDate, idSchema } from './domain';
 // brand take-back schemes, charities and scrap-buying apps in Ho Chi Minh City. Reviewed 2026-10-17 through search
 // results (the organisations' own pages could not be opened from the review environment), so none is marked confirmed
 // and every card asks people to call first. Only entries backed by the organisation's own page or a newspaper report
-// are listed; directory and listicle sites were not used on their own. No coordinates were added: they could not be
-// checked against the address.
+// are listed; directory and listicle sites were not used on their own. Entries whose address, schedule or current
+// status could not be pinned down were removed (Tân Mỹ MRF station, Bình Tân "đổi rác lấy quà", RE.UNIQLO, Biti's
+// batteries, Goodwill Vietnam); add them back once confirmed. No coordinates were added: they could not be checked
+// against the address.
 export const placeTypes = ['state', 'brand', 'charity', 'scrap'] as const;
 export type PlaceType = (typeof placeTypes)[number];
 export const placeTypeLabels: Record<PlaceType, string> = {
@@ -43,47 +45,6 @@ const papers = ['giay', 'bao', 'carton', 'tap-chi', 'tap-vo', 'sach', 'tui-giay'
 const metals = ['lon', 'hop-thiec', 'noi-chao', 'nap-chai-kim-loai'];
 
 export const reusePlaces: ReusePlace[] = [
-  {
-    id: 'mrf-tan-my',
-    type: 'state',
-    name: 'Trạm thu hồi vật liệu tái chế (MRF) Phường Tân Mỹ',
-    operator: 'UBND Phường Tân Mỹ, phối hợp Unilever Việt Nam và Grac',
-    kind: 'fixed',
-    address: 'Số 4 đường Tân Phú, Phường Tân Mỹ, TP.HCM',
-    mapsQuery: 'Trạm MRF Phường Tân Mỹ, Thành phố Hồ Chí Minh',
-    phone: '',
-    website: 'https://grac.vn/doi-rac-tai-che-nhan-qua-thiet-thuc-tai-tram-mrf-phuong-tan-my/',
-    itemIds: [...plastics, ...papers, 'lon'],
-    accepts:
-      'Đổi rác tái chế lấy quà: chai nhựa, lon nhôm, giấy, bìa. Rác cần được phân loại, làm sạch, ép dẹp trước khi mang tới; điểm thưởng ghi qua ứng dụng Grac.',
-    schedule: 'Chương trình đổi quà từ 28/03/2026 đến 31/12/2026. Giờ mở cửa chưa có nguồn.',
-    note: 'Nguồn chưa thống nhất về địa chỉ: báo SGGP ghi số 4 đường Tân Phú (trong công viên), Grac ghi số 04 đường số 4.',
-    validTo: '2026-12-31',
-    sources: [
-      { name: 'SGGP · Đưa vào hoạt động trạm đổi rác nhận quà', url: 'https://www.sggp.org.vn/dua-vao-hoat-dong-tram-doi-rac-nhan-qua-post846096.html', checkedAt: checked },
-      { name: 'PLO · Phường Tân Mỹ có trạm thu hồi vật liệu tái chế', url: 'https://plo.vn/phuong-tan-my-co-tram-thu-hoi-vat-lieu-tai-che-post902458.html', checkedAt: checked },
-      { name: 'Grac · Đổi rác tái chế tại trạm MRF Phường Tân Mỹ', url: 'https://grac.vn/doi-rac-tai-che-nhan-qua-thiet-thuc-tai-tram-mrf-phuong-tan-my/', checkedAt: checked },
-    ],
-  },
-  {
-    id: 'doi-rac-binh-tan',
-    type: 'state',
-    name: 'Đổi rác lấy quà · Phường Bình Tân',
-    operator: 'UBND Phường Bình Tân',
-    kind: 'event',
-    address: 'Công viên trung tâm Phường Bình Tân, TP.HCM',
-    mapsQuery: 'Công viên trung tâm Phường Bình Tân, Thành phố Hồ Chí Minh',
-    phone: '',
-    website: '',
-    itemIds: [...plastics, ...papers, ...metals],
-    accepts: 'Đổi rác tái chế đã phân loại lấy quà, gắn với phân loại rác tại nguồn.',
-    schedule: 'Phát động ngày 29/04/2026; lịch các đợt sau chưa có nguồn.',
-    note: 'Hỏi UBND phường hoặc tổ dân phố lịch đổi gần nhất.',
-    validTo: null,
-    sources: [
-      { name: 'SGGP · Phường Bình Tân phát động chương trình “đổi rác lấy quà”', url: 'https://www.sggp.org.vn/phuong-binh-tan-phat-dong-chuong-trinh-doi-rac-lay-qua-post850341.html', checkedAt: checked },
-    ],
-  },
   {
     id: 'sach-trao-tay',
     type: 'state',
@@ -123,62 +84,6 @@ export const reusePlaces: ReusePlace[] = [
       { name: 'Việt Nam Tái Chế · Câu hỏi thường gặp', url: 'https://vietnamrecycles.com/en/faq-en', checkedAt: checked },
       { name: 'Việt Nam Tái Chế · Dịch vụ thu gom tại hộ gia đình', url: 'https://vietnamrecycles.com/en/vietnam-recycles-kicks-off-household-e-waste-collection-service.html', checkedAt: checked },
     ],
-  },
-  {
-    id: 're-uniqlo',
-    type: 'brand',
-    name: 'RE.UNIQLO · thùng thu quần áo tại cửa hàng UNIQLO',
-    operator: 'UNIQLO Việt Nam, phối hợp Quỹ Hy Vọng',
-    kind: 'network',
-    address: 'Các cửa hàng UNIQLO tại TP.HCM',
-    mapsQuery: 'UNIQLO, Thành phố Hồ Chí Minh',
-    phone: '',
-    website: 'https://faq-vn.uniqlo.com/articles/vi/FAQ/UQVN-Gi%E1%BB%9Bi-thi%E1%BB%87u-v%E1%BB%81-Ch%C6%B0%C6%A1ng-tr%C3%ACnh-t%C3%A1i-ch%E1%BA%BF-UNIQLO',
-    itemIds: ['quan-ao'],
-    accepts: 'Chỉ nhận quần áo hiệu UNIQLO đã giặt sạch; không nhận giày dép và đồ mặc trong. Quần áo được trao tặng cộng đồng khó khăn.',
-    schedule: 'Theo giờ mở cửa của cửa hàng.',
-    note: 'Nguồn về thùng thu gom đã có từ 2021; hỏi cửa hàng xem còn thùng không.',
-    validTo: null,
-    sources: [
-      { name: 'UNIQLO Việt Nam · Giới thiệu chương trình tái chế UNIQLO', url: 'https://faq-vn.uniqlo.com/articles/vi/FAQ/UQVN-Gi%E1%BB%9Bi-thi%E1%BB%87u-v%E1%BB%81-Ch%C6%B0%C6%A1ng-tr%C3%ACnh-t%C3%A1i-ch%E1%BA%BF-UNIQLO', checkedAt: checked },
-      { name: 'Saigon Times (Tuổi Trẻ) · Uniqlo thu gom quần áo đã qua sử dụng', url: 'https://tuoitre.vn/saigontimes/uniqlo-thu-gom-quan-ao-da-qua-su-dung-106216038.htm', checkedAt: checked },
-    ],
-  },
-  {
-    id: 'bitis-pin',
-    type: 'brand',
-    name: "Biti's · thu hồi pin cũ tại cửa hàng",
-    operator: "Biti's",
-    kind: 'network',
-    address: "Các cửa hàng Biti's tham gia tại TP.HCM",
-    mapsQuery: "Biti's, Thành phố Hồ Chí Minh",
-    phone: '',
-    website: 'https://bitis.com.vn/blogs/news/biti-s-cac-diem-thu-hoi-pin-cu-tren-toan-quoc',
-    itemIds: ['pin-aa', 'pin-cuc', 'pin-9v'],
-    accepts: 'Nhận pin cũ gia dụng tại các cửa hàng có trong danh sách của hãng.',
-    schedule: 'Theo giờ mở cửa của cửa hàng.',
-    note: 'Danh sách cửa hàng đăng khoảng năm 2024, có chỗ không khớp địa chỉ; gọi cửa hàng trước khi mang pin tới.',
-    validTo: null,
-    sources: [
-      { name: "Biti's · Các điểm thu hồi pin cũ trên toàn quốc", url: 'https://bitis.com.vn/blogs/news/biti-s-cac-diem-thu-hoi-pin-cu-tren-toan-quoc', checkedAt: checked },
-    ],
-  },
-  {
-    id: 'goodwill-vn',
-    type: 'charity',
-    name: 'Goodwill Vietnam · nhận quyên góp quần áo',
-    operator: 'Goodwill Vietnam',
-    kind: 'fixed',
-    address: '11 Nguyễn Văn Nghi, TP.HCM',
-    mapsQuery: '11 Nguyễn Văn Nghi, Gò Vấp, Thành phố Hồ Chí Minh',
-    phone: '0974 00 11 33',
-    website: 'https://goodwill.org.vn/',
-    itemIds: ['quan-ao'],
-    accepts: 'Nhận quyên góp quần áo cũ; có thu gom tận nhà và các trạm quyên góp.',
-    schedule: 'Hỏi Donation Center trước khi mang tới.',
-    note: 'Địa chỉ trước 01/07/2025: Phường 4, Gò Vấp; chưa đối chiếu được tên phường mới. Chưa rõ đây là trạm nhận hay văn phòng.',
-    validTo: null,
-    sources: [{ name: 'Goodwill Vietnam · Trang chủ', url: 'https://goodwill.org.vn/pages/trang-chu', checkedAt: checked }],
   },
   {
     id: 'reshare',
