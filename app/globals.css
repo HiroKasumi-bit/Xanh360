@@ -2506,6 +2506,79 @@ textarea {
   justify-content: center;
 }
 
+/* A recognised item is a full-width row whose right end is the call to action: a solid green pill (white on
+   --green-600 is 6.6:1) with an arrow, so "Xem hướng dẫn" reads as the next step, not as a faint caption. The whole
+   row is the button and stays at least 56px tall, well past the 44px touch target. */
+.recognition-controls .candidate-row {
+  width: 100%;
+  margin-inline: 0;
+  min-height: 56px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--cat-recycle-line);
+  border-radius: var(--r-md);
+  background: var(--paper-raised);
+}
+
+.recognition-controls .candidate-row + .candidate-row {
+  margin-top: -4px;
+}
+
+.candidate-row .candidate-check {
+  color: var(--green-500);
+}
+
+.candidate-row > span:nth-child(2) {
+  min-width: 0;
+}
+
+.candidate-row b {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.candidate-row small {
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.candidate-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 12px 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--green-600);
+  color: #fff;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.candidate-cta svg {
+  width: 18px;
+  height: 18px;
+  transition: translate var(--dur-base) var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .candidate-row:not(:disabled):hover .candidate-cta {
+    background: var(--green-700);
+  }
+
+  .candidate-row:not(:disabled):hover .candidate-cta svg {
+    translate: 3px 0;
+  }
+}
+
+.candidate-row:not(:disabled):active .candidate-cta {
+  background: var(--green-800);
+}
+
+
 .recognition-controls .consent {
   align-items: flex-start;
   font-size: var(--fs-caption);
