@@ -119,7 +119,7 @@ describe('API xác nhận cộng đồng', () => {
   });
 
   it('điểm chưa có tọa độ kiểm chứng chưa nhận xác nhận; điểm không tồn tại trả 404', async () => {
-    expect((await post(vote({targetId: 'nhieu-loc'}))).status).toBe(409);
+    expect((await post(vote())).status).toBe(409);
     expect((await post(vote({targetId: 'khong-ton-tai'}))).status).toBe(404);
   });
 
@@ -147,6 +147,6 @@ describe('API xác nhận cộng đồng', () => {
 
   it('GET kiểm tra tham số và trả trạng thái chờ khi chưa có phiếu', async () => {
     expect((await GET(new Request('https://app.test/api/votes?kind=x&ids=a'))).status).toBe(400);
-    expect(await status('nhieu-loc')).toMatchObject({yes: 0, no: 0, status: 'pending', lastConfirmedAt: null});
+    expect(await status()).toMatchObject({yes: 0, no: 0, status: 'pending', lastConfirmedAt: null});
   });
 });
