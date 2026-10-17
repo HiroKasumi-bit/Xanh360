@@ -13,8 +13,9 @@ describe('Điểm tái chế và quyên góp', () => {
     expect(new Set(reusePlaces.map(p => p.id)).size).toBe(reusePlaces.length);
   });
 
-  it('có đủ 4 loại: nhà nước, thương hiệu, từ thiện, ve chai', () => {
-    for (const type of placeTypes) expect(reusePlaces.some(p => p.type === type), type).toBe(true);
+  it('chỉ dùng các loại đã định nghĩa; hiện có thương hiệu, từ thiện, ve chai', () => {
+    for (const p of reusePlaces) expect(placeTypes, p.id).toContain(p.type);
+    expect(new Set(reusePlaces.map(p => p.type))).toEqual(new Set(['brand', 'charity', 'scrap']));
   });
 
   it('chỉ trong TP.HCM: địa chỉ cố định ghi TP.HCM', () => {
@@ -25,25 +26,27 @@ describe('Điểm tái chế và quyên góp', () => {
     for (const p of reusePlaces.filter(p => p.phone)) expect(p.phone.replace(/\D/g, ''), p.id).toMatch(/^0\d{9,10}$/);
   });
 
-  it('chai nhựa có ứng dụng ve chai; sách có chương trình nhà nước; xếp theo thứ tự loại', () => {
+  it('chai nhựa, sách có ứng dụng ve chai; xếp theo thứ tự loại', () => {
     expect(placesFor('chai-nhua', reusePlaces, now).map(g => g.type)).toEqual(['scrap']);
-    expect(placesFor('sach', reusePlaces, now).map(g => g.type)).toEqual(['state', 'scrap']);
+    expect(placesFor('sach', reusePlaces, now).map(g => g.type)).toEqual(['scrap']);
   });
 
-  it('quần áo cũ có tổ chức quyên góp; đồ điện tử có thương hiệu thu hồi', () => {
-    expect(placesFor('quan-ao', reusePlaces, now).map(g => g.type)).toEqual(['charity']);
-    expect(placesFor('laptop', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toContain('vntc-pickup');
+  it('quần áo cũ có thương hiệu thu hồi và tổ chức quyên góp; đồ điện tử có thu gom tận nhà', () => {
+    const groups = placesFor('quan-ao', reusePlaces, now);
+    expect(groups.map(g => g.type)).toEqual(['brand', 'charity']);
+    expect(groups.flatMap(g => g.places.map(p => p.id))).toEqual(['re-uniqlo', 'reshare', 'goodwill-vn']);
+    expect(placesFor('laptop', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toEqual(['vntc-pickup']);
   });
 
   it('các mục địa chỉ, lịch hoặc tình trạng chưa rõ đã được bỏ ra', () => {
-    for (const id of ['mrf-tan-my', 'doi-rac-binh-tan', 're-uniqlo', 'bitis-pin', 'goodwill-vn'])
+    for (const id of ['mrf-tan-my', 'doi-rac-binh-tan', 'bitis-pin', 'sach-trao-tay'])
       expect(reusePlaces.some(p => p.id === id), id).toBe(false);
   });
 
   it('chương trình hết hạn không còn hiện', () => {
     const ended = [{...reusePlaces[0], validTo: '2026-12-31'}];
-    expect(placesFor('sach', ended, now)).toHaveLength(1);
-    expect(placesFor('sach', ended, new Date('2027-01-02T05:00:00Z'))).toHaveLength(0);
+    expect(placesFor('laptop', ended, now)).toHaveLength(1);
+    expect(placesFor('laptop', ended, new Date('2027-01-02T05:00:00Z'))).toHaveLength(0);
   });
 
   it('vật nguy hại hoặc rác còn lại không được gợi ý quyên góp', () => {
