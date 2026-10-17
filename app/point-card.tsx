@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {MapPin, Navigation, ExternalLink, Phone, PhoneCall, ShieldCheck} from 'lucide-react';
 import {Dialog, DialogContent, DialogTitle, DialogDescription} from '@/components/ui/dialog';
 import type {findPoints} from '@/lib/domain';
+import CommunityVotes from './community-votes';
 
 export type PointMatch = ReturnType<typeof findPoints>['confirm'][number];
 
@@ -93,6 +94,13 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
           Chi tiết
         </button>
       </div>
+      {p.kind !== 'pickup' && (
+        <CommunityVotes
+          kind="point"
+          targetId={p.id}
+          target={p.latitude !== null && p.longitude !== null ? {lat: p.latitude, lng: p.longitude} : null}
+        />
+      )}
       {p.sourceUrl && (
         <p className="small point-source">
           Nguồn:{' '}

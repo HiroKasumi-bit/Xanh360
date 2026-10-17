@@ -2181,6 +2181,71 @@ textarea {
   text-decoration-line: underline;
 }
 
+/* Community confirmation on a point card: status, last confirmation, and the two vote buttons (44px targets). */
+.community {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.community-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.community-status svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green-600);
+}
+
+.community > p {
+  margin: 6px 0 0;
+}
+
+.community-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.community-actions .btn-outline {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+.community-actions .btn-outline[aria-disabled=true] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.community-actions .btn-outline[aria-busy=true] {
+  cursor: progress;
+}
+
+.community-help {
+  color: var(--ink-3);
+}
+
+.community-message:empty {
+  display: none;
+}
+
+.community-message {
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.community-message.is-error {
+  color: var(--red-700);
+}
+
 /* History */
 .history-list {
   border: 1px solid var(--border);

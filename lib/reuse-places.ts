@@ -34,6 +34,9 @@ export const reusePlaceSchema = z.object({
   schedule: z.string().max(200),
   note: z.string().max(400),
   validTo: date.nullable(),
+  // Only for fixed places, once checked against the address; enables community confirmation on site.
+  latitude: z.number().min(-90).max(90).nullable().optional(),
+  longitude: z.number().min(-180).max(180).nullable().optional(),
   sources: z.array(z.object({ name: z.string().min(2), url: z.string().url().startsWith('https://'), checkedAt: date })).min(1),
 });
 export type ReusePlace = z.infer<typeof reusePlaceSchema>;

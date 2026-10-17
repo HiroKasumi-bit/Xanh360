@@ -47,7 +47,7 @@ Yêu cầu Node 22.13+ và pnpm theo `packageManager`.
 pnpm install --frozen-lockfile
 pnpm run db:generate
 pnpm run build
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_worried_puma.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 migrations apply DB --local --config dist/server/wrangler.json --persist-to .wrangler/state
 pnpm run dev
 ```
 
@@ -149,3 +149,14 @@ Widget trên header tự gọi GET `/api/environment/city`, không GPS hoặc ch
 - Bộ giải mã ảnh có fallback HTMLImageElement cho trình duyệt không giải mã được bằng createImageBitmap. HEIC chưa hỗ trợ trực tiếp; UI hướng dẫn xuất JPEG.
 - Giao diện mới giữ tra cứu tên, nguồn hướng dẫn, phản hồi, lịch sử cục bộ, điểm tiếp nhận, quản trị và widget môi trường. Không thay schema hoặc danh mục dữ liệu.
 - Cấu hình còn thiếu: `ADMIN_EMAILS` nếu cần quyền quản trị. Không có khóa dịch vụ mới hoặc mua dịch vụ trong đợt nâng cấp này.
+
+
+## Xác nhận của cộng đồng — 10/2026
+
+- Mỗi điểm tiếp nhận (và điểm tái chế/quyên góp cố định) có nút **"Điểm này có nhận"** / **"Không còn nhận"**. Lưu trong bảng D1 `point_votes` (migration `drizzle/0001_point_votes.sql`, chỉ thêm bảng mới), API `app/api/votes/route.ts`, quy tắc trong `lib/votes.ts`.
+- Chỉ bấm được khi GPS cho thấy người dùng ở trong **200 m** quanh tọa độ của điểm (server tự tính lại bằng tọa độ trong danh mục, độ chính xác GPS phải ≤ 150 m, vị trí phải trong TP.HCM). Không lưu vị trí người dùng.
+- Mỗi thiết bị (id ngẫu nhiên lưu trên máy, server chỉ lưu bản băm SHA-256) **1 phiếu/điểm/ngày** theo giờ Việt Nam, tối đa 20 phiếu/ngày; thêm giới hạn 20 lần/giờ/IP.
+- **≥ 3 thiết bị khác nhau** báo "có nhận" trong 90 ngày → "Đã xác nhận bởi cộng đồng"; ≥ 3 báo "không còn nhận" (và không ít hơn số "có nhận") → cảnh báo. Hiện "Xác nhận lần cuối: <ngày>".
+- **Điểm chưa có tọa độ kiểm chứng thì chưa bấm được.** Muốn bật cho một điểm: kiểm tra địa chỉ tại chỗ, rồi thêm `latitude`/`longitude` cho điểm đó trong `lib/points-hcm.ts` (hoặc `lib/reuse-places.ts`).
+- Giới hạn: GPS có thể bị giả lập trên thiết bị đã can thiệp; ngưỡng 3 thiết bị và giới hạn theo IP/thiết bị giảm nhưng không loại bỏ hoàn toàn rủi ro này.
+
