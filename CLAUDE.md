@@ -19,6 +19,16 @@ Nên hỏi về:
 
 Việc nhỏ, rõ ràng (sửa chữ, đổi màu, sửa một lỗi cụ thể) thì làm luôn, không cần hỏi.
 
+## Gợi ý model và effort
+
+Người dùng tự chọn model và mức effort khi tạo cuộc trò chuyện; Claude không tự đổi được. Ở đầu mỗi việc lớn (cùng lúc với 3 câu hỏi ở trên), thêm **một dòng** gợi ý model và effort hợp với việc đó, theo bảng dưới. Nếu đang dùng đúng mức hợp lý thì nói ngắn "model/effort hiện tại là đủ"; nếu thấp hơn mức nên dùng thì nói rõ có thể đổi ngay trong cuộc trò chuyện này. Việc nhỏ thì không cần gợi ý.
+
+| Loại việc | Model | Effort |
+|---|---|---|
+| Sửa chữ, đổi màu, sửa một lỗi rõ ràng | Sonnet hoặc Haiku | thấp–vừa |
+| Thêm tính năng trong vài file, viết test | Sonnet hoặc Opus | vừa–cao |
+| Việc nhiều phần, tra dữ liệu thật nhiều nguồn, đổi database D1, ảnh hưởng deploy/bảo mật | Opus | cao |
+
 ## Nguyên tắc luôn giữ
 
 - Không bịa địa chỉ, số điện thoại, tọa độ hay quy định. Không tìm được thì ghi rõ là không có; chưa rõ thì bỏ ra.
