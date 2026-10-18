@@ -2069,6 +2069,14 @@ textarea {
   color: #5f3a12;
 }
 
+.point-provider {
+  display: inline-block;
+  margin-left: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
 .point-source {
   margin: 12px 0 0;
   color: var(--ink-3);

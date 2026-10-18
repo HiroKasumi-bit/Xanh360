@@ -23,7 +23,7 @@ describe('Điểm tái chế và quyên góp', () => {
   });
 
   it('số điện thoại (nếu có) đúng dạng số Việt Nam; không có thì ghi rõ trong thẻ', () => {
-    for (const p of reusePlaces.filter(p => p.phone)) expect(p.phone.replace(/\D/g, ''), p.id).toMatch(/^0\d{9,10}$/);
+    for (const p of reusePlaces.filter(p => p.phone)) expect(p.phone.replace(/\D/g, ''), p.id).toMatch(/^(0\d{9,10}|1[89]00\d{4,6})$/);
   });
 
   it('chai nhựa, sách có ứng dụng ve chai; xếp theo thứ tự loại', () => {
@@ -35,7 +35,7 @@ describe('Điểm tái chế và quyên góp', () => {
     const groups = placesFor('quan-ao', reusePlaces, now);
     expect(groups.map(g => g.type)).toEqual(['brand', 'charity']);
     expect(groups.flatMap(g => g.places.map(p => p.id))).toEqual(['re-uniqlo', 'reshare', 'goodwill-vn']);
-    expect(placesFor('laptop', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toEqual(['vntc-pickup']);
+    expect(placesFor('laptop', reusePlaces, now).flatMap(g => g.places.map(p => p.id))).toEqual(['vntc-pickup', 'tgdd-thu-cu', 'cellphones-thu-cu']);
   });
 
   it('các mục địa chỉ, lịch hoặc tình trạng chưa rõ đã được bỏ ra', () => {

@@ -1,13 +1,12 @@
 import { z } from 'zod';
 import { activeDate, idSchema } from './domain';
 
-// Places that give a reusable or recyclable item a second life, shown under the disposal guidance: brand take-back
-// schemes, charities and scrap-buying apps in Ho Chi Minh City. Every entry was checked on 2026-10-17 against the
-// organisation's own page; directory and listicle sites were not used. Entries whose address, schedule or current
-// status could not be pinned down were left out: the Tân Mỹ MRF station (two different addresses, neither matching the
-// map), Bình Tân "đổi rác lấy quà" (one launch day, no schedule), "Sách trao tay" (latest report from 2019) and
-// Biti's batteries (the 2026 drive ran 5–25 June). Public programmes ('state') stay a supported type for when one can
-// be confirmed. No coordinates were added; none of these is a single fixed place yet.
+// Services without one fixed address, shown in the "Điểm tiếp nhận" tab under the collection points: brand take-back
+// and trade-in schemes, home pickups, charities and scrap-buying apps in Ho Chi Minh City. Places with an address
+// (the Tân Mỹ MRF station, scrap shops) are collection points in lib/points-collectors.ts instead. Every entry here was
+// checked on 2026-10-17 against the organisation's own page (verified: true); directory and listicle sites were not
+// used. Left out because they had ended or had no current source: Bình Tân "đổi rác lấy quà" (one launch day),
+// "Sách trao tay" (latest report 2019) and Biti's batteries (the 2026 drive ran 5–25 June).
 export const placeTypes = ['state', 'brand', 'charity', 'scrap'] as const;
 export type PlaceType = (typeof placeTypes)[number];
 export const placeTypeLabels: Record<PlaceType, string> = {
@@ -34,6 +33,8 @@ export const reusePlaceSchema = z.object({
   schedule: z.string().max(200),
   note: z.string().max(400),
   validTo: date.nullable(),
+  // True when the organisation's own page or a newspaper report was read directly and matches what is shown.
+  verified: z.boolean(),
   // Only for fixed places, once checked against the address; enables community confirmation on site.
   latitude: z.number().min(-90).max(90).nullable().optional(),
   longitude: z.number().min(-180).max(180).nullable().optional(),
@@ -62,10 +63,52 @@ export const reusePlaces: ReusePlace[] = [
       'Thu gom miễn phí tại nhà khi hộ gia đình có ít nhất 1 thiết bị lớn (tivi, màn hình, máy tính, máy in, máy fax, máy scan, máy photocopy) hoặc 10 thiết bị điện tử nhỏ. Pin các loại chỉ tính là 1 thiết bị; mỗi đợt tối đa 50 sản phẩm nhỏ.',
     schedule: 'Tình nguyện viên thường thu gom cuối tuần; hotline thứ Hai–thứ Sáu, 8h30–17h00.',
     note: 'Khu vực phục vụ trên website còn ghi theo tên quận cũ; hỏi lại khi gọi.',
+    verified: true,
     validTo: null,
     sources: [
       { name: 'Việt Nam Tái Chế · Câu hỏi thường gặp', url: 'https://vietnamrecycles.com/faq-vn', checkedAt: checked },
       { name: 'Việt Nam Tái Chế · Liên hệ', url: 'https://vietnamrecycles.com/lien-he', checkedAt: checked },
+    ],
+  },
+  {
+    id: 'tgdd-thu-cu',
+    type: 'brand',
+    name: 'Thế Giới Di Động · thu cũ đổi mới',
+    operator: 'Thế Giới Di Động',
+    kind: 'network',
+    address: 'Các cửa hàng Thế Giới Di Động tại TP.HCM',
+    mapsQuery: 'Thế Giới Di Động, Thành phố Hồ Chí Minh',
+    phone: '1900 232 460',
+    website: 'https://www.thegioididong.com/thu-cu-doi-moi',
+    itemIds: ['dien-thoai', 'may-tinh-bang', 'laptop'],
+    accepts:
+      'Khi mua máy mới: mang điện thoại, máy tính bảng hoặc laptop cũ tới cửa hàng để định giá và được trợ giá theo từng đợt chương trình.',
+    schedule: 'Mức trợ giá đổi theo đợt; xem trang thu cũ đổi mới.',
+    note: 'Chỉ áp dụng khi mua máy mới; máy còn hoạt động thường được định giá tốt hơn.',
+    verified: true,
+    validTo: null,
+    sources: [{ name: 'Thế Giới Di Động · Thu cũ đổi mới', url: 'https://www.thegioididong.com/thu-cu-doi-moi', checkedAt: checked }],
+  },
+  {
+    id: 'cellphones-thu-cu',
+    type: 'brand',
+    name: 'CellphoneS · thu cũ đổi mới, thu mua máy cũ',
+    operator: 'CellphoneS',
+    kind: 'network',
+    address: 'Các cửa hàng CellphoneS tại TP.HCM',
+    mapsQuery: 'CellphoneS, Thành phố Hồ Chí Minh',
+    phone: '1800 2097',
+    website: 'https://cellphones.com.vn/thu-cu-doi-moi',
+    itemIds: ['dien-thoai', 'may-tinh-bang', 'laptop'],
+    accepts:
+      'Thu mua và thu cũ đổi mới điện thoại, máy tính bảng, laptop theo tình trạng máy. Laptop không còn hoạt động, không lên nguồn thì không thu mua.',
+    schedule: 'Định giá tại cửa hàng.',
+    note: 'Máy hư nặng nên tìm tiệm thu mua xác hoặc Việt Nam Tái Chế.',
+    verified: true,
+    validTo: null,
+    sources: [
+      { name: 'CellphoneS · Thu cũ đổi mới điện thoại', url: 'https://cellphones.com.vn/thu-cu-doi-moi', checkedAt: checked },
+      { name: 'CellphoneS · Thu mua laptop cũ', url: 'https://cellphones.com.vn/thu-cu-doi-moi/trade-in-laptop', checkedAt: checked },
     ],
   },
   {
@@ -83,6 +126,7 @@ export const reusePlaces: ReusePlace[] = [
       'Nhận mọi sản phẩm hiệu UNIQLO đã qua sử dụng: bỏ vào Hộp tái chế hoặc đưa nhân viên cửa hàng. Đồ dùng cá nhân không thuộc diện quyên góp.',
     schedule: 'Trong giờ mở cửa của cửa hàng.',
     note: 'Chỉ nhận đồ hiệu UNIQLO.',
+    verified: true,
     validTo: null,
     sources: [
       { name: 'UNIQLO Việt Nam · Giới thiệu về Chương trình tái chế UNIQLO', url: 'https://faq-vn.uniqlo.com/articles/vi/FAQ/UQVN-Gi%E1%BB%9Bi-thi%E1%BB%87u-v%E1%BB%81-Ch%C6%B0%C6%A1ng-tr%C3%ACnh-t%C3%A1i-ch%E1%BA%BF-UNIQLO', checkedAt: checked },
@@ -102,6 +146,7 @@ export const reusePlaces: ReusePlace[] = [
     accepts: 'Nhận quần áo đã qua sử dụng: đồ còn dùng được chuyển tới tủ đồ 0 đồng và tổ chức từ thiện, đồ hỏng đưa đi tái chế. Một số trạm khóa một chiều, nhận gói dưới 5 kg.',
     schedule: 'Xem bản đồ trạm trên website.',
     note: 'Có thể gửi đồ qua website reshare.vn.',
+    verified: true,
     validTo: null,
     sources: [
       { name: 'REshare · Mạng lưới trạm thu gom', url: 'https://tram.reshare.vn/', checkedAt: checked },
@@ -123,6 +168,7 @@ export const reusePlaces: ReusePlace[] = [
       'Nhận quyên góp quần áo cũ: gọi Donation Center để được thu gom tận nhà, hoặc mang tới các trạm quyên góp của Goodwill (xem trên website).',
     schedule: 'Gọi hotline để hẹn thu gom.',
     note: '11 Nguyễn Văn Nghi (Gò Vấp cũ) là trụ sở chính, không phải trạm nhận đồ.',
+    verified: true,
     validTo: null,
     sources: [{ name: 'Goodwill Vietnam · Trang chủ', url: 'https://goodwill.org.vn/pages/trang-chu', checkedAt: checked }],
   },
@@ -140,6 +186,7 @@ export const reusePlaces: ReusePlace[] = [
     accepts: 'Đặt lịch người thu mua ve chai, phế liệu đến tận nhà; giá theo thị trường.',
     schedule: 'Đặt lịch trong ứng dụng.',
     note: 'Khu vực phục vụ xem trong ứng dụng.',
+    verified: true,
     validTo: null,
     sources: [
       { name: 'Google Play · VECA (cập nhật 25/05/2026)', url: 'https://play.google.com/store/apps/details?id=veca.di4l.vn.veca_customer', checkedAt: checked },
@@ -160,6 +207,7 @@ export const reusePlaces: ReusePlace[] = [
     accepts: 'Ứng dụng miễn phí: đặt lịch thu gom rác sinh hoạt và bán ve chai, phế liệu.',
     schedule: 'Đặt lịch trong ứng dụng.',
     note: 'Chưa tìm được số điện thoại; liên hệ qua ứng dụng hoặc website.',
+    verified: true,
     validTo: null,
     sources: [{ name: 'Grac · Ứng dụng thu gom rác', url: 'https://grac.vn/grac-app-thu-gom-rac/', checkedAt: checked }],
   },
