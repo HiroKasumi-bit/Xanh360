@@ -16,7 +16,9 @@ export type Rule=z.infer<typeof ruleSchema>;
 export const acceptanceSchema=z.object({itemIds:z.array(idSchema).min(1),status:z.enum(['accepted','rejected','unknown']),condition:txt,sourceId:idSchema,checkedAt:z.string(),validTo:z.string().nullable(),verification:z.enum(['published','direct','unverified']),audience:z.enum(['household','business','both']),maxQuantity:z.number().positive().nullable(),intactOnly:z.boolean()});
 export const pointSchema=z.object({id:idSchema,name:txt.min(2),address:txt.min(3),originalAddress:txt,areaId:idSchema,scopeSourceId:idSchema,latitude:z.number().min(-90).max(90).nullable(),longitude:z.number().min(-180).max(180).nullable(),coordinateSource:txt,placeId:txt,phone:z.string().regex(/^[+0-9 ()-]*$/).max(30),website:url,kind:z.enum(['fixed','event','pickup']),serviceAreaIds:z.array(idSchema),status:z.enum(['active','unconfirmed','paused']),validTo:z.string().nullable(),hours:txt,fee:txt,acceptance:z.array(acceptanceSchema).max(100),demo:z.boolean().default(false),
  // Added in the 2026-10 data review; optional so records already saved in D1 stay valid.
- mapsQuery:txt.optional(),sourceUrl:url.optional(),sourceCheckedAt:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),phoneSourceUrl:url.optional(),note:txt.optional()}).refine(p=>(p.latitude===null)===(p.longitude===null),'Cần đủ cả vĩ độ và kinh độ');
+ mapsQuery:txt.optional(),sourceUrl:url.optional(),
+ // Who runs it: a public programme, a brand take-back, a charity, or a scrap buyer (2026-10, optional for old records).
+ provider:z.enum(['state','brand','charity','scrap']).optional(),sourceCheckedAt:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),phoneSourceUrl:url.optional(),note:txt.optional()}).refine(p=>(p.latitude===null)===(p.longitude===null),'Cần đủ cả vĩ độ và kinh độ');
 export type Point=z.infer<typeof pointSchema>;
 export type Catalog={items:Item[];rules:Rule[];points:Point[];sources:Source[];areas:Area[]};
 export type Answers=Partial<Record<'clean'|'empty'|'intact',boolean>>;
@@ -67,5 +69,5 @@ export function findPoints(c:Catalog,q:PointQuery,now=new Date()){
  const verified=p.status==='active'&&((accept.verification==='direct'&&fresh)||official);
  return[{point:p,acceptance:accept,km,verified,directions:p.kind==='pickup'?null:mapsPlace(p)}];});
  found.sort((a,b)=>Number(b.verified)-Number(a.verified)||(a.km??Infinity)-(b.km??Infinity)||a.point.name.localeCompare(b.point.name,'vi'));
- return{verified:found.filter(x=>x.verified).slice(0,5),confirm:found.filter(x=>!x.verified).slice(0,5)};
+ return{verified:found.filter(x=>x.verified).slice(0,10),confirm:found.filter(x=>!x.verified).slice(0,10)};
 }

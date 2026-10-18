@@ -7,6 +7,13 @@ import CommunityVotes from './community-votes';
 
 export type PointMatch = ReturnType<typeof findPoints>['confirm'][number];
 
+const providerLabels = {
+  state: 'Chương trình nhà nước',
+  brand: 'Thương hiệu thu hồi',
+  charity: 'Quyên góp, từ thiện',
+  scrap: 'Tiệm thu mua đồ cũ, đồ hư',
+};
+
 const day = (iso: string) => {
   const [y, m, d] = iso.split('-');
   return `${d}/${m}/${y}`;
@@ -37,12 +44,13 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
             {data.verified ? (
               <>
                 <ShieldCheck aria-hidden="true" />
-                Đã xác nhận
+                Đã xác minh
               </>
             ) : (
-              'Chưa xác nhận'
+              'Chưa xác minh'
             )}
           </span>
+          {p.provider && <span className="point-provider">{providerLabels[p.provider]}</span>}
           <h3>{p.name}</h3>
         </div>
       </div>
@@ -105,7 +113,9 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
         <p className="small point-source">
           Nguồn:{' '}
           <a href={p.sourceUrl} target="_blank" rel="noreferrer">
-            {new URL(p.sourceUrl).hostname.replace(/^www\./, '')}
+            {p.sourceUrl.startsWith('https://www.google.com/maps')
+              ? 'Google Maps'
+              : new URL(p.sourceUrl).hostname.replace(/^www\./, '')}
           </a>
           {p.sourceCheckedAt && <> · kiểm tra {day(p.sourceCheckedAt)}</>}
         </p>
@@ -125,7 +135,7 @@ export default function PointCard({data, onFeedback}: {data: PointMatch; onFeedb
           <p className="small">
             {data.verified
               ? `Đã đối chiếu danh sách chính thức và vị trí trên bản đồ${p.sourceCheckedAt ? ` (kiểm tra ${day(p.sourceCheckedAt)})` : ''}${p.coordinateSource ? `: ${p.coordinateSource}` : ''}. Giờ nhận tại điểm có thể thay đổi; gọi hỏi nếu mang nhiều đồ.`
-              : `Chưa xác nhận trực tiếp: điểm có trong danh sách công bố nhưng chưa có tọa độ kiểm chứng hoặc xác nhận tại chỗ. Danh mục tiếp nhận kiểm tra ${day(data.acceptance.checkedAt)}.`}
+              : `Chưa xác minh: chưa kiểm chứng được độc lập rằng điểm còn nhận loại đồ này${p.provider === 'scrap' ? ' (thông tin do cửa hàng tự đăng trên Google Maps)' : ''}. Kiểm tra ${day(data.acceptance.checkedAt)}.`}
           </p>
           {p.phone && (
             <p className="small">

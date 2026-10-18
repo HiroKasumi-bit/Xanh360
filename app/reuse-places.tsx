@@ -13,19 +13,18 @@ const kindLabels: Record<ReusePlace['kind'], string> = {
 };
 const day = (iso: string) => iso.split('-').reverse().join('/');
 
-// Under the disposal guidance: where the item can be recycled or given away instead of thrown out, grouped by who runs
-// it. None of these is confirmed yet, so each card leads with the call-ahead line and the number (or says there is
-// none), the same rule as the collection points.
+// In the "Điểm tiếp nhận" tab, under the collection points: services with no single address (home pickups, trade-in
+// at a chain's stores, charities' drop-off networks, scrap apps), grouped by who runs them. Each card says whether its
+// source was checked; an unchecked one leads with the call-ahead line, the same rule as the collection points.
 export default function ReusePlaces({itemId}: {itemId: string}) {
   const groups = placesFor(itemId);
   if (!groups.length) return null;
   const hasScrap = groups.some(g => g.type === 'scrap');
   return (
     <section className="reuse-places" aria-labelledby="reuse-title">
-      <span className="eyebrow">Cho món đồ thêm một vòng đời</span>
-      <h3 id="reuse-title">Tái chế, quyên góp ở đâu?</h3>
-      <p className="small">
-        Chỉ gồm chương trình tại TP.HCM có nguồn. Thông tin có thể đã thay đổi: hãy gọi trước khi mang đồ tới.
+      <h2 id="reuse-title">Thu gom tận nơi, thu cũ đổi mới & quyên góp</h2>
+      <p className="small mb-4">
+        Dịch vụ tại TP.HCM không gắn với một địa chỉ cố định: gọi hoặc đặt lịch, hoặc mang tới cửa hàng của chuỗi.
       </p>
       {groups.map(g => {
         const Icon = typeIcons[g.type];
@@ -57,23 +56,28 @@ function PlaceCard({place: p}: {place: ReusePlace}) {
   return (
     <article className="reuse-card">
       <div className="reuse-card-head">
-        <span className="badge special">Chưa xác nhận</span>
+        <span className={'badge ' + (p.verified ? 'recycle' : 'special')}>
+          {p.verified ? 'Đã xác minh' : 'Chưa xác minh'}
+        </span>
         <span className="reuse-kind">{kindLabels[p.kind]}</span>
       </div>
       <h5>{p.name}</h5>
       {p.address && <p className="small">{p.address}</p>}
       <p>{p.accepts}</p>
       {p.schedule && <p className="small">{p.schedule}</p>}
-      <div className="reuse-call" role="note">
-        <PhoneCall aria-hidden="true" />
-        <div>
-          <b>Gọi trước để chắc chắn điểm còn nhận</b>
-          <span>
-            {p.phone ? `Số liên hệ: ${p.phone}` : 'Chưa tìm được số điện thoại liên hệ.'}
-            {p.note && <> · {p.note}</>}
-          </span>
+      {!p.verified && (
+        <div className="reuse-call" role="note">
+          <PhoneCall aria-hidden="true" />
+          <div>
+            <b>Gọi trước để chắc chắn điểm còn nhận</b>
+            <span>
+              {p.phone ? `Số liên hệ: ${p.phone}` : 'Chưa tìm được số điện thoại liên hệ.'}
+              {p.note && <> · {p.note}</>}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
+      {p.verified && p.note && <p className="small">{p.note}</p>}
       <div className="point-actions">
         {tel && (
           <a className="primary" href={tel}>

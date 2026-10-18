@@ -3,6 +3,7 @@ import {additionalItemDefs,additionalRules,additionalSources,materialDetails} fr
 import {extraAliases,householdItemDefs,householdMaterials,householdRules,householdSources} from './catalog-household';
 import type {Catalog,Item,Rule,Source,Area,Point} from './domain';
 import {hcmPoints,pointSources} from './points-hcm';
+import {collectorPoints,collectorSources} from './points-collectors';
 export const sources:Source[]=[
 ...additionalSources,
 ...householdSources,
@@ -15,6 +16,7 @@ export const sources:Source[]=[
 {id:'vntc-home',name:'Việt Nam Tái Chế · Dành cho hộ gia đình',url:'https://vietnamrecycles.com/cho-ho-gia-dinh',checkedAt:'2026-10-04',scope:'Hướng dẫn bàn giao điện tử và dữ liệu cá nhân.'},
 {id:'hcm-admin',name:'Cổng thông tin Chính phủ · Đơn vị hành chính TP.HCM',url:'https://xaydungchinhsach.chinhphu.vn/sap-xep-dvhc-danh-sach-168-xa-phuong-dac-khu-cua-thanh-pho-ho-chi-minh-119250623085031865.htm',checkedAt:'2026-10-04',scope:'Phạm vi hành chính theo Nghị quyết 1685/NQ-UBTVQH15; tên cũ chỉ hỗ trợ tra cứu.'},
 ...pointSources,
+...collectorSources,
 ];
 const defs:[string,string,Item['group'],string[],Item['questions'],boolean][]=[
 ...additionalItemDefs,
@@ -41,5 +43,5 @@ rule('electronic','electronic','special','Chương trình thu hồi thiết bị
 rule('chemical','chemical','special','Liên hệ đơn vị xử lý chuyên trách',['Giữ nhãn để đơn vị tiếp nhận xác định thành phần.','Hỏi hướng dẫn trước khi vận chuyển.'],['epa-hazard'],{},10,true,'Không trộn hóa chất, đổ xuống cống hoặc đốt.')
 ];
 export const areas:Area[]=[{id:'all',name:'Toàn TP. Hồ Chí Minh',aliases:['TP.HCM','Sài Gòn'],cityId:'hcm',sourceId:'hcm-admin',validFrom:'2025-07-01',validTo:null},...(areaData as Area[])];
-export const points:Point[]=hcmPoints;
+export const points:Point[]=[...hcmPoints,...collectorPoints];
 export const seed:Catalog={items,rules,points,sources,areas};

@@ -134,6 +134,7 @@ const entries: Entry[] = [
 export const hcmPoints: Point[] = entries.map((e) => ({
   ...e,
   scopeSourceId: 'vntc-points-2025',
+  provider: 'brand',
   placeId: '',
   phone: VNTC_HOTLINE,
   phoneSourceUrl: CONTACT_URL,
