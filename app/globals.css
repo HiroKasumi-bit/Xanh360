@@ -44,11 +44,6 @@
   /* Lime accent, on dark surfaces only. */
   --sprout: #d7f79b;
 
-  /* Decorative city accents for the hero skyline only: the Cathedral's brick and the afternoon sun. They sit near the
-     hazard red and the amber of "thu gom chuyên biệt", so they never appear on paper or carry status. */
-  --deco-brick: #b0603f;
-  --deco-brick-deep: #8e4632;
-  --deco-sun: #f2c96b;
   /* One gạch bông (encaustic cement) tile in green and sand only: sand quarter-flowers in the corners meet across
      tiles, a green four-petal medallion sits in the middle. */
   --gach-bong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23cdb680'%3E%3Cpath d='M0 0h8a8 8 0 0 1-8 8z'/%3E%3Cpath d='M40 0v8a8 8 0 0 1-8-8z'/%3E%3Cpath d='M40 40h-8a8 8 0 0 1 8-8z'/%3E%3Cpath d='M0 40v-8a8 8 0 0 1 8 8z'/%3E%3C/g%3E%3Cpath d='M20 1 39 20 20 39 1 20z' fill='none' stroke='%2317694c' stroke-width='.9' stroke-opacity='.5'/%3E%3Cg fill='%2317694c'%3E%3Cpath d='M20 5c5 5 5 10 0 14-5-4-5-9 0-14z'/%3E%3Cpath d='M35 20c-5 5-10 5-14 0 4-5 9-5 14 0z'/%3E%3Cpath d='M20 35c-5-5-5-10 0-14 5 4 5 9 0 14z'/%3E%3Cpath d='M5 20c5-5 10-5 14 0-4 5-9 5-14 0z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='2.4' fill='%23cdb680'/%3E%3C/svg%3E");

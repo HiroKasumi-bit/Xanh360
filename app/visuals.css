@@ -305,80 +305,159 @@ body {
   height: 14px;
 }
 
-/* Saigon skyline (SaigonScene in app/eco-visual.tsx). The scene covers the hero behind the copy; the skyline is drawn
-   from the bottom up, --scene-h tall, with the landmarks on the right and the river across the whole width. The hero
-   keeps --river-room clear under the copy: on wide heroes the river fits in the bottom padding, so it costs nothing;
-   on tablets and phones the copy sits above the whole band. The brick and sun accents (--deco-*) appear only on this dark scene, never on
-   paper, so they cannot be read as the hazard red or the amber of "thu gom chuyên biệt". */
+/* Saigon skyline (SaigonScene in app/eco-visual.tsx): a 3D scene, shown first as a still rendered from it and, on
+   request, live. Both fill a band --scene-h tall at the bottom of the hero, cropped like object-fit: cover anchored
+   bottom right, so the landmarks stay right of the copy and narrow screens lose only river on the left. The hero keeps
+   --river-room clear under the copy: on wide heroes the river fits in the bottom padding, so it costs nothing; on
+   tablets and phones the copy sits above the whole band. */
 .hero-intro {
   --scene-h: 270px;
   --river-room: 6px;
   padding-bottom: calc(43px + var(--river-room));
 }
 
+/* No z-index here, so the scene forms no stacking context: the still and the canvas paint under the copy (z-index 2),
+   which keeps its text selectable and clickable, while the toggle (z-index 3) sits above everything. */
 .eco-scene {
   position: absolute;
   inset: 0;
   pointer-events: none;
   user-select: none;
-  z-index: 0;
 }
 
-.saigon-svg {
+.saigon-still,
+.saigon-live {
   position: absolute;
   inset: auto 0 0;
-  display: block;
   width: 100%;
   height: var(--scene-h);
 }
 
-.sg-far { fill: #174a3b; opacity: .75; }
-.sg-far-low { fill: #153f33; opacity: .7; }
-/* Hairlines (edges, mullions, stays, crown fins) keep their pixel width at every scale, so they neither vanish on
-   phones nor thicken on wide screens. */
-.sg-edge,
-.sg-crown,
-.sg-mullion,
-.sg-stay,
-.sg-helipad-rim,
-.sg-helipad-strut { fill: none; vector-effect: non-scaling-stroke; }
-.sg-edge { stroke: rgb(215 247 155 / .55); stroke-width: 1.2px; }
-.sg-crown { stroke: #cfeeb0; stroke-width: 1.5px; stroke-linecap: round; }
-.sg-mullion { stroke: rgb(5 30 22 / .35); stroke-width: 1px; }
-.sg-helipad { fill: #3f9a8b; }
-.sg-helipad-rim { stroke: rgb(215 247 155 / .75); stroke-width: 1.2px; }
-.sg-helipad-strut { stroke: #2b7470; stroke-width: 1.5px; stroke-linecap: round; }
-.sg-stay { stroke: rgb(215 247 155 / .45); stroke-width: .9px; }
-.sg-pylon { fill: #3c8a6c; }
-.sg-deck { fill: #2c6f57; }
-.sg-brick { fill: var(--deco-brick-deep); }
-.sg-brick-lit { fill: var(--deco-brick); }
-.sg-spire { fill: #3e4a48; }
-.sg-spire-lit { fill: #6f7f78; }
-.sg-gable { fill: #a35539; }
-.sg-cross { fill: none; stroke: #f1d79a; stroke-width: 1.3; stroke-linecap: round; }
-.sg-rose { fill: var(--deco-sun); opacity: .85; }
-.sg-door { fill: #3a1c14; opacity: .6; }
-.sg-sand { fill: #d8c28a; }
-.sg-sand-lit { fill: #ecd9a4; }
-.sg-roof { fill: #a8915a; }
-.sg-clock { fill: #fff3c8; stroke: #6e5a2c; stroke-width: 1; }
-.sg-hands { fill: none; stroke: #4a3b1a; stroke-width: 1.1; stroke-linecap: round; }
-.sg-arcade { fill: none; stroke: rgb(70 55 25 / .5); stroke-width: 1; }
-.sg-trees { fill: #12483a; }
-.sg-bank { fill: #0c3027; }
-.sg-reflect { fill: none; stroke: rgb(215 247 155 / .18); stroke-width: 2; stroke-linecap: round; }
-.sg-water { fill: none; stroke: rgb(220 245 230 / .35); stroke-width: 1.4; stroke-linecap: round; animation: sg-flow 48s linear infinite; }
-.sg-hull,
-.sg-rower { fill: #0b2a22; }
-.sg-hull-lit { fill: rgb(215 247 155 / .35); }
-.sg-oar { fill: none; stroke: #0b2a22; stroke-width: 1.4; stroke-linecap: round; }
-/* The haul: kraft cardboard, a pale sack of bottles, a sage sack of cans. */
-.sg-bale-card { fill: #bfa77a; }
-.sg-bale-tie { fill: none; stroke: #7d6a45; stroke-width: .8; }
-.sg-bale-bottles { fill: #b9d3d6; }
-.sg-bale-cans { fill: #9fbe8e; }
-.sg-boat { animation: sg-drift 34s var(--ease-float) infinite alternate; }
+.saigon-still {
+  display: block;
+  object-fit: cover;
+  object-position: right bottom;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+/* The live canvas takes over once its first frame is drawn, so the swap shows no gap. Horizontal drags turn the
+   camera; vertical swipes still scroll the page. */
+.saigon-live canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.saigon-live canvas:active {
+  cursor: grabbing;
+}
+
+.eco-scene[data-mode=live] .saigon-still {
+  opacity: 0;
+}
+
+/* Side by side with the copy, the far bank fades out under it, so the hero sentence and meta line sit on the plain
+   green. On tablets and phones the copy is above the band and the whole scene shows. */
+@media (min-width: 901px) {
+  .saigon-still,
+  .saigon-live {
+    -webkit-mask-image: linear-gradient(90deg, transparent 18%, #000 46%);
+    mask-image: linear-gradient(90deg, transparent 18%, #000 46%);
+  }
+}
+
+/* "Xem 3D": frosted glass in the empty sky at the top right, the one control on the scene, clear of the landmarks at
+   every width. */
+.scene-toggle {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px 0 13px;
+  border: 1px solid rgb(255 255 255 / .24);
+  border-radius: var(--r-pill);
+  background: linear-gradient(180deg, rgb(255 255 255 / .18), rgb(255 255 255 / .08));
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), 0 1px 2px rgb(1 15 11 / .25), -4px 10px 20px -10px rgb(1 15 11 / .6);
+  color: #f4fff7;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: auto;
+  transition: background-color var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-spring);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .scene-toggle {
+    background: rgb(24 78 61 / .94);
+  }
+}
+
+.scene-toggle svg {
+  width: 18px;
+  height: 18px;
+  color: var(--sprout);
+}
+
+.scene-toggle[aria-pressed=true] {
+  background: rgb(215 247 155 / .2);
+  border-color: rgb(215 247 155 / .45);
+}
+
+.scene-toggle:disabled {
+  cursor: progress;
+}
+
+.scene-toggle:not(:disabled):active {
+  scale: var(--press-scale);
+  transition-duration: var(--dur-instant);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scene-toggle:not(:disabled):hover {
+    background-color: rgb(255 255 255 / .1);
+  }
+}
+
+/* Phones: a round icon button, so it stays clear of the headline; the label remains its accessible name. */
+@media (max-width: 640px) {
+  .scene-toggle {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .scene-toggle span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.scene-hint {
+  position: absolute;
+  right: 18px;
+  top: 68px;
+  z-index: 3;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgb(4 22 17 / .55);
+  color: #e3f1e6;
+  font-size: var(--fs-caption);
+  pointer-events: none;
+}
 
 /* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
 .capture-card {
@@ -624,18 +703,6 @@ footer::before {
 }
 
 /* Keyframes: decorative loops move only transform and opacity. */
-@keyframes sg-flow {
-  to {
-    transform: translateX(-1000px);
-  }
-}
-
-@keyframes sg-drift {
-  to {
-    transform: translateX(300px);
-  }
-}
-
 @keyframes leaf-sway {
   to {
     transform: translate3d(-16px, 9px, 0) rotate(-1.6deg);
