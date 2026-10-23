@@ -51,5 +51,5 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 
-# impeccable design skill: live-server runtime state
-/.impeccable/live/
+# impeccable design skill: live-server state and critique snapshots (local only)
+/.impeccable/
