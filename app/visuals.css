@@ -305,94 +305,67 @@ body {
   height: 14px;
 }
 
-/* Decorative globe. Layers, back to front: contact shadow on the ground, the bobbing planet (a rotating surface and drifting clouds under a fixed lighting shell), then glass labels.
-   --planet is the diameter, --planet-x/--planet-top the centre within the scene, --lift how far it rises. Labels are placed from the planet, not the scene edges, so they keep clear of it at every size. */
+/* Saigon skyline (SaigonScene in app/eco-visual.tsx). The scene covers the hero behind the copy; the skyline is drawn
+   from the bottom up, --scene-h tall, and the hero keeps --river-room clear under the copy for the river band. The
+   landmarks use the city accents (--saigon-*) only here and in the gạch bông tiles; they never carry status. */
+.hero-intro {
+  --scene-h: 300px;
+  --river-room: 64px;
+  padding-bottom: calc(43px + var(--river-room));
+}
+
 .eco-scene {
-  --planet: 196px;
-  --planet-x: 50%;
-  --planet-top: 46%;
-  --lift: -12px;
-  grid-row: 1;
-  grid-column: 2;
-  position: relative;
-  min-width: 0;
-  height: 330px;
-  width: 100%;
-  max-width: 450px;
-  justify-self: end;
-  pointer-events: none;
-  user-select: none;
-  isolation: isolate;
-}
-
-/* The ground shadow: darkest and widest when the planet is lowest, shrinking and fading as it rises (same timing as the bob). Offset slightly left, away from the key light. */
-.planet-shadow {
-  position: absolute;
-  left: var(--planet-x);
-  top: calc(var(--planet-top) + var(--planet) / 2 + 24px);
-  width: calc(var(--planet) * .72);
-  height: calc(var(--planet) * .13);
-  translate: calc(-50% - 10px) -50%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 9 6 / .7), rgb(0 9 6 / .34) 52%, rgb(0 9 6 / 0));
-  z-index: 1;
-  animation: planet-shadow 3.7s var(--ease-float) infinite alternate;
-}
-
-.planet-float {
-  position: absolute;
-  left: var(--planet-x);
-  top: var(--planet-top);
-  width: var(--planet);
-  height: var(--planet);
-  translate: -50% -50%;
-  z-index: 2;
-  animation: planet-bob 3.7s var(--ease-float) infinite alternate;
-}
-
-.eco-planet {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 50%;
-  isolation: isolate;
-  background: #1a6863;
-  box-shadow: 3px -3px 16px rgb(168 236 196 / .16), 0 0 0 1px rgb(2 20 15 / .25);
-}
-
-/* Only the surface turns: a strip two globes wide, tiled with a seamless map, pans one globe-width and loops. The clouds drift a little faster for depth. */
-.planet-surface,
-.planet-clouds {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 200%;
-  height: 100%;
-  background: url(/globe/land.webp) 0 0 / 50% 100% repeat-x;
-}
-
-.planet-surface {
-  animation: planet-turn 84s linear infinite;
-}
-
-.planet-clouds {
-  background-image: url(/globe/clouds.webp);
-  opacity: .45;
-  animation: planet-turn 58s linear infinite;
-}
-
-/* Fixed lighting shell: the glint, the terminator and the rim light stay put while the surface turns underneath. */
-.planet-light {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 69% 26%, rgb(255 250 226 / .34) 0, rgb(255 250 226 / .1) 9%, rgb(255 250 226 / 0) 22%),
-    radial-gradient(circle at 66% 30%, rgb(2 20 15 / 0) 0, rgb(2 20 15 / 0) 28%, rgb(2 20 15 / .42) 50%, rgb(1 14 10 / .82) 68%, rgb(1 12 9 / .94) 82%);
-  box-shadow: inset -3px 4px 7px rgb(226 255 206 / .3), inset 12px -16px 28px rgb(1 14 10 / .45);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
-/* Floating labels: real frosted glass over the dark hero, upright, each on its own rhythm. */
+.saigon-svg {
+  position: absolute;
+  inset: auto 0 0;
+  display: block;
+  width: 100%;
+  height: var(--scene-h);
+}
+
+.sg-far { fill: #174a3b; opacity: .75; }
+.sg-edge { fill: none; stroke: rgb(215 247 155 / .55); stroke-width: 1.2; }
+.sg-crown { fill: none; stroke: #cfeeb0; stroke-width: 1.6; stroke-linecap: round; }
+.sg-mullion { fill: none; stroke: rgb(5 30 22 / .35); stroke-width: 1; }
+.sg-beacon { fill: #ff7a5c; }
+.sg-helipad { fill: #3f9a8b; }
+.sg-helipad-rim { fill: none; stroke: rgb(215 247 155 / .7); stroke-width: 1.2; }
+.sg-stay { fill: none; stroke: rgb(215 247 155 / .4); stroke-width: .8; }
+.sg-pylon { fill: #3c8a6c; }
+.sg-deck { fill: #2c6f57; }
+.sg-brick { fill: var(--saigon-brick-deep); }
+.sg-brick-lit { fill: var(--saigon-brick); }
+.sg-spire { fill: #7a3b2a; }
+.sg-spire-lit { fill: #a85a3c; }
+.sg-gable { fill: #a35539; }
+.sg-cross { fill: none; stroke: #f1d79a; stroke-width: 1.3; stroke-linecap: round; }
+.sg-rose { fill: var(--saigon-sun); opacity: .85; }
+.sg-door { fill: #3a1c14; opacity: .6; }
+.sg-sand { fill: #b59d63; }
+.sg-sand-lit { fill: #d2bb80; }
+.sg-roof { fill: #5e7f5c; }
+.sg-clock { fill: #fff3c8; stroke: #6e5a2c; stroke-width: 1; }
+.sg-hands { fill: none; stroke: #4a3b1a; stroke-width: 1.1; stroke-linecap: round; }
+.sg-arcade { fill: none; stroke: rgb(70 55 25 / .5); stroke-width: 1; }
+.sg-trees { fill: #12483a; }
+.sg-bank { fill: #0c3027; }
+.sg-reflect { fill: none; stroke: rgb(215 247 155 / .18); stroke-width: 2; stroke-linecap: round; }
+.sg-water { fill: none; stroke: rgb(220 245 230 / .35); stroke-width: 1.4; stroke-linecap: round; animation: sg-flow 48s linear infinite; }
+.sg-hull,
+.sg-rower { fill: #0b2a22; }
+.sg-hat { fill: #e8d59a; }
+.sg-oar { fill: none; stroke: #0b2a22; stroke-width: 1.4; stroke-linecap: round; }
+.sg-boat { animation: sg-drift 34s var(--ease-float) infinite alternate; }
+.sg-beacon { animation: sg-blink 2.4s steps(1) infinite; }
+
+/* Floating labels: real frosted glass in the sky over the skyline, upright, each on its own rhythm. */
 .floating-label {
   --bob: -7px;
   position: absolute;
@@ -440,27 +413,19 @@ body {
   white-space: nowrap;
 }
 
-/* Each label sits off a diagonal of the planet with room for both to bob: top-left, right and lower, bottom-left.
-   Co-prime half-periods (2.65s, 3.35s, 4.05s) and different lifts keep the three from ever moving in step. */
+/* The labels hang in the sky: one over the Cathedral and Bitexco, one high on the left of Landmark 81's crown.
+   Co-prime half-periods keep them from moving in step. */
 .label-recycle {
-  right: calc(100% - var(--planet-x) + var(--planet) * .354 + 12px);
-  bottom: calc(100% - var(--planet-top) + var(--planet) * .354 + 6px);
-}
-
-.label-leaf {
-  --bob: -9px;
-  left: calc(var(--planet-x) + var(--planet) * .43 + 6px);
-  top: calc(var(--planet-top) + var(--planet) * .3 + 4px);
-  animation-duration: 3.35s;
-  animation-delay: -1.4s;
+  left: 57%;
+  top: 33%;
 }
 
 .label-special {
   --bob: -6px;
-  right: calc(100% - var(--planet-x) + var(--planet) * .3 + 10px);
-  top: calc(var(--planet-top) + var(--planet) * .42 + 6px);
-  animation-duration: 4.05s;
-  animation-delay: -2.9s;
+  right: 9%;
+  top: 15%;
+  animation-duration: 3.35s;
+  animation-delay: -1.4s;
 }
 
 /* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
@@ -622,11 +587,43 @@ body {
   color: var(--cat-unknown-fg);
 }
 
-/* Panels */
+/* Panels. The how-it-works strip is laid on faint gạch bông, fading out towards the copy on the left. */
 .how-grid {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: var(--paper-raised);
   border: 1px solid var(--line-soft);
   box-shadow: var(--elev-1);
+}
+
+.how-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gach-bong) 0 0 / 40px 40px;
+  opacity: .1;
+  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000);
+  mask-image: linear-gradient(90deg, transparent 20%, #000);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* The footer stands on a single row of gạch bông, like the tiled step of an old Saigon house. */
+footer {
+  position: relative;
+  border-top: 0;
+  padding-top: 40px;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 20px;
+  background: var(--gach-bong) 0 0 / 20px 20px repeat-x;
+  opacity: .5;
+  pointer-events: none;
 }
 
 .source-panel {
@@ -674,25 +671,21 @@ body {
 }
 
 /* Keyframes: decorative loops move only transform and opacity. */
-@keyframes planet-bob {
+@keyframes sg-flow {
   to {
-    transform: translateY(var(--lift));
+    transform: translateX(-1000px);
   }
 }
 
-@keyframes planet-shadow {
+@keyframes sg-drift {
   to {
-    transform: scale(.8);
-    opacity: .5;
+    transform: translateX(300px);
   }
 }
 
-@keyframes planet-turn {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
+@keyframes sg-blink {
+  50% {
+    opacity: .25;
   }
 }
 
@@ -883,11 +876,13 @@ body {
   box-shadow: var(--elev-pressed);
 }
 
-/* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. The header
-   runs short of room too, so the motion toggle keeps only its icon. */
+/* Small laptops: the hero tightens and the skyline gets a little shorter. The header runs short of room too, so the
+   motion toggle keeps only its icon. */
 @media (max-width: 1000px) {
   .hero-intro {
-    padding: 33px 30px;
+    --scene-h: 270px;
+    --river-room: 84px;
+    padding: 33px 30px calc(33px + var(--river-room));
     grid-template-columns: 1.2fr 1fr;
     min-height: 370px;
     gap: 12px;
@@ -895,16 +890,6 @@ body {
 
   .hero-meta {
     gap: 8px 12px;
-  }
-
-  .eco-scene {
-    --planet: 156px;
-    --planet-x: 62%;
-    height: 300px;
-  }
-
-  .label-leaf {
-    display: none;
   }
 
   /* The motion toggle shrinks to its icon; the label stays as its accessible name and title. */
@@ -939,19 +924,19 @@ body {
   }
 }
 
-/* Tablets and phones: the hero flows as a block and the globe floats beside the headline, a sharp object in the corner
-   rather than a band of its own. Its float area is the circle itself (shape-outside), so the headline and the paragraph
-   wrap around the globe instead of running under it. --globe-drop keeps the eyebrow's line clear; --globe-bleed lets the
-   globe run past the hero's edge. The glass labels and the ground shadow need the wide scene, so they go. */
+/* Tablets and phones: the hero flows as a block and the skyline becomes a band under the copy. The copy keeps clear of
+   the landmarks, so --river-room grows towards the band's height. The glass labels need the wide sky, so they go. */
 @media (max-width: 900px) {
   .hero-intro {
+    --scene-h: 220px;
+    --river-room: 116px;
     display: block;
-    padding: 30px 26px;
+    padding: 30px 26px calc(30px + var(--river-room));
     min-height: 0;
   }
 
-  /* Inline rather than inline-block, so the second line wraps around the floating globe. The padding still covers the
-     stacked marks, and box-decoration-break gives each line its own copy of the sprout ramp. */
+  /* Inline rather than inline-block, so a long second line wraps cleanly. The padding still covers the stacked marks,
+     and box-decoration-break gives each line its own copy of the sprout ramp. */
   .hero-intro h1 em {
     display: inline;
     -webkit-box-decoration-break: clone;
@@ -966,29 +951,12 @@ body {
     margin-top: 18px;
   }
 
-  .eco-scene {
-    --planet: 184px;
-    --planet-x: 50%;
-    --planet-top: calc(100% - var(--planet) / 2);
-    --lift: -8px;
-    --globe-drop: 40px;
-    --globe-bleed: 40px;
-    float: right;
-    width: var(--planet);
-    max-width: none;
-    height: calc(var(--planet) + var(--globe-drop));
-    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
-    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
-    shape-margin: 12px;
-  }
-
-  .eco-scene .floating-label,
-  .eco-scene .planet-shadow {
+  .eco-scene .floating-label {
     display: none;
   }
 }
 
-/* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the floating globe shrinks to 156px. */
+/* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the skyline band gets shorter. */
 @media (max-width: 640px) {
   .ambient-sun {
     width: 140vmax;
@@ -1002,9 +970,11 @@ body {
   }
 
   .hero-intro {
+    --scene-h: 150px;
+    --river-room: 138px;
     border-radius: var(--r-xl);
     margin: 0 0 14px;
-    padding: 20px;
+    padding: 20px 20px calc(20px + var(--river-room));
   }
 
   .hero-intro::after {
@@ -1026,15 +996,6 @@ body {
   .hero-meta {
     gap: 6px 14px;
     margin-top: 12px;
-  }
-
-  /* Phones: a 156px globe that runs a little further past the edge. */
-  .eco-scene {
-    --planet: 156px;
-    --lift: -6px;
-    --globe-drop: 50px;
-    --globe-bleed: 52px;
-    shape-margin: 10px;
   }
 
   .capture-card {
@@ -1093,29 +1054,16 @@ body {
   }
 }
 
-/* Small phones: the hero's padding tightens, and the globe starts a little lower so the first headline line fits beside it. */
+/* Small phones: the hero's padding tightens. */
 @media (max-width: 389px) {
   .hero-intro {
-    padding: 18px 17px;
-  }
-
-  .eco-scene {
-    --globe-drop: 62px;
-  }
-}
-
-/* Very small phones: a smaller globe beside the second and third headline lines. */
-@media (max-width: 359px) {
-  .eco-scene {
-    --planet: 132px;
-    --globe-drop: 96px;
-    --globe-bleed: 48px;
+    padding: 18px 17px calc(18px + var(--river-room));
   }
 }
 
 /* Phones in landscape: the screen is short, so the hero is compact at every width, and the capture cards start within
-   the first screen, above the bottom tab bar. The hero flows as a block with a 100px globe floating beside the headline
-   (as on tablets, see the 900px block), and the eyebrow and the meta line give way to the headline and its sentence. */
+   the first screen, above the bottom tab bar. The hero flows as a block, and the skyline, the eyebrow and the meta line
+   give way to the headline and its sentence: a band short enough to fit would crop the towers. */
 @media (orientation: landscape) and (max-height: 500px) {
   .hero-intro {
     display: block;
@@ -1147,35 +1095,18 @@ body {
   }
 
   .eco-scene {
-    --planet: 100px;
-    --planet-x: 50%;
-    --planet-top: calc(100% - var(--planet) / 2);
-    --lift: -5px;
-    --globe-drop: 8px;
-    --globe-bleed: 22px;
-    float: right;
-    width: var(--planet);
-    max-width: none;
-    height: calc(var(--planet) + var(--globe-drop));
-    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
-    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
-    shape-margin: 10px;
-  }
-
-  .eco-scene .floating-label,
-  .eco-scene .planet-shadow {
     display: none;
   }
 }
 
-/* Decorative loops rest while nobody can see them: the hero is off screen or the page is hidden (EcoScene sets data-scene). */
+/* Decorative loops rest while nobody can see them: the hero is off screen or the page is hidden (SaigonScene sets data-scene). */
 .hero-intro[data-scene=asleep]::after,
 .hero-intro[data-scene=asleep] .eco-scene * {
   animation-play-state: paused;
 }
 
-/* Phones and slow displays: the sunlight pools are a large blended layer, so they stay still there. The globe keeps
-   its small, cheap turn and bob. */
+/* Phones and slow displays: the sunlight pools are a large blended layer, so they stay still there. The river and
+   the ghe keep their small, cheap transforms. */
 @media (max-width: 640px), (update: slow) {
   .hero-intro::after {
     animation: none;

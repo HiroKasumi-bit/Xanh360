@@ -44,6 +44,16 @@
   /* Lime accent, on dark surfaces only. */
   --sprout: #d7f79b;
 
+  /* Saigon accents: brick of the Cathedral and the Post Office, the afternoon sun, the Saigon river. Decorative only (the
+     hero skyline and the gạch bông tiles); status colours stay amber and red. */
+  --saigon-brick: #b0603f;
+  --saigon-brick-deep: #8e4632;
+  --saigon-sun: #f2c96b;
+  --saigon-river: #2a6f70;
+  /* One gạch bông (encaustic cement) tile: quarter flowers in the corners meet across tiles, a four-petal medallion in
+     the middle. */
+  --gach-bong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23b0603f'%3E%3Cpath d='M0 0h8a8 8 0 0 1-8 8z'/%3E%3Cpath d='M40 0v8a8 8 0 0 1-8-8z'/%3E%3Cpath d='M40 40h-8a8 8 0 0 1 8-8z'/%3E%3Cpath d='M0 40v-8a8 8 0 0 1 8 8z'/%3E%3C/g%3E%3Cpath d='M20 1 39 20 20 39 1 20z' fill='none' stroke='%2317694c' stroke-width='.9' stroke-opacity='.55'/%3E%3Cg fill='%2317694c'%3E%3Cpath d='M20 6c4 5 4 9 0 12-4-3-4-7 0-12z'/%3E%3Cpath d='M34 20c-5 4-9 4-12 0 3-4 7-4 12 0z'/%3E%3Cpath d='M20 34c-4-5-4-9 0-12 4 3 4 7 0 12z'/%3E%3Cpath d='M6 20c5-4 9-4 12 0-3 4-7 4-12 0z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='2.4' fill='%23e3a93c'/%3E%3C/svg%3E");
+
   /* Amber (collect separately) and earth red (hazard, destructive). Text steps reach 4.5:1 on their own tints and on paper. */
   --amber-50: #fff8ec;
   --amber-100: #fcefd9;
