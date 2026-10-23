@@ -29,6 +29,14 @@ Người dùng tự chọn model và mức effort khi tạo cuộc trò chuyện
 | Thêm tính năng trong vài file, viết test | Sonnet hoặc Opus | vừa–cao |
 | Việc nhiều phần, tra dữ liệu thật nhiều nguồn, đổi database D1, ảnh hưởng deploy/bảo mật | Opus | cao |
 
+## Thiết kế giao diện: dùng impeccable + ui-ux-pro-max
+
+Mỗi khi thiết kế, sửa hoặc review giao diện (trang, component, màu, chữ, bố cục, hiệu ứng, hình minh họa), dùng cả hai skill:
+- **impeccable** dẫn dắt: định hướng, làm, rồi `critique` / `audit` / `polish` trước khi giao.
+- **ui-ux-pro-max** để tra cứu và kiểm tra: quy tắc accessibility, vùng chạm, chuyển động, màu, font; chạy checklist trước khi giao.
+- Thiết kế đang có của Xanh360 là chuẩn ("lá & giấy dưới nắng", hình Sài Gòn ở đầu trang). Không để skill tự đổi bảng màu, font hay phong cách khi chưa hỏi. Hỏi trước khi tạo `PRODUCT.md`, `DESIGN.md` hay thư mục `design-system/`.
+- Chụp màn hình điện thoại và máy tính gửi người dùng duyệt trước khi mở PR.
+
 ## Nguyên tắc luôn giữ
 
 - Không bịa địa chỉ, số điện thoại, tọa độ hay quy định. Không tìm được thì ghi rõ là không có; chưa rõ thì bỏ ra.
