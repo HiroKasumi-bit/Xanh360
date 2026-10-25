@@ -23,6 +23,7 @@ are drawn larger than life so they read next to the towers.
 import math
 import os
 import sys
+import urllib.request
 
 import bmesh
 import bpy
@@ -39,12 +40,25 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUT = arg('--out', os.path.join(ROOT, 'public', 'hero'))
 SAMPLES = arg('--samples', 128)
 SCALE = arg('--scale', 1.0)
+# Photo textures from Poly Haven (CC0, polyhaven.com), downloaded once at 1k into this git-ignored folder.
+CACHE = os.path.join(ROOT, 'scripts', 'blender', '.cache')
+# Each texture's mean linear brightness, so a photo factor of 1 leaves a colour as chosen.
+PHOTO_MEAN = {'dirty_concrete': 0.232, 'concrete_layers_02': 0.197}
 PARTS = ['dawn', 'day', 'sunset', 'night'] if arg('--part', 'all') == 'all' else [arg('--part', 'all')]
 FRAMES = ['wide', 'tall'] if arg('--frame', 'all') == 'all' else [arg('--frame', 'all')]
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
 collection = scene.collection
+
+
+def polyhaven(asset, kind):
+    """A 1k map (diff, rough, nor_gl…) of a Poly Haven texture, fetched on first use."""
+    path = os.path.join(CACHE, f'{asset}_{kind}_1k.jpg')
+    if not os.path.exists(path):
+        os.makedirs(CACHE, exist_ok=True)
+        urllib.request.urlretrieve(f'https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/{asset}/{asset}_{kind}_1k.jpg', path)
+    return path
 
 
 # A fixed random sequence (Park–Miller, seed 81), so every run builds the same city.
@@ -144,6 +158,27 @@ class Mat:
     def cell(self, value, period):
         return self.math('FLOOR', self.math('DIVIDE', value, period))
 
+    def times(self, color, factor):
+        """A colour scaled by a float socket or value."""
+        n = self.nodes.new('ShaderNodeMix')
+        n.data_type = 'RGBA'
+        n.blend_type = 'MULTIPLY'
+        n.inputs[0].default_value = 1.0
+        self.set(n.inputs[6], color)
+        self.set(n.inputs[7], factor if isinstance(factor, bpy.types.NodeSocket) else (factor,) * 3 + (1.0,))
+        return n.outputs[2]
+
+    def photo(self, asset, tile):
+        """The brightness of a Poly Haven photo texture laid over every face (box projection in world space), one tile
+        every `tile` units; 1 is its average."""
+        tex = self.nodes.new('ShaderNodeTexImage')
+        tex.image = bpy.data.images.load(polyhaven(asset, 'diff'), check_existing=True)
+        tex.projection = 'BOX'
+        tex.projection_blend = 0.3
+        self.set(tex.inputs['Vector'], self.node('ShaderNodeMapping', self.world_pos(), Scale=(1 / tile,) * 3).outputs[0])
+        grey = self.node('ShaderNodeRGBToBW', tex.outputs['Color']).outputs[0]
+        return self.math('DIVIDE', grey, PHOTO_MEAN.get(asset, 0.5))
+
     def glow(self, color, night_strength, mask=None):
         """An emission that comes on with the city lights (TUNE['lights'] scales it per time of day), only where `mask`
         is 1. It is added to the surface, so where it is dark it must be black, not transparent."""
@@ -178,35 +213,44 @@ def principled(name, color, rough=0.6, metal=0.0, night=None, **extra):
 
 
 def glass_curtain(name, tint, frame_tint, floor, mullion, angular=False, night=('#cfe7ff', 0.0), lit_share=0.0):
-    """Curtain wall: reflective glass with spandrel bands at each floor and thin mullions. At night some floors are lit
-    (`lit_share`) and the mullions can carry a line of light (`night`)."""
+    """Curtain wall at its real grain (a storey of about 4 m, a mullion every metre and a half or two): reflective glass
+    with spandrel bands at each floor and thin mullions. At night a share of the bays is lit (`lit_share`), each at its
+    own brightness, warm or cool; the mullions can carry a line of light (`night`)."""
     m = Mat(name)
     x, y, z = m.xyz(m.node('ShaderNodeTexCoord').outputs['Object'] if angular else m.world_pos())
     across = m.math('MULTIPLY', m.math('ARCTAN2', y, x), 24 / math.pi) if angular else m.math('ADD', x, y)
-    spandrel = m.band(z, floor, 0.0, 0.05)
-    mull = m.band(across, mullion, 0.0, 0.09)
+    spandrel = m.band(z, floor, 0.0, 0.18)
+    mull = m.band(across, mullion, 0.0, 0.12)
     frame = m.math('MAXIMUM', spandrel, mull)
     noise = m.node('ShaderNodeTexNoise', m.node('ShaderNodeTexCoord').outputs['Object'], Scale=0.35, Detail=2.0)
     glass = m.mix(m.math('MULTIPLY', noise.outputs['Fac'], 0.5), rgb(tint), rgb('#d8e6df'))
     color = m.mix(frame, glass, rgb(frame_tint))
     bsdf = m.node('ShaderNodeBsdfPrincipled', Base_Color=color, Metallic=m.mixf(frame, 0.6, 0.3),
                   Roughness=m.mixf(frame, 0.12, 0.4))
-    # Lit offices: a random share of floor-by-bay cells glows warm behind the glass.
-    cells = m.node('ShaderNodeCombineXYZ', m.cell(across, mullion * 1.5), m.cell(z, floor), 0).outputs[0]
-    pick = m.node('ShaderNodeTexWhiteNoise', cells).outputs['Value']
-    offices = m.math('MULTIPLY', m.math('LESS_THAN', pick, lit_share), m.math('SUBTRACT', 1.0, frame))
-    room, _ = m.glow(rgb('#ffd6a0'), 2.2, offices)
+    # Lit offices: bay by storey, each with its own level and tone; whole floors come on together now and then.
+    cells = m.node('ShaderNodeCombineXYZ', m.cell(across, mullion), m.cell(z, floor), 0).outputs[0]
+    dice = m.xyz(m.node('ShaderNodeTexWhiteNoise', cells).outputs['Color'])
+    floor_dice = m.node('ShaderNodeTexWhiteNoise', m.node('ShaderNodeCombineXYZ', 0, m.cell(z, floor), 3).outputs[0])
+    on = m.math('MAXIMUM', m.math('LESS_THAN', dice[0], lit_share),
+                m.math('LESS_THAN', floor_dice.outputs['Value'], lit_share * 0.25))
+    level = m.math('ADD', 0.5, m.math('MULTIPLY', dice[1], 0.5))
+    offices = m.math('MULTIPLY', m.math('MULTIPLY', on, level), m.math('SUBTRACT', 1.0, frame))
+    tone = m.mix(m.math('GREATER_THAN', dice[2], 0.75), rgb('#ffd9a8'), rgb('#f6f2ea'))
+    room, _ = m.glow(tone, 2.4, offices)
     line, _ = m.glow(rgb(night[0]), night[1], mull)
     lights = m.node('ShaderNodeAddShader', room, line)
     return m.finish(bsdf.outputs[0], lights=lights.outputs[0])
 
 
 def city_material():
-    """Far apartments and offices: a wall colour per building, ribbon windows, balcony ledges, plain roofs; at night a
-    random share of the windows is lit, warm or cool."""
+    """Far apartments and offices at their real grain (a unit is about 7.5 m: storeys of 3.3–3.8 m, bays of 2.3–3.6 m):
+    a wall colour per building over stained concrete (Poly Haven) with rain streaks, a ledge at each floor, windows set
+    into each bay. At night a share of the windows is lit, each with its own brightness and colour temperature (warm
+    bulbs, white and cool LEDs, the odd blue of a television), some dimmed by curtains; offices light whole floors."""
     m = Mat('city')
     info = m.node('ShaderNodeObjectInfo')
-    ramp = m.node('ShaderNodeValToRGB', info.outputs['Random'])
+    rnd = info.outputs['Random']
+    ramp = m.node('ShaderNodeValToRGB', rnd)
     cr = ramp.color_ramp
     cr.interpolation = 'CONSTANT'
     palette = ['#d9cdb0', '#c4cec8', '#dcc28c', '#a9bfbc', '#d4b59f', '#b6c8a6', '#ddd9cf', '#c4b7a1', '#cfa682']
@@ -219,19 +263,51 @@ def city_material():
     normal = m.xyz(m.node('ShaderNodeNewGeometry').outputs['Normal'])
     side = m.math('LESS_THAN', m.math('ABSOLUTE', normal[2]), 0.5)
     across = m.math('ADD', x, y)
-    windows = m.math('MULTIPLY', m.band(across, 1.55, 0.12, 0.88), m.band(z, 1.05, 0.36, 0.82))
-    windows = m.math('MULTIPLY', m.math('MULTIPLY', windows, side), m.math('GREATER_THAN', z, 1.7))
-    ledge = m.math('MULTIPLY', m.band(z, 1.05, 0.0, 0.12), side)
+    storey = m.math('ADD', 0.44, m.math('MULTIPLY', rnd, 0.07))
+    bay = m.math('ADD', 0.31, m.math('MULTIPLY', m.math('FRACT', m.math('MULTIPLY', rnd, 7.0)), 0.17))
+    windows = m.math('MULTIPLY', m.band(across, bay, 0.18, 0.82), m.band(z, storey, 0.3, 0.84))
+    windows = m.math('MULTIPLY', m.math('MULTIPLY', windows, side), m.math('GREATER_THAN', z, 1.1))
+    ledge = m.math('MULTIPLY', m.band(z, storey, 0.0, 0.1), side)
+    # Stains at the scale of a facade, and rain streaks running down from the ledges.
+    stains = m.photo('dirty_concrete', 1.6)
+    streaks = m.node('ShaderNodeTexNoise', m.node('ShaderNodeMapping', m.world_pos(), Scale=(2.2, 2.2, 0.18)).outputs[0],
+                     Scale=1.0, Detail=4.0)
+    weather = m.math('MULTIPLY', m.math('ADD', 0.55, m.math('MULTIPLY', stains, 0.45)),
+                     m.math('SUBTRACT', 1.0, m.math('MULTIPLY', m.math('MAXIMUM', m.math('SUBTRACT', streaks.outputs['Fac'], 0.5), 0.0), 0.7)))
     pane = m.node('ShaderNodeTexNoise', m.world_pos(), Scale=1.6, Detail=1.0)
     glass = m.mix(pane.outputs['Fac'], rgb('#3f5753'), rgb('#9fb3ad'))
-    wall = m.mix(ledge, ramp.outputs['Color'], rgb('#9a998d'))
+    wall = m.times(m.mix(ledge, ramp.outputs['Color'], rgb('#9a998d')), weather)
     color = m.mix(windows, wall, glass)
-    bsdf = m.node('ShaderNodeBsdfPrincipled', Base_Color=color, Roughness=m.mixf(windows, 0.85, 0.12))
-    cells = m.node('ShaderNodeCombineXYZ', m.cell(across, 1.55), m.cell(z, 1.05), info.outputs['Random']).outputs[0]
-    pick = m.node('ShaderNodeTexWhiteNoise', cells).outputs['Value']
-    lit = m.math('MULTIPLY', windows, m.math('LESS_THAN', pick, 0.42))
-    tone = m.mix(m.math('GREATER_THAN', pick, 0.3), rgb('#ffcf8f'), rgb('#e9f1ff'))
-    lights, _ = m.glow(tone, 3.2, lit)
+    bsdf = m.node('ShaderNodeBsdfPrincipled', Base_Color=color, Roughness=m.mixf(windows, 0.88, 0.12))
+    # Night: three dice per window (on or off, level, tone) and one per floor for offices.
+    cells = m.node('ShaderNodeCombineXYZ', m.cell(across, bay), m.cell(z, storey), m.math('MULTIPLY', rnd, 97.0)).outputs[0]
+    dice = m.xyz(m.node('ShaderNodeTexWhiteNoise', cells).outputs['Color'])
+    share = m.math('ADD', 0.16, m.math('MULTIPLY', m.math('FRACT', m.math('MULTIPLY', rnd, 13.0)), 0.36))
+    office = m.math('GREATER_THAN', m.math('FRACT', m.math('MULTIPLY', rnd, 29.0)), 0.7)
+    floor_dice = m.node('ShaderNodeTexWhiteNoise', m.node('ShaderNodeCombineXYZ', rnd, m.cell(z, storey), 5).outputs[0])
+    whole_floor = m.math('MULTIPLY', office, m.math('LESS_THAN', floor_dice.outputs['Value'], 0.3))
+    on = m.math('MAXIMUM', m.math('LESS_THAN', dice[0], share), whole_floor)
+    curtain = m.math('GREATER_THAN', dice[2], 0.78)
+    level = m.math('MULTIPLY', m.math('ADD', 0.3, m.math('MULTIPLY', dice[1], 0.7)), m.mixf(curtain, 1.0, 0.45))
+    lit = m.math('MULTIPLY', m.math('MULTIPLY', windows, on), level)
+    temps = m.node('ShaderNodeValToRGB', dice[2])
+    tr = temps.color_ramp
+    tr.interpolation = 'LINEAR'
+    stops = ((0.0, '#ffad5e'), (0.35, '#ffcf96'), (0.62, '#fff0dc'), (0.86, '#e4edff'), (1.0, '#9db9ff'))
+    tr.elements[0].color = rgb(stops[0][1])
+    tr.elements[1].color = rgb(stops[-1][1])
+    for pos, c in stops[1:-1]:
+        tr.elements.new(pos).color = rgb(c)
+    lights, _ = m.glow(temps.outputs['Color'], 3.0, lit)
+    return m.finish(bsdf.outputs[0], lights=lights)
+
+
+def weathered(name, color, rough, asset, tile, amount, night=None):
+    """A plain surface over a Poly Haven photo texture: its stains and patches break up the flat colour by `amount`."""
+    m = Mat(name)
+    tone = m.math('ADD', 1.0 - amount, m.math('MULTIPLY', m.photo(asset, tile), amount))
+    bsdf = m.node('ShaderNodeBsdfPrincipled', Base_Color=m.times(rgb(color), tone), Roughness=rough)
+    lights = m.glow(rgb(night[0]), night[1])[0] if night else None
     return m.finish(bsdf.outputs[0], lights=lights)
 
 
@@ -384,8 +460,8 @@ def lamp_material(name, color, strength):
 
 
 MATS = {
-    'cream': principled('cream', '#ead7a0', 0.85),
-    'trim': principled('trim', '#f6eed6', 0.8),
+    'cream': weathered('cream', '#ead7a0', 0.85, 'dirty_concrete', 2.0, 0.3),
+    'trim': weathered('trim', '#f6eed6', 0.8, 'dirty_concrete', 2.0, 0.2),
     'terracotta': principled('terracotta', '#b5603f', 0.75),
     'dark': principled('dark', '#33261e', 0.95, night=('#ffc979', 1.6)),
     'shade': principled('shade', '#5b4a3a', 0.9, night=('#ffd08a', 1.4)),
@@ -394,16 +470,16 @@ MATS = {
     'slate': principled('slate', '#46504e', 0.42, 0.25),
     'gold': principled('gold', '#e7c46a', 0.3, 1.0, night=('#ffd27a', 2.0)),
     'rose': principled('rose', '#5a3b33', 0.2, night=('#ffb45e', 2.5)),
-    'l81': glass_curtain('l81 glass', '#93b6bb', '#bccdca', 0.62, 0.69, night=('#bfe3ff', 0.0), lit_share=0.22),
-    'bitexco': glass_curtain('bitexco glass', '#86b4aa', '#b7cdc5', 0.55, 1.0, angular=True,
-                             night=('#9fd8ff', 1.4), lit_share=0.18),
+    'l81': glass_curtain('l81 glass', '#93b6bb', '#bccdca', 0.55, 0.24, night=('#bfe3ff', 0.0), lit_share=0.2),
+    'bitexco': glass_curtain('bitexco glass', '#86b4aa', '#b7cdc5', 0.5, 0.3, angular=True,
+                             night=('#9fd8ff', 1.4), lit_share=0.13),
     'fins': principled('fins', '#e8f1df', 0.3, 0.7, night=('#e6f6ff', 4.0)),
     'pad': principled('helipad', '#5fa595', 0.45, 0.3),
     'paint': principled('helipad paint', '#f3f6ea', 0.6),
-    'concrete': principled('concrete', '#e3e4da', 0.6),
+    'concrete': weathered('concrete', '#e3e4da', 0.6, 'concrete_layers_02', 1.2, 0.35),
     'cable': principled('cable', '#f4f6ee', 0.4, 0.6, night=('#f2f8ff', 6.0)),
     'ground': principled('ground', '#5d6c5b', 0.95),
-    'quay': principled('quay', '#9a9c8a', 0.9),
+    'quay': weathered('quay', '#9a9c8a', 0.9, 'concrete_layers_02', 0.8, 0.6),
     'city': city_material(),
     'trunk': principled('trunk', '#5e5243', 0.95),
     'foliage': foliage_material(),
@@ -425,6 +501,7 @@ MATS = {
     'mist': mist_material(),
     'lamp': lamp_material('lamp', '#ffcf86', 12.0),
     'lantern': lamp_material('lantern', '#ffb35c', 18.0),
+    'aviation': lamp_material('aviation', '#ff2a18', 40.0),
 }
 
 
@@ -623,6 +700,9 @@ for i in range(420):
     # Rooftop clutter on taller blocks: a water tank or a stair house, as on Saigon apartment roofs.
     if h > 6 and (i % 3 == 0):
         box('roof box', (min(w, 2.4), min(d, 2.0), 1.1), (x + w * 0.18, -z + d * 0.1, h + 0.6 + 0.55), 'quay', round_=0.1)
+    # Red aviation lights on the tall roofs, a scatter of red points over the city at night.
+    if h > 14:
+        sphere('aviation light', 0.16, (x - w * 0.35, -z - d * 0.35, h + 0.8), 'aviation', subdiv=1)
 
 # Cây dầu along the river: tall bare trunks, crowns high up.
 spots = []
@@ -732,6 +812,7 @@ for lo, hi in zip(rings, rings[1:]):
 bm.faces.new(list(reversed(rings[0])))
 bitexco = group('bitexco', (46, 16, 0.6))
 link('bitexco body', bm, 'bitexco', parent=bitexco, smooth=True)
+sphere('aviation light', 0.18, (0, 0, 34.5), 'aviation', bitexco, subdiv=1)
 # The podium it stands on, so the bud does not read as balanced on its tip.
 box('bitexco podium', (13, 9, 2.6), (0, 0, 1.3), 'bitexco', bitexco, 0.08)
 cone('helipad', 3.2, 3.2, 0.5, (-6.7, 0, 22.6), 'pad', bitexco, segments=48)
@@ -755,6 +836,8 @@ for i in range(16):
     h = 3.5 + (i * 5 % 7) * 0.7
     box('fin', (0.18, 0.18, h), (math.cos(a) * 1.05, math.sin(a) * 1.05, 48 + h / 2), 'fins', l81)
 cone('mast', 0.16, 0.06, 10, (0, 0, 53), 'fins', l81, segments=8)
+for z in (58.2, 52.0):
+    sphere('aviation light', 0.2, (0, 0, z), 'aviation', l81, subdiv=1)
 
 # Ba Son bridge: a raised deck over the inlet and one white pylon, curving back from the main span like a blade, the
 # stays fanning from its upper half across the main span and a shorter back fan behind it.
@@ -980,7 +1063,8 @@ PARTS_SETUP = {
     # sun: (azimuth in the wide frame, azimuth in the tall frame, elevation), colour and strength; light: the physical
     # sky's strength and Nishita air, dust and ozone; sky: the art sky's ramp stops (on the square root of the
     # elevation), glow colour and lobes, stars, strength; then haze, the share of city lights, the two cloud layers
-    # (shade, lit, rim, strength, amount, coverage), mist (tint, amount, strength), exposure and look.
+    # (shade, lit, rim, strength, amount, coverage), mist (tint, amount, strength), exposure and look; glare =
+    # (threshold, size) where it differs from the default bloom.
     # Dawn rises low on the left, soft and pastel, with mist on the water; sunset sinks on the right, deep and gold.
     'dawn': dict(sun=(-38, -17, 3.5), sun_color='#ffc39a', sun_energy=3.6,
                  light=dict(strength=0.3, air=1.0, dust=3.0, ozone=5.0, art=0.0),
@@ -1010,12 +1094,13 @@ PARTS_SETUP = {
                    disc=('#ffa04d', 60.0)),
     'night': dict(sun=(225, 225, 38), sun_color='#9fb4ff', sun_energy=0.06,
                   light=dict(strength=0.0, air=1.0, dust=1.0, ozone=2.0, art=1.0),
-                  sky=dict(stops=[(0.0, '#4a3a3c'), (0.12, '#2a324c'), (0.3, '#18233e'), (0.6, '#0e1832'), (1.0, '#070e22')],
-                           glow='#000000', lobes=(0.0, 0.0, 0.0), stars=0.7, strength=1.0),
+                  sky=dict(stops=[(0.0, '#5a443c'), (0.1, '#33344a'), (0.3, '#18233e'), (0.6, '#0e1832'), (1.0, '#070e22')],
+                           glow='#000000', lobes=(0.0, 0.0, 0.0), stars=0.15, strength=1.0),
                   haze='#27334a', haze_strength=0.6, lights=1.0,
                   cumulus=('#151c2e', '#3a4566', '#4b5878', 0.5, 0.5, 0.6),
                   cirrus=('#1a2236', '#3c4868', '#4e5a7a', 0.45, 0.6, 0.6),
-                  mist=('#3b4864', 0.3, 0.6), exposure=0.55, look='AgX - Medium High Contrast', disc=None),
+                  mist=('#3b4864', 0.3, 0.6), exposure=0.55, look='AgX - Medium High Contrast', disc=None,
+                  glare=(5.0, 6)),
 }
 
 
@@ -1073,6 +1158,8 @@ def set_part(part, frame):
         sun_glow.inputs['Color'].default_value = rgb(p['disc'][0])
         sun_glow.inputs['Strength'].default_value = p['disc'][1]
     sun_disc.location = direction(az, p['sun'][2]) * 9000 + Vector((camera.location.x, camera.location.y, 0))
+    # Bloom: by night only the lamps, the stays and the lantern bloom, so lit windows stay crisp and apart.
+    glare.threshold, glare.size = p.get('glare', (2.5, 7))
     scene.view_settings.look = p['look']
     scene.view_settings.exposure = p['exposure']
 

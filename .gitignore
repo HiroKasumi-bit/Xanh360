@@ -53,3 +53,6 @@ next-env.d.ts
 
 # impeccable design skill: live-server state and critique snapshots (local only)
 /.impeccable/
+
+# Poly Haven textures downloaded by scripts/blender/saigon_hero.py
+scripts/blender/.cache/
