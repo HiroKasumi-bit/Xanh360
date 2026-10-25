@@ -34,10 +34,9 @@ export type SaigonScene = {
   dispose(): void;
 };
 
-const rand = (() => {
-  let seed = 81;
-  return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
-})();
+// Park–Miller, restarted at 81 by every build: each "Xem 3D" shows the same city, the one the Blender still replays.
+let seed = 81;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 
 function canvasTexture(width: number, height: number, draw: (g: CanvasRenderingContext2D) => void, repeat = true) {
   const canvas = document.createElement('canvas');
@@ -207,6 +206,17 @@ function archShape(width: number, height: number) {
   return new THREE.ShapeGeometry(s, 12);
 }
 
+// A hipped roof over a w × d plan, its ridge `ridge` long along x; a pyramid when the ridge is 0. Base at y = 0.
+function hipRoof(w: number, d: number, h: number, ridge = 0) {
+  const [x, z, r] = [w / 2, d / 2, ridge / 2];
+  const a = [-x, 0, z], b = [x, 0, z], c = [x, 0, -z], e = [-x, 0, -z], left = [-r, h, 0], right = [r, h, 0];
+  const faces = ridge ? [[a, b, right, left], [b, c, right], [c, e, left, right], [e, a, left]] : [[a, b, left], [b, c, left], [c, e, left], [e, a, left]];
+  const positions = faces.flatMap(f => (f.length === 4 ? [f[0], f[1], f[2], f[0], f[2], f[3]] : f).flat());
+  const geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
 const triangularPrism = (width: number, height: number, depth: number) => {
   const s = new THREE.Shape();
   s.moveTo(-width / 2, 0);
@@ -219,6 +229,7 @@ const triangularPrism = (width: number, height: number, depth: number) => {
 };
 
 export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonSceneOptions): SaigonScene {
+  seed = 81;
   const disposables: {dispose(): void}[] = [];
   const keep = <T extends {dispose(): void}>(x: T) => (disposables.push(x), x);
   const scene = new THREE.Scene();
@@ -270,7 +281,7 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
   {
     const parts: THREE.BufferGeometry[] = [];
     const colors: number[][] = [];
-    const palette = [[0.74, 0.72, 0.66], [0.68, 0.7, 0.66], [0.76, 0.69, 0.52], [0.6, 0.67, 0.66], [0.72, 0.6, 0.54], [0.64, 0.7, 0.6]];
+    const palette = ['#efe3c4', '#d8e2dc', '#f1d59a', '#bcd3d0', '#e9c8b1', '#c9dcb8', '#f4f0e6', '#d9cbb4', '#e6b98f'].map(c => new THREE.Color(c).toArray());
     for (let i = 0; i < 300; i++) {
       const x = -420 + rand() * 820;
       const z = -18 - rand() * 120;
@@ -324,7 +335,7 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
         const r = 1.4 + rand() * 1.2;
         const a = (k / 5) * Math.PI * 2 + rand();
         const dx = k === 4 ? 0 : Math.cos(a) * 1.4, dz = k === 4 ? 0 : Math.sin(a) * 1.1, dy = k === 4 ? 1.3 : rand() * 0.6 - 0.4;
-        crowns.setMatrixAt(i * 5 + k, m.compose(p.set(x + dx, 0.6 + h + 0.8 + dy, z + dz), q.identity(), s.set(r * 1.1, r * 0.9, r * 1.05)));
+        crowns.setMatrixAt(i * 5 + k, m.compose(p.set(x + dx * 1.2, 0.6 + h + 0.8 + dy, z + dz), q.identity(), s.set(r * 1.375, r * 0.75, r * 1.21)));
         crowns.setColorAt(i * 5 + k, tint.setHSL(0.29 + rand() * 0.06, 0.4, 0.2 + rand() * 0.1));
       }
     });
@@ -333,72 +344,77 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     scene.add(trunks, crowns);
   }
 
-  // Chợ Bến Thành: the long cream hall, a taller entrance pavilion and the clock tower.
+  // Chợ Bến Thành: the long cream hall under terracotta, the entrance pavilion and the clock tower with its hipped cap.
   {
     const market = new THREE.Group();
-    const cream = mat(new THREE.MeshStandardMaterial({color: 0xe8d6a4, roughness: 0.85}));
-    const trim = mat(new THREE.MeshStandardMaterial({color: 0xf4ead0, roughness: 0.8}));
-    const roof = mat(new THREE.MeshStandardMaterial({color: 0x8c6b4c, roughness: 0.9}));
-    const dark = mat(new THREE.MeshStandardMaterial({color: 0x3a2c22, roughness: 1}));
-    const hall = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(24, 6, 10)), cream));
-    hall.position.y = 3.6;
-    const hallRoof = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(24.6, 0.8, 10.6)), roof));
-    hallRoof.position.y = 7;
-    const pavilion = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(8, 9, 9)), cream));
-    pavilion.position.set(0, 5.1, 1.2);
-    const tower = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(4.2, 7, 4.2)), trim));
-    tower.position.set(0, 12.6, 2.2);
-    const cap = shadow(new THREE.Mesh(keep(new THREE.ConeGeometry(3.3, 3.2, 4)), roof));
-    cap.rotation.y = Math.PI / 4;
-    cap.position.set(0, 17.7, 2.2);
+    const cream = mat(new THREE.MeshStandardMaterial({color: 0xead7a0, roughness: 0.85}));
+    const trim = mat(new THREE.MeshStandardMaterial({color: 0xf6eed6, roughness: 0.8}));
+    const roof = mat(new THREE.MeshStandardMaterial({color: 0xb5603f, roughness: 0.75}));
+    const dark = mat(new THREE.MeshStandardMaterial({color: 0x33261e, roughness: 1}));
+    const add = (geometry: THREE.BufferGeometry, material: THREE.Material, x: number, y: number, z: number) => {
+      const mesh = shadow(new THREE.Mesh(keep(geometry), material));
+      mesh.position.set(x, y, z);
+      market.add(mesh);
+      return mesh;
+    };
+    add(new THREE.BoxGeometry(24, 6, 10), cream, 0, 3.6, 0);
+    add(hipRoof(25, 11, 1.8, 14), roof, 0, 6.6, 0);
+    add(new THREE.BoxGeometry(8, 9, 9), cream, 0, 5.1, 1.2);
+    add(new THREE.BoxGeometry(8.6, 0.5, 9.6), trim, 0, 9.8, 1.2);
+    for (const x of [-3.6, 3.6]) add(new THREE.BoxGeometry(0.7, 9, 0.4), trim, x, 5.1, 5.75);
+    add(new THREE.BoxGeometry(4.2, 7, 4.2), trim, 0, 12.6, 2.2);
+    add(new THREE.BoxGeometry(4.6, 0.35, 4.6), cream, 0, 15.9, 2.2);
+    add(hipRoof(6.2, 6.2, 2.6), roof, 0, 16.1, 2.2);
+    add(new THREE.CylinderGeometry(0.02, 0.08, 2.4, 6), dark, 0, 19.6, 2.2);
     const face = new THREE.Mesh(keep(new THREE.CircleGeometry(1.25, 32)), mat(new THREE.MeshStandardMaterial({color: 0xfffaea, roughness: 0.5})));
-    face.position.set(0, 13.2, 4.33);
+    face.position.set(0, 13.2, 4.36);
     const hands = new THREE.Mesh(keep(mergeGeometries([new THREE.BoxGeometry(0.14, 0.95, 0.05).translate(0, 0.42, 0), new THREE.BoxGeometry(0.7, 0.12, 0.05).translate(0.3, 0, 0)])!), dark);
-    hands.position.set(0, 13.2, 4.38);
+    hands.position.set(0, 13.2, 4.41);
     const door = new THREE.Mesh(keep(archShape(3, 4.6)), dark);
-    door.position.set(0, 0.6, 5.71);
-    market.add(hall, hallRoof, pavilion, tower, cap, face, hands, door);
+    door.position.set(0, 0.6, 5.76);
+    market.add(face, hands, door);
     for (const x of [-9, -5.5, 5.5, 9]) {
       const arch = new THREE.Mesh(keep(archShape(2, 3.4)), dark);
       arch.position.set(x, 1.4, 5.02);
-      market.add(arch);
+      const pane = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.3, 0.8)), mat(new THREE.MeshStandardMaterial({color: 0x5b4a3a, roughness: 0.9})));
+      pane.position.set(x, 5.6, 5.02);
+      market.add(arch, pane);
     }
     market.position.set(8, 0, -9);
     scene.add(market);
   }
 
-  // Nhà thờ Đức Bà: twin brick towers under slate spires, the gabled facade and its rose window between them.
+  // Nhà thờ Đức Bà: twin brick towers under slate spires, the gabled facade with its rose window and three portals.
+  // The nave starts behind the facade, as in the still.
   {
     const cathedral = new THREE.Group();
     const brick = mat(new THREE.MeshStandardMaterial({map: keep(brickTexture()), roughness: 0.9}));
     brick.map!.repeat.set(1.2, 2.4);
-    const slate = mat(new THREE.MeshStandardMaterial({color: 0x45514e, roughness: 0.55, metalness: 0.2}));
-    const gold = mat(new THREE.MeshStandardMaterial({color: 0xe7c46a, roughness: 0.35, metalness: 0.8}));
-    const dark = mat(new THREE.MeshStandardMaterial({color: 0x2e1d17, roughness: 1}));
-    const nave = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(8, 10, 16)), brick));
-    nave.position.set(0, 5.6, -6);
-    const naveRoof = shadow(new THREE.Mesh(keep(triangularPrism(8.6, 3.6, 16)), slate));
-    naveRoof.position.set(0, 10.6, -6);
-    const facade = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(6, 11, 2)), brick));
-    facade.position.set(0, 6.1, 1);
-    const gable = shadow(new THREE.Mesh(keep(triangularPrism(6, 3.4, 2)), brick));
-    gable.position.set(0, 11.6, 1);
-    const rose = new THREE.Mesh(keep(new THREE.CircleGeometry(1.25, 24)), mat(new THREE.MeshStandardMaterial({color: 0xf2c96b, roughness: 0.4, emissive: 0x6b4a14, emissiveIntensity: 0.3})));
-    rose.position.set(0, 8.4, 2.02);
-    const door = new THREE.Mesh(keep(archShape(2.4, 4)), dark);
-    door.position.set(0, 0.6, 2.03);
-    cathedral.add(nave, naveRoof, facade, gable, rose, door);
+    const slate = mat(new THREE.MeshStandardMaterial({color: 0x46504e, roughness: 0.45, metalness: 0.25}));
+    const gold = mat(new THREE.MeshStandardMaterial({color: 0xe7c46a, roughness: 0.3, metalness: 0.9}));
+    const trim = mat(new THREE.MeshStandardMaterial({color: 0xf6eed6, roughness: 0.8}));
+    const dark = mat(new THREE.MeshStandardMaterial({color: 0x33261e, roughness: 1}));
+    const add = (geometry: THREE.BufferGeometry, material: THREE.Material, x: number, y: number, z: number, cast = true) => {
+      const mesh = new THREE.Mesh(keep(geometry), material);
+      if (cast) shadow(mesh);
+      mesh.position.set(x, y, z);
+      cathedral.add(mesh);
+      return mesh;
+    };
+    add(new THREE.BoxGeometry(8, 10, 15), brick, 0, 5.6, -6.5);
+    add(triangularPrism(8.6, 3.6, 15), slate, 0, 10.6, -6.5);
+    add(new THREE.BoxGeometry(6, 11, 2), brick, 0, 6.1, 1.05);
+    add(triangularPrism(6, 3.4, 2), brick, 0, 11.6, 1.05);
+    add(new THREE.CircleGeometry(1.5, 32), trim, 0, 8.4, 2.06, false);
+    add(new THREE.CircleGeometry(1.2, 32), mat(new THREE.MeshStandardMaterial({color: 0x5a3b33, roughness: 0.2, emissive: 0x6b4214, emissiveIntensity: 0.25})), 0, 8.4, 2.08, false);
+    add(archShape(2.4, 4), dark, 0, 0.6, 2.07, false);
     for (const x of [-4.6, 4.6]) {
-      const tower = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(3.6, 16, 3.6)), brick));
-      tower.position.set(x, 8.6, 0.8);
-      const spire = shadow(new THREE.Mesh(keep(new THREE.ConeGeometry(2.7, 9, 4)), slate));
-      spire.rotation.y = Math.PI / 4;
-      spire.position.set(x, 21.1, 0.8);
-      const cross = new THREE.Mesh(keep(mergeGeometries([new THREE.BoxGeometry(0.22, 1.9, 0.22), new THREE.BoxGeometry(1.1, 0.22, 0.22).translate(0, 0.35, 0)])!), gold);
-      cross.position.set(x, 26.6, 0.8);
-      const lancet = new THREE.Mesh(keep(archShape(1, 2.6)), dark);
-      lancet.position.set(x, 11, 2.62);
-      cathedral.add(tower, spire, cross, lancet);
+      add(new THREE.BoxGeometry(3.6, 16, 3.6), brick, x, 8.6, 0.8);
+      add(new THREE.BoxGeometry(4, 0.35, 4), trim, x, 16.6, 0.8);
+      add(new THREE.ConeGeometry(2.2, 9, 8), slate, x, 21.1, 0.8).rotation.y = Math.PI / 8;
+      for (const [px, pz] of [[-1.5, -1.5], [1.5, -1.5], [-1.5, 1.5], [1.5, 1.5]]) add(new THREE.ConeGeometry(0.32, 2.2, 6), slate, x + px, 17.9, 0.8 + pz);
+      add(mergeGeometries([new THREE.BoxGeometry(0.22, 1.9, 0.22), new THREE.BoxGeometry(1.1, 0.22, 0.22).translate(0, 0.35, 0)])!, gold, x, 26.6, 0.8, false);
+      for (const [w, h, y] of [[1, 2.6, 12.6], [0.8, 2, 7.4], [1.6, 3, 0.6]]) add(archShape(w, h), dark, x, y, 2.62, false);
     }
     cathedral.position.set(26, 0, -10);
     scene.add(cathedral);
@@ -416,37 +432,43 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     const profile = [[4.7, 0], [5.1, 9], [4.9, 17], [4.2, 23], [3.1, 28], [1.8, 31.5], [0.6, 33.6], [0.01, 34.4]].map(([r, y]) => new THREE.Vector2(r, y));
     const body = new THREE.LatheGeometry(profile, 48);
     body.scale(1, 1, 0.68);
-    const tower = shadow(new THREE.Mesh(keep(body), glass(0x6fb1a6, 18, 24, 1)));
+    const tower = shadow(new THREE.Mesh(keep(body), glass(0x86b4aa, 18, 24, 1)));
     const padMat = mat(new THREE.MeshStandardMaterial({color: 0x5aa596, roughness: 0.5, metalness: 0.3}));
     const pad = shadow(new THREE.Mesh(keep(new THREE.CylinderGeometry(3.2, 3.2, 0.5, 40)), padMat));
     pad.position.set(-6.7, 22.6, 0);
     const ring = new THREE.Mesh(keep(new THREE.RingGeometry(1.6, 2.2, 40)), mat(new THREE.MeshBasicMaterial({color: 0xeaf5e0})));
     ring.rotation.x = -Math.PI / 2;
     ring.position.set(-6.7, 22.86, 0);
-    const strut = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(5.4, 0.5, 0.8)), padMat));
-    strut.position.set(-5, 21.1, 0);
-    strut.rotation.z = 0.5;
+    // The brace runs from the tower up to the pad's outer edge.
+    const strut = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(5.2, 0.45, 0.7)), padMat));
+    strut.position.set(-6.2, 20.8, 0);
+    strut.rotation.z = -0.6;
     const bitexco = new THREE.Group();
     bitexco.add(tower, pad, ring, strut);
     bitexco.position.set(46, 0.6, -16);
     scene.add(bitexco);
   }
 
-  // Landmark 81: a slender bundle of nine glass shafts stepping up to the central one and its crown of fins.
+  // Landmark 81: a slender bundle of nine glass shafts on a podium, stepping up to the central one and its crown of fins.
   {
     const l81 = new THREE.Group();
     const heights = [[30, 40, 34], [43, 48, 45], [33, 41, 27]];
     const w = 2.75;
+    const finMat = mat(new THREE.MeshStandardMaterial({color: 0xe8f1df, roughness: 0.3, metalness: 0.7}));
     for (let i = 0; i < 3; i++)
       for (let k = 0; k < 3; k++) {
         const h = heights[i][k];
-        const tube = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(w, h, w)), glass(0x86b9ad, Math.round(h / 3), 10, 1)));
+        const tube = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(w, h, w)), glass(0x93b6bb, Math.round(h / 3), 10, 1)));
         tube.position.set((i - 1) * w, h / 2, (k - 1) * w);
-        l81.add(tube);
+        const cap = new THREE.Mesh(keep(new THREE.BoxGeometry(w * 0.92, 0.5, w * 0.92)), finMat);
+        cap.position.set((i - 1) * w, h + 0.25, (k - 1) * w);
+        l81.add(tube, cap);
       }
-    const finMat = mat(new THREE.MeshStandardMaterial({color: 0xe6f1dc, roughness: 0.35, metalness: 0.6}));
-    for (let i = 0; i < 14; i++) {
-      const a = (i / 14) * Math.PI * 2;
+    const podium = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(14, 3.2, 12)), glass(0x93b6bb, 3, 14, 1)));
+    podium.position.y = 1.6;
+    l81.add(podium);
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2;
       const h = 3.5 + ((i * 5) % 7) * 0.7;
       const fin = new THREE.Mesh(keep(new THREE.BoxGeometry(0.16, h, 0.16)), finMat);
       fin.position.set(Math.cos(a) * 1.05, 48 + h / 2, Math.sin(a) * 1.05);
@@ -459,26 +481,43 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     scene.add(l81);
   }
 
-  // Ba Son bridge: a raised deck over the inlet, the single pylon leaning towards the main span, two fans of stays.
+  // Ba Son bridge: a raised deck over the inlet and one white pylon, curving back from the main span like a blade, the
+  // stays fanning from its upper half across the main span and a shorter back fan behind it.
   {
     const bridge = new THREE.Group();
-    const concrete = mat(new THREE.MeshStandardMaterial({color: 0xd9dccf, roughness: 0.7}));
-    const deck = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(34, 0.9, 3.4)), concrete));
-    deck.position.set(70, 4.2, -6);
-    const pylon = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(1.3, 24, 1.8)), concrete));
-    pylon.position.set(64 + Math.sin(0.26) * 12, 0.6 + Math.cos(0.26) * 12, -6);
-    pylon.rotation.z = -0.26;
-    bridge.add(deck, pylon);
+    const concrete = mat(new THREE.MeshStandardMaterial({color: 0xe3e4da, roughness: 0.6}));
+    const deck = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(46, 0.9, 3.4)), concrete));
+    deck.position.set(69, 4.2, -6);
+    bridge.add(deck);
     for (const x of [55, 85]) {
       const pier = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(1.2, 4, 2.4)), concrete));
       pier.position.set(x, 2, -6);
       bridge.add(pier);
     }
-    const top = new THREE.Vector3(64 + Math.sin(0.26) * 23.5, 0.6 + Math.cos(0.26) * 23.5, -6);
+    // The blade: 25 rings of a tapering rectangle along a curve that leans back as it rises.
+    const spine = Array.from({length: 25}, (_, i) => new THREE.Vector3(76 + 8 * (i / 24) ** 1.7, 0.6 + 25.5 * (i / 24), -6));
+    const rings = spine.map((p, i) => {
+      const t = i / 24, hw = 0.95 * (1 - t) + 0.1 * t, hd = 1 * (1 - t) + 0.14 * t;
+      return [[-hw, hd], [hw, hd], [hw, -hd], [-hw, -hd]].map(([x, z]) => [p.x + x, p.y, p.z + z]);
+    });
+    const blade: number[] = [];
+    for (let i = 0; i < 24; i++)
+      for (let k = 0; k < 4; k++) {
+        const [a, b, c, d] = [rings[i][k], rings[i][(k + 1) % 4], rings[i + 1][(k + 1) % 4], rings[i + 1][k]];
+        blade.push(...a, ...b, ...c, ...a, ...c, ...d);
+      }
+    const bladeGeo = keep(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(blade, 3)));
+    bladeGeo.computeVertexNormals();
+    bridge.add(shadow(new THREE.Mesh(bladeGeo, concrete)));
+    const anchors = [9, 11, 13, 15, 17, 19, 21, 23].map(i => spine[i]);
     const stays: number[] = [];
-    for (const x of [74, 77, 80, 83, 86, 52, 55, 58, 61])
-      for (const z of [-7.4, -4.6]) stays.push(top.x, top.y, top.z, x, 4.7, z);
-    const lines = new THREE.LineSegments(keep(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(stays, 3))), mat(new THREE.LineBasicMaterial({color: 0xf3f6ea, transparent: true, opacity: 0.85})));
+    const fan = (tops: THREE.Vector3[], xs: number[]) =>
+      tops.forEach((top, i) => {
+        for (const z of [-7.4, -4.6]) stays.push(top.x, top.y, z, xs[i], 4.7, z);
+      });
+    fan(anchors, [71, 68, 65, 62, 59, 56, 53, 50]);
+    fan(anchors.filter((_, i) => i % 2), [82, 85, 88, 91]);
+    const lines = new THREE.LineSegments(keep(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(stays, 3))), mat(new THREE.LineBasicMaterial({color: 0xf4f6ee, transparent: true, opacity: 0.85})));
     bridge.add(lines);
     scene.add(bridge);
   }
@@ -523,10 +562,13 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     const arm = shadow(new THREE.Mesh(keep(new THREE.CapsuleGeometry(0.13, 0.95, 4, 8)), shirt));
     arm.position.set(3.05, 1.95, 0.3);
     arm.rotation.z = -0.9;
-    const oar = shadow(new THREE.Mesh(keep(new THREE.CylinderGeometry(0.07, 0.07, 5.2, 8)), wood));
-    oar.position.set(3.9, 1.2, 0.35);
-    oar.rotation.z = 0.62;
-    boat.add(body, head, hat, arm, oar);
+    const oar = shadow(new THREE.Mesh(keep(new THREE.CylinderGeometry(0.07, 0.07, 4, 8)), wood));
+    oar.position.set(4.08, 0.8, 0.4);
+    oar.rotation.z = 0.51;
+    const oarBlade = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(0.5, 1.2, 0.08)), wood));
+    oarBlade.position.set(4.95, -0.75, 0.4);
+    oarBlade.rotation.z = 0.51;
+    boat.add(body, head, hat, arm, oar, oarBlade);
     boat.scale.setScalar(1.25);
     boat.position.set(42, 0.25, 58);
     boat.rotation.y = 0.08;
@@ -541,15 +583,16 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     sunDirection: SUN.clone(),
     sunColor: 0xffe2b0,
     waterColor: 0x123b37,
-    distortionScale: 1.2,
+    distortionScale: 0.8,
     fog: true,
   });
   water.rotation.x = -Math.PI / 2;
   water.position.set(40, 0, 140);
   water.material.uniforms.size.value = 7;
-  // A muddy river rather than a mirror: less Fresnel reflection, the reflection tinted towards the water colour.
+  // A muddy river rather than a mirror, as in the still: a fixed share of reflection (seen this low, Fresnel would make
+  // the whole river a copy of the pale far bank), tinted towards the water colour.
   water.material.fragmentShader = water.material.fragmentShader
-    .replace('float rf0 = 0.3;', 'float rf0 = 0.05;')
+    .replace('float reflectance = rf0 + ( 1.0 - rf0 ) * pow( ( 1.0 - theta ), 5.0 );', 'float reflectance = 0.24 + 0.22 * pow( ( 1.0 - theta ), 5.0 );')
     // Ripples smear reflections vertically: average a short vertical run of the mirror, distort mostly sideways.
     .replace(
       'vec3 reflectionSample = vec3( texture2D( mirrorSampler, mirrorCoord.xy / mirrorCoord.w + distortion ) );',
@@ -558,7 +601,6 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
       for ( int i = -4; i <= 4; i ++ ) reflectionSample += texture2D( mirrorSampler, mirrorUv + vec2( 0.0, float( i ) * 0.0045 ) ).rgb;
       reflectionSample /= 9.0;`,
     )
-    .replace('float reflectance = rf0', 'float reflectance = 0.5 * rf0')
     .replace('( vec3( 0.1 ) + reflectionSample * 0.9 + reflectionSample * specularLight )', '( reflectionSample * vec3( 0.46, 0.56, 0.52 ) + specularLight * 0.3 )');
   keep(water.material);
   scene.add(water);
