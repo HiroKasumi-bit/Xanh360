@@ -14,8 +14,8 @@ export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
 }
 
-// The hero's photograph of Saigon: a ghe ve chai crossing the river in front of Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco,
-// the Ba Son bridge and Landmark 81, rendered in Blender for four times of day (scripts/blender/saigon_hero.py). The CSS
+// The hero's picture of Saigon: a ghe ve chai crossing the river in front of Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco,
+// the Ba Son bridge and Landmark 81, one for each of four times of day (AI illustrations, not photographs). The CSS
 // picks the picture from html[data-daypart].
 export function SaigonScene(){
  return <div className="eco-scene" aria-hidden="true"><div className="saigon-photo"/></div>;

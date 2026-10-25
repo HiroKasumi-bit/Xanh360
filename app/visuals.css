@@ -221,12 +221,12 @@ body {
   height: 14px;
 }
 
-/* Saigon (SaigonScene in app/eco-visual.tsx): a photograph rendered in Blender for each time of day
-   (scripts/blender/saigon_hero.py), picked from html[data-daypart] (app/daypart.ts; day when it is missing). Laptops and
-   landscape tablets get the wide frame, portrait tablets and phones the tall one, each cropped like object-fit: cover
-   anchored bottom right, so the landmarks stay right of the copy and narrow screens lose only river and sky on the left.
-   Only the picture in use is downloaded. The copy keeps --city-room clear above the bottom edge, so the skyline sits
-   below or beside it. */
+/* Saigon (SaigonScene in app/eco-visual.tsx): an AI illustration for each time of day, picked from html[data-daypart]
+   (app/daypart.ts; day when it is missing). Laptops and landscape tablets get the wide frame, portrait tablets and phones
+   the tall one (the wide picture's skyline band under a taller sky, so the towers sit below the copy), each cropped like
+   object-fit: cover anchored bottom right, so the landmarks stay right of the copy and narrow screens lose only river
+   and sky on the left. Only the picture in use is downloaded. The copy keeps --city-room clear above the bottom edge,
+   so the skyline sits below or beside it. */
 .hero-intro {
   --city-room: 0px;
   padding-bottom: calc(43px + var(--city-room));
@@ -290,10 +290,12 @@ body {
 }
 
 @media (max-width: 900px) {
+  /* The skyline is a band along the bottom of the tall picture: the scrim holds behind the copy, then clears over the
+     towers, with a wash on the left that keeps the meta line legible where the low buildings run under it. */
   .eco-scene::after {
     background:
-      linear-gradient(180deg, rgb(11 28 34 / .84) 0, rgb(11 28 34 / .76) 52%, rgb(11 28 34 / .52) 70%, rgb(11 28 34 / 0) 84%),
-      linear-gradient(90deg, rgb(11 28 34 / .55) 0, rgb(11 28 34 / 0) 60%);
+      linear-gradient(180deg, rgb(11 28 34 / .84) 0, rgb(11 28 34 / .76) 50%, rgb(11 28 34 / .45) 62%, rgb(11 28 34 / .1) 72%, rgb(11 28 34 / 0) 78%),
+      linear-gradient(90deg, rgb(11 28 34 / .55) 0, rgb(11 28 34 / .3) 35%, rgb(11 28 34 / 0) 60%);
   }
   .saigon-photo {
     background-image: url(/hero/saigon-day-tall-800.webp);
@@ -314,11 +316,13 @@ body {
 }
 
 @media (max-width: 640px) {
-  /* On phones the meta line wraps and sits two thirds down the hero, so the scrim holds longer before it clears. */
+  /* On phones the meta line wraps two thirds down, on the left, over the low buildings beside the towers: the scrim
+     clears over the skyline from about two thirds down, and a soft shade on the left holds behind the meta line. */
   .eco-scene::after {
     background:
-      linear-gradient(180deg, rgb(11 28 34 / .86) 0, rgb(11 28 34 / .8) 56%, rgb(11 28 34 / .66) 75%, rgb(11 28 34 / .2) 82%, rgb(11 28 34 / 0) 88%),
-      linear-gradient(90deg, rgb(11 28 34 / .6) 0, rgb(11 28 34 / 0) 60%);
+      radial-gradient(ellipse 95% 17% at 0 70%, rgb(11 28 34 / .72), rgb(11 28 34 / .3) 60%, rgb(11 28 34 / 0)),
+      linear-gradient(180deg, rgb(11 28 34 / .86) 0, rgb(11 28 34 / .8) 54%, rgb(11 28 34 / .62) 66%, rgb(11 28 34 / .3) 76%, rgb(11 28 34 / 0) 84%),
+      linear-gradient(90deg, rgb(11 28 34 / .62) 0, rgb(11 28 34 / .4) 35%, rgb(11 28 34 / 0) 62%);
   }
   .saigon-photo {
     background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1200.webp) 2x);
@@ -858,6 +862,13 @@ body {
 
   .hero-meta {
     display: none;
+  }
+
+  /* The copy runs the full width and down to the river, so the picture is a backdrop under an even scrim. */
+  .eco-scene::after {
+    background:
+      linear-gradient(180deg, rgb(11 28 34 / .8) 0, rgb(11 28 34 / .74) 100%),
+      linear-gradient(90deg, rgb(11 28 34 / .3) 0, rgb(11 28 34 / 0) 70%);
   }
 
   .hero-intro h1 {

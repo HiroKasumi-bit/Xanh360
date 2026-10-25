@@ -1,4 +1,4 @@
-// Which of the hero's four photographs of Saigon to show (scripts/blender/saigon_hero.py): the one for the hour in Ho
+// Which of the hero's four pictures of Saigon to show (SaigonScene in app/eco-visual.tsx): the one for the hour in Ho
 // Chi Minh City, which keeps UTC+7 all year. Dawn 5:00–7:30, day until 16:30, sunset until 18:30, night until 5:00.
 //
 // applyDaypart sets html[data-daypart], which the CSS reads to pick the picture and the sky wash of the page
