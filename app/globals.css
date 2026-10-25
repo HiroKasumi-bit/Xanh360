@@ -1672,6 +1672,7 @@ header {
   padding-bottom: 16px;
   font-size: .9375rem;
   line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .steps li:last-child {

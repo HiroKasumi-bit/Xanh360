@@ -427,7 +427,8 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     return mat(new THREE.MeshPhysicalMaterial({color, map, metalness: 0.25, roughness: 0.22, clearcoat: 0.8, clearcoatRoughness: 0.12, envMapIntensity: 1.3}));
   };
 
-  // Bitexco Financial Tower: the lotus bud on an elliptical plan, the helipad cantilevered from its west face.
+  // Bitexco Financial Tower: the lotus bud on an elliptical plan and a low podium, the helipad cantilevered from its
+  // west face.
   {
     const profile = [[4.7, 0], [5.1, 9], [4.9, 17], [4.2, 23], [3.1, 28], [1.8, 31.5], [0.6, 33.6], [0.01, 34.4]].map(([r, y]) => new THREE.Vector2(r, y));
     const body = new THREE.LatheGeometry(profile, 48);
@@ -443,8 +444,10 @@ export function buildSaigonScene(renderer: THREE.WebGLRenderer, options: SaigonS
     const strut = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(5.2, 0.45, 0.7)), padMat));
     strut.position.set(-6.2, 20.8, 0);
     strut.rotation.z = -0.6;
+    const podium = shadow(new THREE.Mesh(keep(new THREE.BoxGeometry(13, 2.6, 9)), glass(0x86b4aa, 3, 14, 1)));
+    podium.position.y = 1.3;
     const bitexco = new THREE.Group();
-    bitexco.add(tower, pad, ring, strut);
+    bitexco.add(tower, podium, pad, ring, strut);
     bitexco.position.set(46, 0.6, -16);
     scene.add(bitexco);
   }

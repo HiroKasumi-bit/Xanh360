@@ -584,7 +584,8 @@ for x in (-4.6, 4.6):
     arch('lancet', 0.8, 2.0, 0.3, (x, -2.75, 7.4), 'dark', cathedral, pointed=True)
     arch('side portal', 1.6, 3.0, 0.3, (x, -2.75, 0.6), 'dark', cathedral)
 
-# Bitexco Financial Tower: the lotus bud on an elliptical plan, the helipad cantilevered from its west face.
+# Bitexco Financial Tower: the lotus bud on an elliptical plan and a low podium, the helipad cantilevered from its west
+# face.
 profile = [(4.7, 0), (5.1, 9), (4.9, 17), (4.2, 23), (3.1, 28), (1.8, 31.5), (0.6, 33.6), (0.01, 34.4)]
 bm = bmesh.new()
 rings = []
@@ -596,9 +597,9 @@ for lo, hi in zip(rings, rings[1:]):
         bm.faces.new((lo[k], lo[(k + 1) % 64], hi[(k + 1) % 64], hi[k]))
 bm.faces.new(list(reversed(rings[0])))
 bitexco = group('bitexco', (46, 16, 0.6))
-body = link('bitexco body', bm, 'bitexco', parent=bitexco, smooth=True)
-sub = body.modifiers.new('smooth', 'SUBSURF')
-sub.levels = sub.render_levels = 1
+link('bitexco body', bm, 'bitexco', parent=bitexco, smooth=True)
+# The podium it stands on, so the bud does not read as balanced on its tip.
+box('bitexco podium', (13, 9, 2.6), (0, 0, 1.3), 'bitexco', bitexco, 0.08)
 cone('helipad', 3.2, 3.2, 0.5, (-6.7, 0, 22.6), 'pad', bitexco, segments=48)
 cone('helipad mark', 2.2, 2.2, 0.06, (-6.7, 0, 22.88), 'paint', bitexco, segments=48)
 cone('helipad hole', 1.6, 1.6, 0.08, (-6.7, 0, 22.89), 'pad', bitexco, segments=48)

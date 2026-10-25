@@ -1,6 +1,6 @@
 'use client';
 import {useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
-import {Loader2,Pause,Rotate3d,Sparkles} from 'lucide-react';
+import {Loader2,Pause,Rotate3d,Sparkles,X} from 'lucide-react';
 
 export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
@@ -44,16 +44,20 @@ export function SaigonScene(){
    live.current=startSaigon3d(host.current,()=>setMode('live'));
   }catch{live.current?.stop();live.current=null;setMode('failed')}
  };
- const on=mode==='live'||mode==='loading';
+ // A failure note clears itself after a while; the button can try again at any time.
+ useEffect(()=>{if(mode!=='failed')return;const t=setTimeout(()=>setMode('still'),6000);return()=>clearTimeout(t)},[mode]);
+ const loading=mode==='loading';
+ // The label names what the button does next, so it carries no pressed state. While loading it keeps focus (aria-disabled
+ // rather than disabled) and ignores presses. The note under it is a live region that stays in the page, so turning 3D on
+ // or failing to is announced.
  return <div className="eco-scene" data-mode={mode} ref={scene}>
-  <img className="saigon-still" src="/hero/saigon-3d-2400.webp" srcSet="/hero/saigon-3d-1200.webp 1200w, /hero/saigon-3d-2400.webp 2400w" sizes="(max-width: 640px) 100vw, 1120px" alt="" width={2400} height={571} decoding="async"/>
+  <img className="saigon-still" src="/hero/saigon-3d-2400.webp" srcSet="/hero/saigon-3d-1200.webp 1200w, /hero/saigon-3d-2400.webp 2400w" sizes="(max-width: 640px) max(470px, 100vw), (max-width: 1179px) max(924px, 100vw), 1134px" alt="" width={2400} height={571} decoding="async" fetchPriority="high"/>
   <div className="saigon-live" ref={host}/>
-  <button type="button" className="scene-toggle" aria-pressed={on} disabled={mode==='loading'} onClick={()=>on?stop():void start()}>
-   {mode==='loading'?<Loader2 className="spin" aria-hidden="true"/>:on?<Pause aria-hidden="true"/>:<Rotate3d aria-hidden="true"/>}
-   <span>{mode==='loading'?'Đang tải 3D…':on?'Tắt 3D':'Xem 3D'}</span>
+  <button type="button" className="scene-toggle" aria-disabled={loading||undefined} aria-busy={loading||undefined} onClick={()=>{if(loading)return;if(mode==='live')stop();else void start()}}>
+   {loading?<Loader2 className="spin" aria-hidden="true"/>:mode==='live'?<X aria-hidden="true"/>:<Rotate3d aria-hidden="true"/>}
+   <span>{loading?'Đang tải 3D…':mode==='live'?'Tắt 3D':'Xem 3D'}</span>
   </button>
-  {mode==='live'&&<p className="scene-hint">Kéo để xoay</p>}
-  {mode==='failed'&&<p className="scene-hint" role="status">Máy này chưa mở được 3D</p>}
+  <p className="scene-hint" role="status">{mode==='live'?'Đã bật 3D. Kéo để xoay':mode==='failed'?'Chưa mở được 3D. Hãy thử lại.':''}</p>
  </div>;
 }
 

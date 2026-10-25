@@ -24,10 +24,12 @@ export function startSaigon3d(host: HTMLElement, onFirstFrame: () => void): Live
   const view = buildSaigonScene(renderer, {shadowMapSize: small ? 1024 : 2048, waterTextureSize: small ? 256 : 512});
   const reduced = () => document.documentElement.dataset.motion === 'reduced';
 
+  let dirty = true;
   const resize = () => {
     const w = host.clientWidth, h = host.clientHeight;
     renderer.setSize(w, h, false);
     view.setViewport(w, h);
+    dirty = true;
   };
   resize();
   const resizer = new ResizeObserver(resize);
@@ -50,13 +52,18 @@ export function startSaigon3d(host: HTMLElement, onFirstFrame: () => void): Live
   canvas.addEventListener('pointerup', up);
   canvas.addEventListener('pointercancel', up);
 
+  // With motion reduced nothing moves on its own, so a frame is drawn only while a drag is settling or after a resize.
   let visible = true, first = true, time = 0, last = performance.now();
   const frame = (now: number) => {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
-    if (!reduced()) time += dt;
-    const sway = reduced() ? 0 : Math.sin(time * 0.11) * 0.06;
-    yaw += (target + sway - yaw) * Math.min(1, dt * 4);
+    const still = reduced();
+    if (!still) time += dt;
+    const sway = still ? 0 : Math.sin(time * 0.11) * 0.06;
+    const step = (target + sway - yaw) * Math.min(1, dt * 4);
+    if (still && !dirty && Math.abs(step) < 1e-5) return;
+    dirty = false;
+    yaw += step;
     view.setYaw(yaw);
     view.tick(time);
     renderer.render(view.scene, view.camera);

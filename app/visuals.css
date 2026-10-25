@@ -262,6 +262,7 @@ body {
   color: #d5e8de;
   max-width: 465px;
   margin: 0;
+  text-wrap: pretty;
 }
 
 .hero-meta {
@@ -280,14 +281,15 @@ body {
   height: 14px;
 }
 
-/* Saigon skyline (SaigonScene in app/eco-visual.tsx): a 3D scene, shown first as a still rendered from it and, on
-   request, live. Both fill a band --scene-h tall at the bottom of the hero, cropped like object-fit: cover anchored
+/* Saigon skyline (SaigonScene in app/eco-visual.tsx): a still rendered in Blender and, on request, the live 3D scene it
+   was made from. Both fill a band --scene-h tall at the bottom of the hero, cropped like object-fit: cover anchored
    bottom right, so the landmarks stay right of the copy and narrow screens lose only river on the left. The hero keeps
-   --river-room clear under the copy: on wide heroes the river fits in the bottom padding, so it costs nothing; on
-   tablets and phones the copy sits above the whole band. */
+   --river-room clear under the copy: on wide heroes it lifts the meta line off the hazy far bank onto plain sky; on
+   tablets and phones the copy sits above the whole band. Where the band is a full-width strip, it is at least as tall
+   as the picture is at that width (571/2400 of it), so cover never crops Landmark 81's spire. */
 .hero-intro {
   --scene-h: 270px;
-  --river-room: 6px;
+  --river-room: 52px;
   padding-bottom: calc(43px + var(--river-room));
 }
 
@@ -334,9 +336,9 @@ body {
   opacity: 0;
 }
 
-/* Side by side with the copy, the far bank fades out under it, so the hero sentence and meta line sit on the plain
-   green. On tablets and phones the copy is above the band and the whole scene shows. */
-@media (min-width: 901px) {
+/* Side by side with the copy (at the shell's full width), the far bank fades out under it, so the hero sentence and meta
+   line sit on the plain green. On narrower screens the copy is above the band and the whole scene shows. */
+@media (min-width: 1180px) {
   .saigon-still,
   .saigon-live {
     -webkit-mask-image: linear-gradient(90deg, transparent 18%, #000 46%);
@@ -382,22 +384,23 @@ body {
   color: var(--sprout);
 }
 
-.scene-toggle[aria-pressed=true] {
+/* Lit while the live view is on or loading. Loading keeps focus and full contrast (aria-disabled, not disabled). */
+.eco-scene:is([data-mode=live], [data-mode=loading]) .scene-toggle {
   background: rgb(215 247 155 / .2);
   border-color: rgb(215 247 155 / .45);
 }
 
-.scene-toggle:disabled {
+.scene-toggle[aria-disabled=true] {
   cursor: progress;
 }
 
-.scene-toggle:not(:disabled):active {
+.scene-toggle:not([aria-disabled=true]):active {
   scale: var(--press-scale);
   transition-duration: var(--dur-instant);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .scene-toggle:not(:disabled):hover {
+  .scene-toggle:not([aria-disabled=true]):hover {
     background-color: rgb(255 255 255 / .1);
   }
 }
@@ -418,6 +421,7 @@ body {
     clip-path: inset(50%);
     white-space: nowrap;
   }
+
 }
 
 .scene-hint {
@@ -432,6 +436,29 @@ body {
   color: #e3f1e6;
   font-size: var(--fs-caption);
   pointer-events: none;
+}
+
+/* Empty while the still shows, but kept in the page so its announcements are heard. */
+.scene-hint:empty {
+  padding: 0;
+  background: none;
+}
+
+/* Phones: the hint sits on the river it refers to, clear of the headline. */
+@media (max-width: 640px) {
+  .scene-hint {
+    top: auto;
+    right: 12px;
+    bottom: 10px;
+  }
+}
+
+/* Very narrow phones: the toggle moves into the corner, a little further from the headline. */
+@media (max-width: 359px) {
+  .scene-toggle {
+    top: 10px;
+    right: 10px;
+  }
 }
 
 /* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
@@ -859,26 +886,29 @@ footer::before {
   box-shadow: var(--elev-pressed);
 }
 
-/* Narrower desktops: the skyline steps down so Chợ Bến Thành stays clear of the hero sentence. */
-@media (max-width: 1100px) {
+/* Below the shell's full width (1180px), on narrower desktops, tablets and phones: the hero flows as a block and the
+   skyline becomes a band under the copy (side by side, Chợ Bến Thành would crowd the sentence and the meta line). The
+   copy keeps clear of the landmarks, so --river-room follows the band's height. */
+@media (max-width: 1179px) {
   .hero-intro {
-    --scene-h: 230px;
-    --river-room: 0px;
+    --scene-h: max(220px, calc((100vw - 64px) * .238));
+    --river-room: calc(var(--scene-h) - 104px);
+    display: block;
+    padding: 30px 26px calc(30px + var(--river-room));
+    min-height: 0;
+  }
+
+  .hero-copy > p {
+    max-width: 460px;
+  }
+
+  .hero-meta {
+    margin-top: 18px;
   }
 }
 
-/* Small laptops: the hero tightens and the skyline gets a little shorter. The header runs short of room too, so the
-   motion toggle keeps only its icon. */
+/* Small laptops: the header runs short of room, so the motion toggle keeps only its icon. */
 @media (max-width: 1000px) {
-  .hero-intro {
-    --scene-h: 200px;
-    --river-room: 4px;
-    padding: 33px 30px calc(33px + var(--river-room));
-    grid-template-columns: 1.2fr 1fr;
-    min-height: 370px;
-    gap: 12px;
-  }
-
   .hero-meta {
     gap: 8px 12px;
   }
@@ -915,27 +945,6 @@ footer::before {
   }
 }
 
-/* Tablets and phones: the hero flows as a block and the skyline becomes a band under the copy. The copy keeps clear of
-   the landmarks, so --river-room grows towards the band's height. */
-@media (max-width: 900px) {
-  .hero-intro {
-    --scene-h: 220px;
-    --river-room: 116px;
-    display: block;
-    padding: 30px 26px calc(30px + var(--river-room));
-    min-height: 0;
-  }
-
-  .hero-copy > p {
-    max-width: 460px;
-  }
-
-  .hero-meta {
-    margin-top: 18px;
-  }
-
-}
-
 /* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the skyline band gets shorter. */
 @media (max-width: 640px) {
   .ambient-sun {
@@ -950,8 +959,8 @@ footer::before {
   }
 
   .hero-intro {
-    --scene-h: 112px;
-    --river-room: 100px;
+    --scene-h: max(112px, calc((100vw - 32px) * .238));
+    --river-room: calc(var(--scene-h) - 12px);
     border-radius: var(--r-xl);
     margin: 0 0 14px;
     padding: 18px 20px calc(18px + var(--river-room));
@@ -1028,6 +1037,14 @@ footer::before {
   .tab-pill {
     background: linear-gradient(180deg, #dcebd6, var(--green-100));
     box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
+  }
+}
+
+/* Short phones (360×640 and the like): the copy may overlap the band's empty top a little more, so "Chụp ảnh" clears
+   the tab bar. */
+@media (max-width: 640px) and (max-height: 700px) {
+  .hero-intro {
+    --river-room: calc(var(--scene-h) - 28px);
   }
 }
 
