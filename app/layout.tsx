@@ -37,11 +37,10 @@ export const viewport: Viewport = {
 };
 
 // The single source of truth for reduced motion. This runs in <head>, before the first paint, and sets
-// html[data-motion] to "reduced" when the system asks for less motion or the visitor chose "Dừng hiệu ứng" earlier
-// (saved under xanh360-motion), otherwise "full". data-motion-source says why ("system", "user" or "none"), so the
-// header can explain a system setting instead of offering a toggle. CSS reads only these attributes; MotionControl
-// (app/eco-visual.tsx) keeps them in sync afterwards. React does not own these attributes, hence suppressHydrationWarning.
-const motionScript = `(function(){var d=document.documentElement,s=false,p=null;try{s=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}try{p=localStorage.getItem('xanh360-motion')}catch(e){}d.setAttribute('data-motion',s||p==='paused'?'reduced':'full');d.setAttribute('data-motion-source',s?'system':p==='paused'?'user':'none')})()`;
+// html[data-motion] to "reduced" when the system asks for less motion, otherwise "full", and follows the system
+// setting if it changes while the page is open. CSS and app/motion.ts read only this attribute. React does not own it,
+// hence suppressHydrationWarning.
+const motionScript = `(function(){var d=document.documentElement;try{var m=window.matchMedia('(prefers-reduced-motion: reduce)');var set=function(){d.setAttribute('data-motion',m.matches?'reduced':'full')};set();m.addEventListener('change',set)}catch(e){d.setAttribute('data-motion','full')}})()`;
 
 // The hero's photograph follows the hour in Ho Chi Minh City (app/daypart.ts): html[data-daypart] is set here, before the
 // first paint, so the CSS asks for the right picture straight away.

@@ -205,7 +205,7 @@ The signed-in admin (`.admin-shell`) is a working tool laid straight on the page
 - Functional greens, amber and earth red live inside cards and carry meaning.
 - Saigon hero photograph by time of day under a forest scrim.
 - Soft, green-tinted, top-lit elevation; generous rounded corners.
-- Motion limited to transform and opacity, with one reduced-motion switch.
+- Motion limited to transform and opacity; the system's reduced-motion setting stops it.
 
 ## Colors
 
@@ -260,7 +260,7 @@ A two-world palette: forest colours for whatever sits on the ground, paper and i
 
 A single centred shell, max 1180px wide, with 32px gutters (16px on phones, both extended by the safe-area insets). Order on the search tab: header on the ground, the tab tray, the full-width hero, three capture cards (`1.13fr 1fr 1fr`, 16px gap), the search card, popular items in a three-column grid (12px gap), then the paper "how it works" card and the footer under a 1px `on-ground-line` hairline.
 
-Breakpoints observed: 1179px (hero stacks copy above the skyline), 1000px (motion toggle becomes icon-only), 900px (tall hero photograph), 640px (phone: bottom tab bar, 16px gutters, tighter cards), 389px (small phones), and landscape at max-height 500px (compact hero, bottom tab bar). On phones the tab list becomes a fixed bottom bar (`--tabbar-h` 44px on phones, 56px otherwise, plus the safe-area inset), and "Chụp ảnh" must stay above it at 390×664 and 360×640. Touch targets are at least 44px; header chips and tabs are 46px.
+Breakpoints observed: 1179px (hero stacks copy above the skyline), 1000px (tighter hero meta), 900px (tall hero photograph), 640px (phone: bottom tab bar, 16px gutters, tighter cards), 389px (small phones), and landscape at max-height 500px (compact hero, bottom tab bar). On phones the tab list becomes a fixed bottom bar (`--tabbar-h` 44px on phones, 56px otherwise, plus the safe-area inset), and "Chụp ảnh" must stay above it at 390×664 and 360×640. Touch targets are at least 44px; header chips and tabs are 46px.
 
 ## Elevation & Depth
 
@@ -270,7 +270,7 @@ Hybrid: paper cards are lifted off the ground with soft, green-tinted, layered s
 - **Rest** (`--elev-1`): every paper card and header chip.
 - **Raised** (`--elev-2`): the classification result card.
 - **Lift** (`--elev-lift`): hover shadow, pre-drawn on a pseudo-element and faded in by opacity, never by animating `box-shadow`.
-- **Pressed** (`--elev-pressed`): pressed cards, outline buttons and the pressed motion toggle.
+- **Pressed** (`--elev-pressed`): pressed cards and outline buttons.
 - **Field well** (`inset 0 1px 2px rgb(13 42 31 / .07)`): the search field.
 - **Hero** (`0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7)`): the photograph frame.
 
@@ -281,7 +281,7 @@ Hybrid: paper cards are lifted off the ground with soft, green-tinted, layered s
 
 ## Shapes
 
-Generously rounded, never sharp. Radii step from 8px (rows) through 10px (buttons), 14px (fields, icon tiles, brand tile), 18px (item cards, point cards, result sign), 22px (capture, search and result cards) to 28px (hero). Chips and header controls are full pills. Phones step large containers down one size (hero 22px, capture and search cards 18px). Borders are 1px in `line-soft` on cards. The gạch bông (encaustic cement tile) pattern appears only as a faded corner, masked from the top right at 12% opacity, on the paper "how it works" card.
+Generously rounded, never sharp. Radii step from 8px (rows) through 10px (buttons), 14px (fields, icon tiles, brand tile), 18px (item cards, point cards, result sign), 22px (capture, search and result cards) to 28px (hero). Chips and header controls are full pills. Phones step large containers down one size (hero 22px, capture and search cards 18px). Borders are 1px in `line-soft` on cards.
 
 ## Components
 
@@ -295,7 +295,7 @@ Generously rounded, never sharp. Radii step from 8px (rows) through 10px (button
 
 ### Chips
 - **Quick picks:** paper pills, 1px light border, `green-700` text at 13px; hover border `green-300`.
-- **Header chips** (location, weather, motion toggle): 46px paper pills with `--elev-1`. The pressed motion toggle sinks and takes the `green-100` tint.
+- **Header chips** (location, weather): 46px paper pills with `--elev-1`.
 - **Badges:** 13px semibold pills in category tints.
 
 ### Cards / Containers
@@ -322,6 +322,9 @@ A full-frame, rounded (28px) photograph of the Saigon riverfront for the current
 ### Waste Sign (signature)
 The classification result sign: category tint background with a white top sheen, a 10px category band on the left edge, a 76px embossed paper icon tile, the category name in the category text colour (22px), and a 13px instruction line. Hazard results switch the surrounding card to the red family.
 
+### Visitor-added points
+Under the sourced points in the Điểm tiếp nhận tab, headed "Do người dùng thêm · chưa kiểm chứng". Each is the same point card with a people icon in its tile and a badge: amber "Do người dùng thêm", green "Cộng đồng xác nhận" after five on-site confirmations on two different days, red when three people say it no longer takes things. The card lists the groups it takes, a Google Maps link to its coordinates, a "Báo điểm sai" menu and the on-site vote buttons. The add form opens in a dialog: labelled fields with 16px text, the groups as 44px toggle chips, a GPS step with a link to check the spot in Google Maps, and each error under the field it belongs to.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -334,7 +337,7 @@ The classification result sign: category tint background with a white top sheen,
 
 ### Don't:
 - **Don't** return to a cream page with a green button; the ground is forest and the cards are paper.
-- **Don't** put a pattern on the ground; gạch bông lives only as the faded corner of the "how it works" paper card.
+- **Don't** add decorative patterns (the gạch bông tiles were removed at the owner's request); the Saigon photograph carries the city.
 - **Don't** add a second accent colour or use category colours as decoration.
 - **Don't** set small uppercase labels above headings; only the 404 page keeps its muted error code.
 - **Don't** animate `box-shadow` or `filter`; use pre-drawn shadows and opacity.

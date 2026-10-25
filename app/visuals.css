@@ -88,71 +88,6 @@ html {
   box-shadow: none;
 }
 
-/* The motion toggle is the last chip in the header, the same height as the location and weather chips. */
-.motion-control {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid var(--line-soft);
-  border-radius: var(--r-pill);
-  background: var(--paper-raised);
-  box-shadow: var(--elev-1);
-  color: var(--ink-2);
-  padding: 8px 14px;
-  font-size: var(--fs-caption);
-  font-weight: 500;
-  line-height: 1.3;
-  min-width: 46px;
-  min-height: 46px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.motion-control svg {
-  width: 15px;
-  height: 15px;
-}
-
-/* The label stays "Dừng hiệu ứng"; aria-pressed carries the state. Pressed, the chip sinks into the paper and takes the
-   brand tint, so the stopped state is seen as well as announced. */
-.motion-control[aria-pressed=true] {
-  background: var(--green-100);
-  border-color: var(--green-300);
-  color: var(--green-700);
-  box-shadow: var(--elev-pressed);
-}
-
-/* When the system asks for reduced motion there is nothing to switch, so a plain line explains why nothing moves
-   instead of a disabled button. html[data-motion-source] is set before the first paint (app/layout.tsx). */
-.motion-status {
-  display: none;
-  align-items: center;
-  gap: 7px;
-  max-width: 172px;
-  margin: 0;
-  color: var(--on-ground-2);
-  font-size: var(--fs-caption);
-  font-weight: 500;
-  line-height: 1.3;
-  text-wrap: balance;
-}
-
-.motion-status svg {
-  width: 15px;
-  height: 15px;
-  color: var(--accent-on-ground);
-}
-
-:root[data-motion-source=system] .motion-control {
-  display: none;
-}
-
-:root[data-motion-source=system] .motion-status {
-  display: inline-flex;
-}
-
 /* What sits straight on the ground rather than in a card: page intros, the headings between cards, the page count,
    the Maps fallback and the footer. Headings take the light on-ground colour, body text (and the 404 page's error
    code) the muted one, links the accent; cards keep their ink. */
@@ -558,27 +493,11 @@ body:has(.admin-shell) {
   color: var(--cat-unknown-fg);
 }
 
-/* Panels. The how-it-works strip carries a corner of faint gạch bông, fading out from the top right so the step copy
-   stays on plain paper. */
+/* Panels: the how-it-works strip is plain paper. */
 .how-grid {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   background: var(--paper-raised);
   border: 1px solid var(--line-soft);
   box-shadow: var(--elev-1);
-}
-
-.how-grid::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gach-bong) 0 0 / 40px 40px;
-  opacity: .12;
-  -webkit-mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
-  mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
-  pointer-events: none;
-  z-index: -1;
 }
 
 .source-panel {
@@ -705,8 +624,7 @@ body:has(.admin-shell) {
   }
 
   .quick button:not(:disabled):hover,
-  .location-button:hover,
-  .motion-control:hover {
+  .location-button:hover {
     border-color: var(--green-300);
   }
 
@@ -725,7 +643,6 @@ body:has(.admin-shell) {
 .quick button,
 .searchbox button,
 .location-button,
-.motion-control,
 .nav-tabs [role=tab],
 .area-option,
 .result-row,
@@ -751,7 +668,6 @@ body:has(.admin-shell) {
 .quick button:not(:disabled):active,
 .searchbox button:not(:disabled):active,
 .location-button:active,
-.motion-control:active,
 .nav-tabs [role=tab]:active,
 .photo-dropzone:active,
 .shutter:not(:disabled):active,
@@ -796,7 +712,6 @@ body:has(.admin-shell) {
   box-shadow: inset 0 2px 4px rgb(0 0 0 / .25);
 }
 
-.motion-control:active,
 .btn-outline:not(:disabled, [aria-disabled=true]):active {
   box-shadow: var(--elev-pressed);
 }
@@ -829,41 +744,9 @@ body:has(.admin-shell) {
   }
 }
 
-/* Small laptops: the header runs short of room, so the motion toggle keeps only its icon. */
 @media (max-width: 1000px) {
   .hero-meta {
     gap: 8px 12px;
-  }
-
-  /* The motion toggle shrinks to its icon; the label stays as its accessible name and title. */
-  .motion-control {
-    width: 46px;
-    padding: 0;
-  }
-
-  .motion-control span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .motion-control svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  /* No room for the explanation, and nothing to switch: the system setting is already followed. The line stays for
-     screen readers, so the state is still discoverable. */
-  :root[data-motion-source=system] .motion-status {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 }
 
@@ -1000,7 +883,7 @@ body:has(.admin-shell) {
 }
 
 /* Reduced motion, one switch. html[data-motion] is set before the first paint by the inline script in app/layout.tsx
-   (from the system setting and the saved "Dừng hiệu ứng" choice) and kept in sync by MotionControl. When it is
+   from the system setting, and follows it if it changes. When it is
    "reduced", nothing moves: loops, entrances, staggers, lifts, the tab pill, sheets and smooth scrolling all stop.
    Busy spinners keep turning, because they carry information. Colour and opacity changes stay. `*` does not reach
    pseudo-elements, so they are listed too. */

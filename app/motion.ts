@@ -1,5 +1,5 @@
 // Motion helpers for scripts. CSS reads html[data-motion] directly; scripts that animate or scroll ask here, so the
-// visitor's "Dừng hiệu ứng" choice and the system setting count the same everywhere.
+// system's reduced-motion setting counts the same everywhere.
 export function motionReduced(){
  return typeof document!=='undefined'&&document.documentElement.dataset.motion==='reduced';
 }

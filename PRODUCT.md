@@ -33,6 +33,7 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 - Danh mục vật dụng có nguồn (`lib/seed.ts`, `lib/catalog-expansion.ts`), hợp nhất với bản xuất bản trong D1.
 - Nhận diện ảnh bằng Workers AI miễn phí, có giới hạn lượt mỗi ngày; hết lượt thì người dùng tra bằng tên.
 - Khoảng cách là đường chim bay (Haversine). Chưa có geocoding, Places, Routes hay ranh giới phường.
+- Người dùng tự thêm điểm thu gom bằng GPS tại chỗ (mỗi thiết bị 1 điểm/ngày; thiết bị có hơn 3 điểm bị báo sai không thêm được nữa). Điểm hiện riêng với nhãn "chưa kiểm chứng"; 5 người xác nhận tại chỗ trong ít nhất 2 ngày thì thành "Cộng đồng xác nhận", 3 báo cáo sai thì ẩn.
 - Không bịa địa chỉ, số điện thoại, tọa độ hay quy định. Không tìm được thì ghi rõ là không có.
 - Không thêm dịch vụ trả phí hay cần khóa API mới.
 - Migration D1 chỉ thêm bảng/cột, không xoá hay sửa dữ liệu cũ.
@@ -41,7 +42,7 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 
 - Tên: **Xanh360**. Khẩu hiệu đầu trang: "Bỏ đúng chỗ. Xanh thêm mỗi ngày."
 - Toàn bộ giao diện và nội dung bằng tiếng Việt.
-- Bản sắc TP.HCM: ảnh sông Sài Gòn với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày; hoạ tiết gạch bông.
+- Bản sắc TP.HCM: ảnh sông Sài Gòn với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày. (Hoạ tiết gạch bông đã bỏ theo ý chủ dự án.)
 - Người dùng (chủ dự án) yêu cầu nền trang xanh đậm, thẻ nội dung sáng, và một màu nhấn tạo chất riêng (đang chọn giữa vàng nắng, đỏ gạch, xanh mạ).
 
 ## Evidence on Hand
@@ -60,4 +61,4 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 
 ## Accessibility & Inclusion
 
-Chữ thường đạt tương phản tối thiểu 4,5:1, vùng chạm từ 44px, tôn trọng cài đặt giảm chuyển động (có nút "Dừng hiệu ứng"), dùng được bằng bàn phím và trình đọc màn hình, chữ phóng to 125% không vỡ bố cục.
+Chữ thường đạt tương phản tối thiểu 4,5:1, vùng chạm từ 44px, tôn trọng cài đặt giảm chuyển động của thiết bị, dùng được bằng bàn phím và trình đọc màn hình, chữ phóng to 125% không vỡ bố cục.
