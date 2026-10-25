@@ -1,64 +1,22 @@
 'use client';
-import {useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
-import {Loader2,Pause,Rotate3d,Sparkles,X} from 'lucide-react';
+import {useEffect,useSyncExternalStore} from 'react';
+import {Pause,Sparkles} from 'lucide-react';
+import {applyDaypart} from './daypart';
 
 export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
 }
-// The hero's Saigon skyline in 3D (app/saigon-3d): Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, the Ba Son bridge and
-// Landmark 81 across the river, a ghe ve chai rowed by a woman in a nón lá. The page shows a still rendered in Blender
-// from the same layout (scripts/blender/saigon_still.py), so nothing heavy loads up front; "Xem 3D" loads three.js and
-// swaps in the live scene at the same framing. The live view stops when pressed again, when the visitor turns decorative
-// motion off, or when the component unmounts. The hero is also marked data-scene="asleep" off screen, which pauses its
-// CSS loops.
-type Live3d={stop():void};
+// The hero's photograph of Saigon: a ghe ve chai crossing the river in front of Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco,
+// the Ba Son bridge and Landmark 81, rendered in Blender for four times of day (scripts/blender/saigon_hero.py). The CSS
+// picks the picture from html[data-daypart] (app/daypart.ts, set before the first paint); this keeps it in step with the
+// clock while the page stays open, checking every few minutes and whenever the tab comes back.
 export function SaigonScene(){
- const scene=useRef<HTMLDivElement>(null);
- const host=useRef<HTMLDivElement>(null);
- const live=useRef<Live3d|null>(null);
- const [mode,setMode]=useState<'still'|'loading'|'live'|'failed'>('still');
  useEffect(()=>{
-  const hero=scene.current?.closest<HTMLElement>('.hero-intro');if(!hero)return;
-  let onScreen=true;
-  const sync=()=>{hero.dataset.scene=onScreen&&document.visibilityState==='visible'?'awake':'asleep'};
-  const observer=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{onScreen=entries[entries.length-1].isIntersecting;sync()}):null;
-  observer?.observe(hero);document.addEventListener('visibilitychange',sync);sync();
-  return()=>{observer?.disconnect();document.removeEventListener('visibilitychange',sync);delete hero.dataset.scene};
+  const sync=()=>{if(document.visibilityState==='visible')applyDaypart()};
+  const timer=setInterval(sync,5*60*1000);document.addEventListener('visibilitychange',sync);
+  return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',sync)};
  },[]);
- const stop=useCallback(()=>{live.current?.stop();live.current=null;setMode('still')},[]);
- // Turning decorative motion off (the header toggle or the system setting changing) also ends the live view.
- useEffect(()=>{
-  if(mode!=='live')return;
-  const root=document.documentElement;const was=root.dataset.motion;
-  const watch=new MutationObserver(()=>{if(root.dataset.motion==='reduced'&&was!=='reduced')stop()});
-  watch.observe(root,{attributes:true,attributeFilter:['data-motion']});
-  return()=>watch.disconnect();
- },[mode,stop]);
- useEffect(()=>()=>live.current?.stop(),[]);
- const start=async()=>{
-  if(!host.current)return;
-  setMode('loading');
-  try{
-   const {startSaigon3d}=await import('./saigon-3d/live');
-   if(!host.current)return;
-   live.current=startSaigon3d(host.current,()=>setMode('live'));
-  }catch{live.current?.stop();live.current=null;setMode('failed')}
- };
- // A failure note clears itself after a while; the button can try again at any time.
- useEffect(()=>{if(mode!=='failed')return;const t=setTimeout(()=>setMode('still'),6000);return()=>clearTimeout(t)},[mode]);
- const loading=mode==='loading';
- // The label names what the button does next, so it carries no pressed state. While loading it keeps focus (aria-disabled
- // rather than disabled) and ignores presses. The note under it is a live region that stays in the page, so turning 3D on
- // or failing to is announced.
- return <div className="eco-scene" data-mode={mode} ref={scene}>
-  <img className="saigon-still" src="/hero/saigon-3d-2400.webp" srcSet="/hero/saigon-3d-1200.webp 1200w, /hero/saigon-3d-2400.webp 2400w" sizes="(max-width: 640px) max(470px, 100vw), (max-width: 1179px) max(924px, 100vw), 1134px" alt="" width={2400} height={571} decoding="async" fetchPriority="high"/>
-  <div className="saigon-live" ref={host}/>
-  <button type="button" className="scene-toggle" aria-disabled={loading||undefined} aria-busy={loading||undefined} onClick={()=>{if(loading)return;if(mode==='live')stop();else void start()}}>
-   {loading?<Loader2 className="spin" aria-hidden="true"/>:mode==='live'?<X aria-hidden="true"/>:<Rotate3d aria-hidden="true"/>}
-   <span>{loading?'Đang tải 3D…':mode==='live'?'Tắt 3D':'Xem 3D'}</span>
-  </button>
-  <p className="scene-hint" role="status">{mode==='live'?'Đã bật 3D. Kéo để xoay':mode==='failed'?'Chưa mở được 3D. Hãy thử lại.':''}</p>
- </div>;
+ return <div className="eco-scene" aria-hidden="true"><div className="saigon-photo"/></div>;
 }
 
 // Reduced motion lives on html[data-motion] and html[data-motion-source], set before the first paint by the inline

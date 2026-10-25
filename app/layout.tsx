@@ -16,6 +16,7 @@ import "@fontsource/be-vietnam-pro/vietnamese-700.css";
 import "@fontsource/be-vietnam-pro/vietnamese-800.css";
 import "./globals.css";
 import "./visuals.css";
+import { applyDaypart } from "./daypart";
 
 export const metadata: Metadata = {
   title: "Xanh360 | Phân loại rác, không khí & thời tiết",
@@ -42,6 +43,10 @@ export const viewport: Viewport = {
 // (app/eco-visual.tsx) keeps them in sync afterwards. React does not own these attributes, hence suppressHydrationWarning.
 const motionScript = `(function(){var d=document.documentElement,s=false,p=null;try{s=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}try{p=localStorage.getItem('xanh360-motion')}catch(e){}d.setAttribute('data-motion',s||p==='paused'?'reduced':'full');d.setAttribute('data-motion-source',s?'system':p==='paused'?'user':'none')})()`;
 
+// The hero's photograph follows the hour in Ho Chi Minh City (app/daypart.ts): html[data-daypart] is set here, before the
+// first paint, so the CSS asks for the right picture straight away.
+const daypartScript = `(${applyDaypart.toString()})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,6 +56,7 @@ export default function RootLayout({
     <html lang="vi" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
+        <script dangerouslySetInnerHTML={{ __html: daypartScript }} />
       </head>
       <body className="antialiased">{children}</body>
     </html>

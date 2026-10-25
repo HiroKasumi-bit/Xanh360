@@ -173,8 +173,9 @@ body {
   display: inline-flex;
 }
 
-/* Hero: deep forest lit by one key light from the top right. Its headline can take focus (when a button opens the
-   search tab), so the ring switches to sprout on the dark surface. */
+/* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest gradient
+   shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring switches
+   to sprout on the dark surface. */
 .hero-intro {
   --focus-ring: var(--focus-ring-on-dark);
   --focus-halo: var(--focus-halo-on-dark);
@@ -183,7 +184,7 @@ body {
   grid-template-columns: 1.13fr 1fr;
   align-items: center;
   max-width: none;
-  min-height: 390px;
+  min-height: 470px;
   padding: 43px 42px;
   margin: 0 0 24px;
   border-radius: var(--r-2xl);
@@ -198,48 +199,19 @@ body {
   box-shadow: inset 0 1px 0 rgb(217 255 230 / .16), inset 0 0 0 1px rgb(255 255 255 / .04), 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
 }
 
-/* Paper grain also lives on the forest, mixed in softly so the dark surface is not plastic-flat. */
+/* Film grain over the photograph and its scrim, under the copy. */
 .hero-intro::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: var(--grain);
   background-size: 180px 180px;
-  opacity: .5;
+  opacity: .32;
   mix-blend-mode: overlay;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
 }
 
-/* Sunlight through leaves (nang xuyen la): soft pools of light with a few bright cores, clustered under the key light and swaying slowly. */
-.hero-intro::after {
-  --pool: rgb(255 238 186 / .7), rgb(255 238 186 / .35) 50%, rgb(255 238 186 / 0) 100%;
-  --core: rgb(255 246 214 / 1), rgb(255 246 214 / .6) 40%, rgb(255 246 214 / 0) 100%;
-  content: '';
-  position: absolute;
-  inset: -20% -10% 10% 28%;
-  background:
-    radial-gradient(1.6% 1.2% at 74% 14%, var(--core)),
-    radial-gradient(1.1% .9% at 81% 23%, var(--core)),
-    radial-gradient(1.9% 1.4% at 88% 12%, var(--core)),
-    radial-gradient(1% .8% at 66% 25%, var(--core)),
-    radial-gradient(1.3% 1% at 93% 31%, var(--core)),
-    radial-gradient(.9% .7% at 60% 12%, var(--core)),
-    radial-gradient(1.2% .9% at 85% 40%, var(--core)),
-    radial-gradient(9% 6% at 76% 16%, var(--pool)),
-    radial-gradient(7% 5% at 88% 26%, var(--pool)),
-    radial-gradient(10% 6.5% at 64% 30%, var(--pool)),
-    radial-gradient(6% 4.5% at 94% 12%, var(--pool)),
-    radial-gradient(8% 5% at 82% 44%, var(--pool)),
-    radial-gradient(6% 4% at 55% 15%, var(--pool)),
-    radial-gradient(5% 3.5% at 70% 46%, var(--pool));
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-  z-index: -1;
-  animation: leaf-sway 13s var(--ease-float) infinite alternate;
-}
-
-/* The scene comes first in the markup (so phones can float it beside the headline); the grid puts it back on the right. */
 .hero-copy {
   position: relative;
   z-index: 2;
@@ -281,183 +253,116 @@ body {
   height: 14px;
 }
 
-/* Saigon skyline (SaigonScene in app/eco-visual.tsx): a still rendered in Blender and, on request, the live 3D scene it
-   was made from. Both fill a band --scene-h tall at the bottom of the hero, cropped like object-fit: cover anchored
-   bottom right, so the landmarks stay right of the copy and narrow screens lose only river on the left. The hero keeps
-   --river-room clear under the copy: on wide heroes it lifts the meta line off the hazy far bank onto plain sky; on
-   tablets and phones the copy sits above the whole band. Where the band is a full-width strip, it is at least as tall
-   as the picture is at that width (571/2400 of it), so cover never crops Landmark 81's spire. */
+/* Saigon (SaigonScene in app/eco-visual.tsx): a photograph rendered in Blender for each time of day
+   (scripts/blender/saigon_hero.py), picked from html[data-daypart] (app/daypart.ts; day when it is missing). Laptops and
+   landscape tablets get the wide frame, portrait tablets and phones the tall one, each cropped like object-fit: cover
+   anchored bottom right, so the landmarks stay right of the copy and narrow screens lose only river and sky on the left.
+   Only the picture in use is downloaded. The copy keeps --city-room clear above the bottom edge, so the skyline sits
+   below or beside it. */
 .hero-intro {
-  --scene-h: 270px;
-  --river-room: 52px;
-  padding-bottom: calc(43px + var(--river-room));
+  --city-room: 0px;
+  padding-bottom: calc(43px + var(--city-room));
 }
 
-/* No z-index here, so the scene forms no stacking context: the still and the canvas paint under the copy (z-index 2),
-   which keeps its text selectable and clickable, while the toggle (z-index 3) sits above everything. */
 .eco-scene {
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   user-select: none;
 }
 
-.saigon-still,
-.saigon-live {
+.saigon-photo {
   position: absolute;
-  inset: auto 0 0;
-  width: 100%;
-  height: var(--scene-h);
+  inset: 0;
+  background-color: var(--green-800);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: cover;
 }
 
-.saigon-still {
-  display: block;
-  object-fit: cover;
-  object-position: right bottom;
-  transition: opacity var(--dur-slow) var(--ease-out);
+.saigon-photo {
+  background-image: url(/hero/saigon-day-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-day-wide-1280.webp) 1x, url(/hero/saigon-day-wide-2560.webp) 2x);
 }
 
-/* The live canvas takes over once its first frame is drawn, so the swap shows no gap. Horizontal drags turn the
-   camera; vertical swipes still scroll the page. */
-.saigon-live canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: auto;
-  cursor: grab;
-  touch-action: pan-y;
+:root[data-daypart=dawn] .saigon-photo {
+  background-image: url(/hero/saigon-dawn-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-dawn-wide-1280.webp) 1x, url(/hero/saigon-dawn-wide-2560.webp) 2x);
 }
 
-.saigon-live canvas:active {
-  cursor: grabbing;
+:root[data-daypart=sunset] .saigon-photo {
+  background-image: url(/hero/saigon-sunset-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-sunset-wide-1280.webp) 1x, url(/hero/saigon-sunset-wide-2560.webp) 2x);
 }
 
-.eco-scene[data-mode=live] .saigon-still {
-  opacity: 0;
+:root[data-daypart=night] .saigon-photo {
+  background-image: url(/hero/saigon-night-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-night-wide-1280.webp) 1x, url(/hero/saigon-night-wide-2560.webp) 2x);
 }
 
-/* Side by side with the copy (at the shell's full width), the far bank fades out under it, so the hero sentence and meta
-   line sit on the plain green. On narrower screens the copy is above the band and the whole scene shows. */
-@media (min-width: 1180px) {
-  .saigon-still,
-  .saigon-live {
-    -webkit-mask-image: linear-gradient(90deg, transparent 18%, #000 46%);
-    mask-image: linear-gradient(90deg, transparent 18%, #000 46%);
-  }
-}
-
-/* "Xem 3D": frosted glass in the empty sky at the top right, the one control on the scene, clear of the landmarks at
-   every width. */
-.scene-toggle {
+/* The scrim: forest green, dense where the copy sits and clear over the skyline. Beside the copy (laptops) and above
+   it in a left column (landscape tablets), it fades from the left, so the towers on the right keep their light; where
+   the copy spans the frame (portrait tablets, phones), it fades from the top, with a lighter wash from the left. */
+.eco-scene::after {
+  content: '';
   position: absolute;
-  right: 16px;
-  top: 16px;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px 0 13px;
-  border: 1px solid rgb(255 255 255 / .24);
-  border-radius: var(--r-pill);
-  background: linear-gradient(180deg, rgb(255 255 255 / .18), rgb(255 255 255 / .08));
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  backdrop-filter: blur(12px) saturate(150%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), 0 1px 2px rgb(1 15 11 / .25), -4px 10px 20px -10px rgb(1 15 11 / .6);
-  color: #f4fff7;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  line-height: 1;
-  pointer-events: auto;
-  transition: background-color var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-settle);
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(7 30 24 / .88) 0, rgb(7 30 24 / .8) 34%, rgb(7 30 24 / .46) 46%, rgb(7 30 24 / 0) 60%),
+    linear-gradient(0deg, rgb(7 30 24 / .35) 0, rgb(7 30 24 / 0) 24%);
 }
 
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .scene-toggle {
-    background: rgb(24 78 61 / .94);
+@media (max-width: 1179px) {
+  .eco-scene::after {
+    background:
+      linear-gradient(90deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .76) 40%, rgb(7 30 24 / .4) 58%, rgb(7 30 24 / 0) 74%),
+      linear-gradient(180deg, rgb(7 30 24 / .5) 0, rgb(7 30 24 / .25) 40%, rgb(7 30 24 / 0) 62%);
   }
 }
 
-.scene-toggle svg {
-  width: 18px;
-  height: 18px;
-  color: var(--sprout);
-}
-
-/* Lit while the live view is on or loading. Loading keeps focus and full contrast (aria-disabled, not disabled). */
-.eco-scene:is([data-mode=live], [data-mode=loading]) .scene-toggle {
-  background: rgb(215 247 155 / .2);
-  border-color: rgb(215 247 155 / .45);
-}
-
-.scene-toggle[aria-disabled=true] {
-  cursor: progress;
-}
-
-.scene-toggle:not([aria-disabled=true]):active {
-  scale: var(--press-scale);
-  transition-duration: var(--dur-instant);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .scene-toggle:not([aria-disabled=true]):hover {
-    background-color: rgb(255 255 255 / .1);
+@media (max-width: 900px) {
+  .eco-scene::after {
+    background:
+      linear-gradient(180deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .74) 50%, rgb(7 30 24 / .44) 66%, rgb(7 30 24 / 0) 80%),
+      linear-gradient(90deg, rgb(7 30 24 / .55) 0, rgb(7 30 24 / 0) 60%);
+  }
+  .saigon-photo {
+    background-image: url(/hero/saigon-day-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=dawn] .saigon-photo {
+    background-image: url(/hero/saigon-dawn-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-dawn-tall-800.webp) 1x, url(/hero/saigon-dawn-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=sunset] .saigon-photo {
+    background-image: url(/hero/saigon-sunset-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-sunset-tall-800.webp) 1x, url(/hero/saigon-sunset-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=night] .saigon-photo {
+    background-image: url(/hero/saigon-night-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-night-tall-800.webp) 1x, url(/hero/saigon-night-tall-1600.webp) 2x);
   }
 }
 
-/* Phones: a round icon button, so it stays clear of the headline; the label remains its accessible name. */
 @media (max-width: 640px) {
-  .scene-toggle {
-    width: 44px;
-    padding: 0;
-    justify-content: center;
+  /* On phones the meta line wraps and sits two thirds down the hero, so the scrim holds longer before it clears. */
+  .eco-scene::after {
+    background:
+      linear-gradient(180deg, rgb(7 30 24 / .86) 0, rgb(7 30 24 / .8) 56%, rgb(7 30 24 / .68) 76%, rgb(7 30 24 / 0) 92%),
+      linear-gradient(90deg, rgb(7 30 24 / .6) 0, rgb(7 30 24 / 0) 60%);
   }
-
-  .scene-toggle span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+  .saigon-photo {
+    background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1200.webp) 2x);
   }
-
-}
-
-.scene-hint {
-  position: absolute;
-  right: 18px;
-  top: 68px;
-  z-index: 3;
-  margin: 0;
-  padding: 4px 10px;
-  border-radius: var(--r-pill);
-  background: rgb(4 22 17 / .55);
-  color: #e3f1e6;
-  font-size: var(--fs-caption);
-  pointer-events: none;
-}
-
-/* Empty while the still shows, but kept in the page so its announcements are heard. */
-.scene-hint:empty {
-  padding: 0;
-  background: none;
-}
-
-/* Phones: the hint sits on the river it refers to, clear of the headline. */
-@media (max-width: 640px) {
-  .scene-hint {
-    top: auto;
-    right: 12px;
-    bottom: 10px;
+  :root[data-daypart=dawn] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-dawn-tall-800.webp) 1x, url(/hero/saigon-dawn-tall-1200.webp) 2x);
   }
-}
-
-/* Very narrow phones: the toggle moves into the corner, a little further from the headline. */
-@media (max-width: 359px) {
-  .scene-toggle {
-    top: 10px;
-    right: 10px;
+  :root[data-daypart=sunset] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-sunset-tall-800.webp) 1x, url(/hero/saigon-sunset-tall-1200.webp) 2x);
+  }
+  :root[data-daypart=night] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-night-tall-800.webp) 1x, url(/hero/saigon-night-tall-1200.webp) 2x);
   }
 }
 
@@ -705,12 +610,6 @@ footer::before {
 }
 
 /* Keyframes: decorative loops move only transform and opacity. */
-@keyframes leaf-sway {
-  to {
-    transform: translate3d(-16px, 9px, 0) rotate(-1.6deg);
-  }
-}
-
 @keyframes item-appear {
   from {
     opacity: 0;
@@ -886,16 +785,16 @@ footer::before {
   box-shadow: var(--elev-pressed);
 }
 
-/* Below the shell's full width (1180px), on narrower desktops, tablets and phones: the hero flows as a block and the
-   skyline becomes a band under the copy (side by side, Chợ Bến Thành would crowd the sentence and the meta line). The
-   copy keeps clear of the landmarks, so --river-room follows the band's height. */
+/* Below the shell's full width (1180px), on narrower desktops, tablets and phones: the hero flows as a block, the copy
+   on top over the sky and the skyline below and beside it (side by side, Chợ Bến Thành would crowd the sentence and the
+   meta line). With the wide picture the hero is at least as tall as the picture is at its width, so all of it shows;
+   portrait tablets switch to the tall picture and give its skyline room under the copy. */
 @media (max-width: 1179px) {
   .hero-intro {
-    --scene-h: max(220px, calc((100vw - 64px) * .238));
-    --river-room: calc(var(--scene-h) - 104px);
+    --city-room: 60px;
     display: block;
-    padding: 30px 26px calc(30px + var(--river-room));
-    min-height: 0;
+    padding: 30px 26px calc(30px + var(--city-room));
+    min-height: calc((100vw - 64px) / 2.2);
   }
 
   .hero-copy > p {
@@ -904,6 +803,13 @@ footer::before {
 
   .hero-meta {
     margin-top: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-intro {
+    --city-room: calc((100vw - 64px) * .3);
+    min-height: 0;
   }
 }
 
@@ -959,15 +865,10 @@ footer::before {
   }
 
   .hero-intro {
-    --scene-h: max(112px, calc((100vw - 32px) * .238));
-    --river-room: calc(var(--scene-h) - 12px);
+    --city-room: max(96px, calc((100vw - 32px) * .26));
     border-radius: var(--r-xl);
     margin: 0 0 14px;
-    padding: 18px 20px calc(18px + var(--river-room));
-  }
-
-  .hero-intro::after {
-    inset: -10% -30% 30% 20%;
+    padding: 18px 20px calc(18px + var(--city-room));
   }
 
   .hero-intro h1 {
@@ -1040,24 +941,24 @@ footer::before {
   }
 }
 
-/* Short phones (360×640 and the like): the copy may overlap the band's empty top a little more, so "Chụp ảnh" clears
-   the tab bar. */
+/* Short phones (360×640 and the like): the skyline may rise a little further beside the copy's short last lines, so
+   "Chụp ảnh" clears the tab bar. */
 @media (max-width: 640px) and (max-height: 700px) {
   .hero-intro {
-    --river-room: calc(var(--scene-h) - 28px);
+    --city-room: max(80px, calc((100vw - 32px) * .22));
   }
 }
 
 /* Small phones: the hero's padding tightens. */
 @media (max-width: 389px) {
   .hero-intro {
-    padding: 18px 17px calc(18px + var(--river-room));
+    padding: 18px 17px calc(18px + var(--city-room));
   }
 }
 
 /* Phones in landscape: the screen is short, so the hero is compact at every width, and the capture cards start within
-   the first screen, above the bottom tab bar. The hero flows as a block, and the skyline and the meta line give way to
-   the headline and its sentence: a band short enough to fit would crop the towers. */
+   the first screen, above the bottom tab bar. The hero flows as a block, the meta line gives way to the headline and its
+   sentence, and the picture stays behind them as a backdrop. */
 @media (orientation: landscape) and (max-height: 500px) {
   .hero-intro {
     display: block;
@@ -1079,24 +980,6 @@ footer::before {
   .hero-copy > p {
     max-width: none;
     line-height: 1.5;
-  }
-
-  .eco-scene {
-    display: none;
-  }
-}
-
-/* Decorative loops rest while nobody can see them: the hero is off screen or the page is hidden (SaigonScene sets data-scene). */
-.hero-intro[data-scene=asleep]::after,
-.hero-intro[data-scene=asleep] .eco-scene * {
-  animation-play-state: paused;
-}
-
-/* Phones and slow displays: the sunlight pools are a large blended layer, so they stay still there. The river and
-   the ghe keep their small, cheap transforms. */
-@media (max-width: 640px), (update: slow) {
-  .hero-intro::after {
-    animation: none;
   }
 }
 
