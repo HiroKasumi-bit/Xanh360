@@ -42,14 +42,14 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 
 - Tên: **Xanh360**. Khẩu hiệu đầu trang: "Bỏ đúng chỗ, vì Sài Gòn xanh hơn." Logo: chiếc lá trên gợn sóng sông Sài Gòn (`app/brand-mark.tsx`, `public/favicon.svg`).
 - Toàn bộ giao diện và nội dung bằng tiếng Việt.
-- Bản sắc TP.HCM: ảnh sông Sài Gòn với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày. (Hoạ tiết gạch bông đã bỏ theo ý chủ dự án.)
+- Bản sắc TP.HCM: ảnh minh họa sông Sài Gòn (tạo bằng AI, có ghi chú trên trang) với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày. (Hoạ tiết gạch bông đã bỏ theo ý chủ dự án.)
 - Giấy kem dưới bầu trời Sài Gòn: đầu mỗi tab ngả theo màu trời của ảnh lúc đó (bình minh, ngày, hoàng hôn, đêm) rồi nhạt dần về nền kem. Nút và thương hiệu dùng một màu cố định, xanh sông Sài Gòn. Không tô màu theo loại rác; chỉ đỏ (nguy hại) và cam (cần thu gom riêng) có màu riêng.
 - Chủ dự án đã thử và không dùng: nền xanh rừng với màu nhấn vàng nắng; mỗi loại rác một màu; nút "Dừng hiệu ứng"; hoa văn trang trí.
 
 ## Evidence on Hand
 
 - Nguồn và ngày kiểm tra của từng quy tắc nằm trong `lib/seed.ts` và hiển thị trong kết quả.
-- Ảnh đầu trang dựng bằng Blender: `public/hero/`, script `scripts/blender/saigon_hero.py`.
+- Ảnh đầu trang là ảnh minh họa tạo bằng AI (Gemini), không phải ảnh chụp thật: `public/hero/`. Đã xoá dấu nước, chỉnh màu cho khớp giữa khung ngang và dọc, rồi cắt khung; trang ghi rõ "Ảnh minh họa tạo bằng AI" ở góc ảnh.
 - Chưa có lời chứng thực, số liệu người dùng hay đối tác. Không được tự thêm.
 - Điểm tiếp nhận theo nguồn công bố chưa được xác nhận trực tiếp; giao diện phải nói rõ điều này.
 
