@@ -1,7 +1,8 @@
 // The hero's Saigon skyline in 3D: Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, the Ba Son bridge and Landmark 81 seen
 // across the Saigon river from the Thủ Thiêm bank on a sunny afternoon, with a ghe ve chai and its rower in a nón lá.
-// The same scene renders the still image the page shows first (scripts/render-saigon-3d.mjs) and the live view the
-// visitor can turn on (./live.ts), so the switch between the two is seamless.
+// This is the live view the visitor can turn on (./live.ts). The still the page shows first is a Blender render of the
+// same layout from the same camera (scripts/blender/saigon_still.py, which replays this file's random sequence for the
+// far city and the trees), so the two line up when the visitor switches; keep them in step when changing either.
 //
 // Units are roughly tens of metres. The small landmarks are drawn larger than life (forced perspective) so they read
 // next to the towers. The camera looks level (no pitch) so verticals stay vertical, and an off-axis frustum frames the

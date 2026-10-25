@@ -1,7 +1,7 @@
 // The live 3D view, loaded only when the visitor presses "Xem 3D" (three.js is a separate chunk, so the page itself
-// only ships the still image). It renders the same scene as the still, so the first frame matches it exactly; dragging
-// turns the camera around the city, and the river, the ghe and a slow sway run unless motion is reduced. Rendering
-// stops while the hero is off screen or the tab is hidden.
+// only ships the still image). It renders the layout the still was made from, from the same camera, so its first frame
+// lines up with it; dragging turns the camera around the city, and the river, the ghe and a slow sway run unless motion
+// is reduced. Rendering stops while the hero is off screen or the tab is hidden.
 import * as THREE from 'three';
 import {buildSaigonScene} from './scene';
 

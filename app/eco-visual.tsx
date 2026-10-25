@@ -6,10 +6,11 @@ export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
 }
 // The hero's Saigon skyline in 3D (app/saigon-3d): Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, the Ba Son bridge and
-// Landmark 81 across the river, a ghe ve chai rowed by a woman in a nón lá. The page shows a still rendered from the
-// scene (scripts/render-saigon-3d.mjs), so nothing heavy loads up front; "Xem 3D" loads three.js and swaps in the live
-// scene at the same framing. The live view stops when pressed again, when the visitor turns decorative motion off, or
-// when the component unmounts. The hero is also marked data-scene="asleep" off screen, which pauses its CSS loops.
+// Landmark 81 across the river, a ghe ve chai rowed by a woman in a nón lá. The page shows a still rendered in Blender
+// from the same layout (scripts/blender/saigon_still.py), so nothing heavy loads up front; "Xem 3D" loads three.js and
+// swaps in the live scene at the same framing. The live view stops when pressed again, when the visitor turns decorative
+// motion off, or when the component unmounts. The hero is also marked data-scene="asleep" off screen, which pauses its
+// CSS loops.
 type Live3d={stop():void};
 export function SaigonScene(){
  const scene=useRef<HTMLDivElement>(null);
