@@ -349,7 +349,7 @@ body {
   /* On phones the meta line wraps and sits two thirds down the hero, so the scrim holds longer before it clears. */
   .eco-scene::after {
     background:
-      linear-gradient(180deg, rgb(7 30 24 / .86) 0, rgb(7 30 24 / .8) 56%, rgb(7 30 24 / .68) 76%, rgb(7 30 24 / 0) 92%),
+      linear-gradient(180deg, rgb(7 30 24 / .86) 0, rgb(7 30 24 / .8) 56%, rgb(7 30 24 / .66) 75%, rgb(7 30 24 / .2) 82%, rgb(7 30 24 / 0) 88%),
       linear-gradient(90deg, rgb(7 30 24 / .6) 0, rgb(7 30 24 / 0) 60%);
   }
   .saigon-photo {
