@@ -22,6 +22,13 @@ Người dùng tự chọn model và effort; Claude không tự đổi được.
 - Thêm tính năng trong vài file, viết test: Sonnet hoặc Opus, effort vừa–cao.
 - Việc nhiều phần, tra dữ liệu thật nhiều nguồn, đổi database, ảnh hưởng deploy/bảo mật: Opus, effort cao.
 
+## Thiết kế giao diện: dùng impeccable + ui-ux-pro-max
+Mỗi khi thiết kế, sửa hoặc review giao diện (trang, component, màu, chữ, bố cục, hiệu ứng, hình minh họa), dùng cả hai skill:
+- impeccable dẫn dắt: định hướng, làm, rồi critique / audit / polish trước khi giao.
+- ui-ux-pro-max để tra cứu và kiểm tra: quy tắc accessibility, vùng chạm, chuyển động, màu, font; chạy checklist trước khi giao.
+- Thiết kế đang có của dự án là chuẩn: không để skill tự đổi bảng màu, font hay phong cách khi chưa hỏi. Hỏi trước khi tạo PRODUCT.md, DESIGN.md hay thư mục design-system/.
+- Chụp màn hình điện thoại và máy tính gửi người dùng duyệt trước khi mở PR.
+
 ## Nguyên tắc luôn giữ
 - Không bịa dữ liệu (địa chỉ, số điện thoại, quy định…); không tìm được thì ghi rõ là không có.
 - Không tự merge PR; chỉ mở PR để người dùng duyệt.

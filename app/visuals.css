@@ -173,8 +173,9 @@ body {
   display: inline-flex;
 }
 
-/* Hero: deep forest lit by one key light from the top right. Its headline can take focus (when a button opens the
-   search tab), so the ring switches to sprout on the dark surface. */
+/* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest gradient
+   shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring switches
+   to sprout on the dark surface. */
 .hero-intro {
   --focus-ring: var(--focus-ring-on-dark);
   --focus-halo: var(--focus-halo-on-dark);
@@ -183,7 +184,7 @@ body {
   grid-template-columns: 1.13fr 1fr;
   align-items: center;
   max-width: none;
-  min-height: 390px;
+  min-height: 470px;
   padding: 43px 42px;
   margin: 0 0 24px;
   border-radius: var(--r-2xl);
@@ -198,48 +199,19 @@ body {
   box-shadow: inset 0 1px 0 rgb(217 255 230 / .16), inset 0 0 0 1px rgb(255 255 255 / .04), 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
 }
 
-/* Paper grain also lives on the forest, mixed in softly so the dark surface is not plastic-flat. */
+/* Film grain over the photograph and its scrim, under the copy. */
 .hero-intro::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: var(--grain);
   background-size: 180px 180px;
-  opacity: .5;
+  opacity: .32;
   mix-blend-mode: overlay;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
 }
 
-/* Sunlight through leaves (nang xuyen la): soft pools of light with a few bright cores, clustered under the key light and swaying slowly. */
-.hero-intro::after {
-  --pool: rgb(255 238 186 / .7), rgb(255 238 186 / .35) 50%, rgb(255 238 186 / 0) 100%;
-  --core: rgb(255 246 214 / 1), rgb(255 246 214 / .6) 40%, rgb(255 246 214 / 0) 100%;
-  content: '';
-  position: absolute;
-  inset: -20% -10% 10% 28%;
-  background:
-    radial-gradient(1.6% 1.2% at 74% 14%, var(--core)),
-    radial-gradient(1.1% .9% at 81% 23%, var(--core)),
-    radial-gradient(1.9% 1.4% at 88% 12%, var(--core)),
-    radial-gradient(1% .8% at 66% 25%, var(--core)),
-    radial-gradient(1.3% 1% at 93% 31%, var(--core)),
-    radial-gradient(.9% .7% at 60% 12%, var(--core)),
-    radial-gradient(1.2% .9% at 85% 40%, var(--core)),
-    radial-gradient(9% 6% at 76% 16%, var(--pool)),
-    radial-gradient(7% 5% at 88% 26%, var(--pool)),
-    radial-gradient(10% 6.5% at 64% 30%, var(--pool)),
-    radial-gradient(6% 4.5% at 94% 12%, var(--pool)),
-    radial-gradient(8% 5% at 82% 44%, var(--pool)),
-    radial-gradient(6% 4% at 55% 15%, var(--pool)),
-    radial-gradient(5% 3.5% at 70% 46%, var(--pool));
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-  z-index: -1;
-  animation: leaf-sway 13s var(--ease-float) infinite alternate;
-}
-
-/* The scene comes first in the markup (so phones can float it beside the headline); the grid puts it back on the right. */
 .hero-copy {
   position: relative;
   z-index: 2;
@@ -247,46 +219,22 @@ body {
   grid-column: 1;
 }
 
-/* Frosted glass is used only over the dark hero. */
-.hero-intro .eyebrow {
-  display: inline-flex;
-  border: 1px solid rgb(255 255 255 / .16);
-  border-radius: var(--r-pill);
-  background: rgb(255 255 255 / .07);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .14);
-  padding: 6px 12px;
-  color: #dcf0cd;
-}
-
-.hero-intro .eyebrow svg {
-  width: 12px;
-  height: 12px;
-  color: var(--sprout);
-}
-
+/* The headline opens the hero on its own; no label above it. */
 .hero-intro h1 {
-  margin: 20px 0 18px;
+  margin: 0 0 18px;
   color: #fbfdf7;
 }
 
-/* The second line catches the light from above: a short vertical sprout ramp, not a rainbow. The box is padded so the clipped gradient keeps stacked marks and descenders; the negative margin keeps the line spacing unchanged. */
+/* The second line, the promise, is set in sprout. */
 .hero-intro h1 em {
-  display: inline-block;
-  padding: .12em .04em .16em 0;
-  margin: -.12em -.04em -.16em 0;
   color: #c9ef98;
-  background: linear-gradient(180deg, #e9fcc0 12%, #b9e795 88%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .hero-copy > p {
   color: #d5e8de;
   max-width: 465px;
   margin: 0;
+  text-wrap: pretty;
 }
 
 .hero-meta {
@@ -305,162 +253,117 @@ body {
   height: 14px;
 }
 
-/* Decorative globe. Layers, back to front: contact shadow on the ground, the bobbing planet (a rotating surface and drifting clouds under a fixed lighting shell), then glass labels.
-   --planet is the diameter, --planet-x/--planet-top the centre within the scene, --lift how far it rises. Labels are placed from the planet, not the scene edges, so they keep clear of it at every size. */
+/* Saigon (SaigonScene in app/eco-visual.tsx): a photograph rendered in Blender for each time of day
+   (scripts/blender/saigon_hero.py), picked from html[data-daypart] (app/daypart.ts; day when it is missing). Laptops and
+   landscape tablets get the wide frame, portrait tablets and phones the tall one, each cropped like object-fit: cover
+   anchored bottom right, so the landmarks stay right of the copy and narrow screens lose only river and sky on the left.
+   Only the picture in use is downloaded. The copy keeps --city-room clear above the bottom edge, so the skyline sits
+   below or beside it. */
+.hero-intro {
+  --city-room: 0px;
+  padding-bottom: calc(43px + var(--city-room));
+}
+
 .eco-scene {
-  --planet: 196px;
-  --planet-x: 50%;
-  --planet-top: 46%;
-  --lift: -12px;
-  grid-row: 1;
-  grid-column: 2;
-  position: relative;
-  min-width: 0;
-  height: 330px;
-  width: 100%;
-  max-width: 450px;
-  justify-self: end;
-  pointer-events: none;
-  user-select: none;
-  isolation: isolate;
-}
-
-/* The ground shadow: darkest and widest when the planet is lowest, shrinking and fading as it rises (same timing as the bob). Offset slightly left, away from the key light. */
-.planet-shadow {
-  position: absolute;
-  left: var(--planet-x);
-  top: calc(var(--planet-top) + var(--planet) / 2 + 24px);
-  width: calc(var(--planet) * .72);
-  height: calc(var(--planet) * .13);
-  translate: calc(-50% - 10px) -50%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 9 6 / .7), rgb(0 9 6 / .34) 52%, rgb(0 9 6 / 0));
-  z-index: 1;
-  animation: planet-shadow 3.7s var(--ease-float) infinite alternate;
-}
-
-.planet-float {
-  position: absolute;
-  left: var(--planet-x);
-  top: var(--planet-top);
-  width: var(--planet);
-  height: var(--planet);
-  translate: -50% -50%;
-  z-index: 2;
-  animation: planet-bob 3.7s var(--ease-float) infinite alternate;
-}
-
-.eco-planet {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 50%;
-  isolation: isolate;
-  background: #1a6863;
-  box-shadow: 3px -3px 16px rgb(168 236 196 / .16), 0 0 0 1px rgb(2 20 15 / .25);
-}
-
-/* Only the surface turns: a strip two globes wide, tiled with a seamless map, pans one globe-width and loops. The clouds drift a little faster for depth. */
-.planet-surface,
-.planet-clouds {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 200%;
-  height: 100%;
-  background: url(/globe/land.webp) 0 0 / 50% 100% repeat-x;
-}
-
-.planet-surface {
-  animation: planet-turn 84s linear infinite;
-}
-
-.planet-clouds {
-  background-image: url(/globe/clouds.webp);
-  opacity: .45;
-  animation: planet-turn 58s linear infinite;
-}
-
-/* Fixed lighting shell: the glint, the terminator and the rim light stay put while the surface turns underneath. */
-.planet-light {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 69% 26%, rgb(255 250 226 / .34) 0, rgb(255 250 226 / .1) 9%, rgb(255 250 226 / 0) 22%),
-    radial-gradient(circle at 66% 30%, rgb(2 20 15 / 0) 0, rgb(2 20 15 / 0) 28%, rgb(2 20 15 / .42) 50%, rgb(1 14 10 / .82) 68%, rgb(1 12 9 / .94) 82%);
-  box-shadow: inset -3px 4px 7px rgb(226 255 206 / .3), inset 12px -16px 28px rgb(1 14 10 / .45);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* Floating labels: real frosted glass over the dark hero, upright, each on its own rhythm. */
-.floating-label {
-  --bob: -7px;
+.saigon-photo {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 4;
-  border-radius: var(--r-md);
-  border: 1px solid rgb(255 255 255 / .2);
-  background: linear-gradient(180deg, rgb(255 255 255 / .16), rgb(255 255 255 / .06));
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  backdrop-filter: blur(14px) saturate(160%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -1px 0 rgb(0 0 0 / .12), 0 1px 2px rgb(1 15 11 / .25), -6px 14px 24px -12px rgb(1 15 11 / .65);
-  padding: 8px 14px 8px 8px;
-  color: #f4fff7;
-  animation: label-bob 2.65s var(--ease-float) infinite alternate;
+  inset: 0;
+  background-color: var(--green-800);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: cover;
 }
 
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .floating-label {
-    background: rgb(24 78 61 / .94);
+.saigon-photo {
+  background-image: url(/hero/saigon-day-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-day-wide-1280.webp) 1x, url(/hero/saigon-day-wide-2560.webp) 2x);
+}
+
+:root[data-daypart=dawn] .saigon-photo {
+  background-image: url(/hero/saigon-dawn-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-dawn-wide-1280.webp) 1x, url(/hero/saigon-dawn-wide-2560.webp) 2x);
+}
+
+:root[data-daypart=sunset] .saigon-photo {
+  background-image: url(/hero/saigon-sunset-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-sunset-wide-1280.webp) 1x, url(/hero/saigon-sunset-wide-2560.webp) 2x);
+}
+
+:root[data-daypart=night] .saigon-photo {
+  background-image: url(/hero/saigon-night-wide-1280.webp);
+  background-image: image-set(url(/hero/saigon-night-wide-1280.webp) 1x, url(/hero/saigon-night-wide-2560.webp) 2x);
+}
+
+/* The scrim: forest green, dense where the copy sits and clear over the skyline. Beside the copy (laptops) and above
+   it in a left column (landscape tablets), it fades from the left, so the towers on the right keep their light; where
+   the copy spans the frame (portrait tablets, phones), it fades from the top, with a lighter wash from the left. */
+.eco-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(7 30 24 / .88) 0, rgb(7 30 24 / .8) 34%, rgb(7 30 24 / .46) 46%, rgb(7 30 24 / 0) 60%),
+    linear-gradient(0deg, rgb(7 30 24 / .35) 0, rgb(7 30 24 / 0) 24%);
+}
+
+@media (max-width: 1179px) {
+  .eco-scene::after {
+    background:
+      linear-gradient(90deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .76) 40%, rgb(7 30 24 / .4) 58%, rgb(7 30 24 / 0) 74%),
+      linear-gradient(180deg, rgb(7 30 24 / .5) 0, rgb(7 30 24 / .25) 40%, rgb(7 30 24 / 0) 62%);
   }
 }
 
-.floating-label > span {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--r-xs);
-  background: rgb(255 255 255 / .13);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .22);
-  color: var(--sprout);
+@media (max-width: 900px) {
+  .eco-scene::after {
+    background:
+      linear-gradient(180deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .74) 50%, rgb(7 30 24 / .44) 66%, rgb(7 30 24 / 0) 80%),
+      linear-gradient(90deg, rgb(7 30 24 / .55) 0, rgb(7 30 24 / 0) 60%);
+  }
+  .saigon-photo {
+    background-image: url(/hero/saigon-day-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=dawn] .saigon-photo {
+    background-image: url(/hero/saigon-dawn-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-dawn-tall-800.webp) 1x, url(/hero/saigon-dawn-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=sunset] .saigon-photo {
+    background-image: url(/hero/saigon-sunset-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-sunset-tall-800.webp) 1x, url(/hero/saigon-sunset-tall-1600.webp) 2x);
+  }
+  :root[data-daypart=night] .saigon-photo {
+    background-image: url(/hero/saigon-night-tall-800.webp);
+    background-image: image-set(url(/hero/saigon-night-tall-800.webp) 1x, url(/hero/saigon-night-tall-1600.webp) 2x);
+  }
 }
 
-.floating-label svg {
-  width: 18px;
-  height: 18px;
-}
-
-.floating-label b {
-  font-size: var(--fs-small);
-  font-weight: 600;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-/* Each label sits off a diagonal of the planet with room for both to bob: top-left, right and lower, bottom-left.
-   Co-prime half-periods (2.65s, 3.35s, 4.05s) and different lifts keep the three from ever moving in step. */
-.label-recycle {
-  right: calc(100% - var(--planet-x) + var(--planet) * .354 + 12px);
-  bottom: calc(100% - var(--planet-top) + var(--planet) * .354 + 6px);
-}
-
-.label-leaf {
-  --bob: -9px;
-  left: calc(var(--planet-x) + var(--planet) * .43 + 6px);
-  top: calc(var(--planet-top) + var(--planet) * .3 + 4px);
-  animation-duration: 3.35s;
-  animation-delay: -1.4s;
-}
-
-.label-special {
-  --bob: -6px;
-  right: calc(100% - var(--planet-x) + var(--planet) * .3 + 10px);
-  top: calc(var(--planet-top) + var(--planet) * .42 + 6px);
-  animation-duration: 4.05s;
-  animation-delay: -2.9s;
+@media (max-width: 640px) {
+  /* On phones the meta line wraps and sits two thirds down the hero, so the scrim holds longer before it clears. */
+  .eco-scene::after {
+    background:
+      linear-gradient(180deg, rgb(7 30 24 / .86) 0, rgb(7 30 24 / .8) 56%, rgb(7 30 24 / .66) 75%, rgb(7 30 24 / .2) 82%, rgb(7 30 24 / 0) 88%),
+      linear-gradient(90deg, rgb(7 30 24 / .6) 0, rgb(7 30 24 / 0) 60%);
+  }
+  .saigon-photo {
+    background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1200.webp) 2x);
+  }
+  :root[data-daypart=dawn] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-dawn-tall-800.webp) 1x, url(/hero/saigon-dawn-tall-1200.webp) 2x);
+  }
+  :root[data-daypart=sunset] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-sunset-tall-800.webp) 1x, url(/hero/saigon-sunset-tall-1200.webp) 2x);
+  }
+  :root[data-daypart=night] .saigon-photo {
+    background-image: image-set(url(/hero/saigon-night-tall-800.webp) 1x, url(/hero/saigon-night-tall-1200.webp) 2x);
+  }
 }
 
 /* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
@@ -622,11 +525,44 @@ body {
   color: var(--cat-unknown-fg);
 }
 
-/* Panels */
+/* Panels. The how-it-works strip carries a corner of faint gạch bông, fading out from the top right so the step copy
+   stays on plain paper. */
 .how-grid {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: var(--paper-raised);
   border: 1px solid var(--line-soft);
   box-shadow: var(--elev-1);
+}
+
+.how-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gach-bong) 0 0 / 40px 40px;
+  opacity: .12;
+  -webkit-mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
+  mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* The footer stands on a single row of gạch bông, like the tiled step of an old Saigon house. */
+footer {
+  position: relative;
+  border-top: 0;
+  padding-top: 46px;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28px;
+  background: var(--gach-bong) 0 0 / 28px 28px repeat-x;
+  opacity: .4;
+  pointer-events: none;
 }
 
 .source-panel {
@@ -674,40 +610,6 @@ body {
 }
 
 /* Keyframes: decorative loops move only transform and opacity. */
-@keyframes planet-bob {
-  to {
-    transform: translateY(var(--lift));
-  }
-}
-
-@keyframes planet-shadow {
-  to {
-    transform: scale(.8);
-    opacity: .5;
-  }
-}
-
-@keyframes planet-turn {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes label-bob {
-  to {
-    transform: translateY(var(--bob));
-  }
-}
-
-@keyframes leaf-sway {
-  to {
-    transform: translate3d(-16px, 9px, 0) rotate(-1.6deg);
-  }
-}
-
 @keyframes item-appear {
   from {
     opacity: 0;
@@ -797,8 +699,8 @@ body {
   }
 }
 
-/* Press: everything pressable sinks a little the moment it is pressed (--dur-instant, --ease-press) and springs back
-   on release (--dur-base, --ease-spring). Buttons, chips and rows use the `scale` property, so the press composes with
+/* Press: everything pressable sinks a little the moment it is pressed (--dur-instant, --ease-press) and settles back
+   on release (--dur-base, --ease-settle), without overshoot. Buttons, chips and rows use the `scale` property, so the press composes with
    transforms used for lifts and centring (the camera shutter). Rows are wide, so they sink less and take a tint. */
 .primary,
 .btn-outline,
@@ -819,11 +721,11 @@ body {
 [data-slot=dialog-close],
 [data-slot=alert-dialog-action],
 [data-slot=alert-dialog-cancel] {
-  transition: scale var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  transition: scale var(--dur-base) var(--ease-settle), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
 .result-row > svg:last-child {
-  transition: translate var(--dur-base) var(--ease-spring);
+  transition: translate var(--dur-base) var(--ease-settle);
 }
 
 .primary:not(:disabled, [aria-disabled=true]):active,
@@ -883,28 +785,38 @@ body {
   box-shadow: var(--elev-pressed);
 }
 
-/* Small laptops: the scene column narrows, so the globe moves right and both remaining labels sit on its left. The header
-   runs short of room too, so the motion toggle keeps only its icon. */
-@media (max-width: 1000px) {
+/* Below the shell's full width (1180px), on narrower desktops, tablets and phones: the hero flows as a block, the copy
+   on top over the sky and the skyline below and beside it (side by side, Chợ Bến Thành would crowd the sentence and the
+   meta line). With the wide picture the hero is at least as tall as the picture is at its width, so all of it shows;
+   portrait tablets switch to the tall picture and give its skyline room under the copy. */
+@media (max-width: 1179px) {
   .hero-intro {
-    padding: 33px 30px;
-    grid-template-columns: 1.2fr 1fr;
-    min-height: 370px;
-    gap: 12px;
+    --city-room: 60px;
+    display: block;
+    padding: 30px 26px calc(30px + var(--city-room));
+    min-height: calc((100vw - 64px) / 2.2);
+  }
+
+  .hero-copy > p {
+    max-width: 460px;
   }
 
   .hero-meta {
+    margin-top: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-intro {
+    --city-room: calc((100vw - 64px) * .3);
+    min-height: 0;
+  }
+}
+
+/* Small laptops: the header runs short of room, so the motion toggle keeps only its icon. */
+@media (max-width: 1000px) {
+  .hero-meta {
     gap: 8px 12px;
-  }
-
-  .eco-scene {
-    --planet: 156px;
-    --planet-x: 62%;
-    height: 300px;
-  }
-
-  .label-leaf {
-    display: none;
   }
 
   /* The motion toggle shrinks to its icon; the label stays as its accessible name and title. */
@@ -939,56 +851,7 @@ body {
   }
 }
 
-/* Tablets and phones: the hero flows as a block and the globe floats beside the headline, a sharp object in the corner
-   rather than a band of its own. Its float area is the circle itself (shape-outside), so the headline and the paragraph
-   wrap around the globe instead of running under it. --globe-drop keeps the eyebrow's line clear; --globe-bleed lets the
-   globe run past the hero's edge. The glass labels and the ground shadow need the wide scene, so they go. */
-@media (max-width: 900px) {
-  .hero-intro {
-    display: block;
-    padding: 30px 26px;
-    min-height: 0;
-  }
-
-  /* Inline rather than inline-block, so the second line wraps around the floating globe. The padding still covers the
-     stacked marks, and box-decoration-break gives each line its own copy of the sprout ramp. */
-  .hero-intro h1 em {
-    display: inline;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-  .hero-copy > p {
-    max-width: 460px;
-  }
-
-  .hero-meta {
-    margin-top: 18px;
-  }
-
-  .eco-scene {
-    --planet: 184px;
-    --planet-x: 50%;
-    --planet-top: calc(100% - var(--planet) / 2);
-    --lift: -8px;
-    --globe-drop: 40px;
-    --globe-bleed: 40px;
-    float: right;
-    width: var(--planet);
-    max-width: none;
-    height: calc(var(--planet) + var(--globe-drop));
-    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
-    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
-    shape-margin: 12px;
-  }
-
-  .eco-scene .floating-label,
-  .eco-scene .planet-shadow {
-    display: none;
-  }
-}
-
-/* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the floating globe shrinks to 156px. */
+/* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the skyline band gets shorter. */
 @media (max-width: 640px) {
   .ambient-sun {
     width: 140vmax;
@@ -1002,39 +865,24 @@ body {
   }
 
   .hero-intro {
+    --city-room: max(96px, calc((100vw - 32px) * .26));
     border-radius: var(--r-xl);
     margin: 0 0 14px;
-    padding: 20px;
-  }
-
-  .hero-intro::after {
-    inset: -10% -30% 30% 20%;
-  }
-
-  .hero-intro .eyebrow {
-    padding: 5px 10px;
+    padding: 18px 20px calc(18px + var(--city-room));
   }
 
   .hero-intro h1 {
-    margin: 12px 0 10px;
+    margin: 0 0 8px;
   }
 
   .hero-copy > p {
     max-width: 330px;
   }
 
+  /* At 13px the two facts take two lines on most phones; tight rows keep "Chụp ảnh" above the tab bar. */
   .hero-meta {
-    gap: 6px 14px;
-    margin-top: 12px;
-  }
-
-  /* Phones: a 156px globe that runs a little further past the edge. */
-  .eco-scene {
-    --planet: 156px;
-    --lift: -6px;
-    --globe-drop: 50px;
-    --globe-bleed: 52px;
-    shape-margin: 10px;
+    gap: 3px 14px;
+    margin-top: 10px;
   }
 
   .capture-card {
@@ -1093,29 +941,24 @@ body {
   }
 }
 
-/* Small phones: the hero's padding tightens, and the globe starts a little lower so the first headline line fits beside it. */
-@media (max-width: 389px) {
+/* Short phones (360×640 and the like): the skyline may rise a little further beside the copy's short last lines, so
+   "Chụp ảnh" clears the tab bar. */
+@media (max-width: 640px) and (max-height: 700px) {
   .hero-intro {
-    padding: 18px 17px;
-  }
-
-  .eco-scene {
-    --globe-drop: 62px;
+    --city-room: max(80px, calc((100vw - 32px) * .22));
   }
 }
 
-/* Very small phones: a smaller globe beside the second and third headline lines. */
-@media (max-width: 359px) {
-  .eco-scene {
-    --planet: 132px;
-    --globe-drop: 96px;
-    --globe-bleed: 48px;
+/* Small phones: the hero's padding tightens. */
+@media (max-width: 389px) {
+  .hero-intro {
+    padding: 18px 17px calc(18px + var(--city-room));
   }
 }
 
 /* Phones in landscape: the screen is short, so the hero is compact at every width, and the capture cards start within
-   the first screen, above the bottom tab bar. The hero flows as a block with a 100px globe floating beside the headline
-   (as on tablets, see the 900px block), and the eyebrow and the meta line give way to the headline and its sentence. */
+   the first screen, above the bottom tab bar. The hero flows as a block, the meta line gives way to the headline and its
+   sentence, and the picture stays behind them as a backdrop. */
 @media (orientation: landscape) and (max-height: 500px) {
   .hero-intro {
     display: block;
@@ -1125,7 +968,6 @@ body {
     border-radius: var(--r-xl);
   }
 
-  .hero-intro .eyebrow,
   .hero-meta {
     display: none;
   }
@@ -1135,50 +977,9 @@ body {
     font-size: clamp(1.625rem, 1rem + 2.2vw, 2.125rem);
   }
 
-  .hero-intro h1 em {
-    display: inline;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
   .hero-copy > p {
     max-width: none;
     line-height: 1.5;
-  }
-
-  .eco-scene {
-    --planet: 100px;
-    --planet-x: 50%;
-    --planet-top: calc(100% - var(--planet) / 2);
-    --lift: -5px;
-    --globe-drop: 8px;
-    --globe-bleed: 22px;
-    float: right;
-    width: var(--planet);
-    max-width: none;
-    height: calc(var(--planet) + var(--globe-drop));
-    margin: 0 calc(-1 * var(--globe-bleed)) 0 0;
-    shape-outside: circle(calc(var(--planet) / 2) at 50% calc(100% - var(--planet) / 2)) border-box;
-    shape-margin: 10px;
-  }
-
-  .eco-scene .floating-label,
-  .eco-scene .planet-shadow {
-    display: none;
-  }
-}
-
-/* Decorative loops rest while nobody can see them: the hero is off screen or the page is hidden (EcoScene sets data-scene). */
-.hero-intro[data-scene=asleep]::after,
-.hero-intro[data-scene=asleep] .eco-scene * {
-  animation-play-state: paused;
-}
-
-/* Phones and slow displays: the sunlight pools are a large blended layer, so they stay still there. The globe keeps
-   its small, cheap turn and bob. */
-@media (max-width: 640px), (update: slow) {
-  .hero-intro::after {
-    animation: none;
   }
 }
 

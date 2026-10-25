@@ -50,3 +50,6 @@ next-env.d.ts
 *.tsbuildinfo
 /playwright-report/
 /test-results/
+
+# impeccable design skill: live-server state and critique snapshots (local only)
+/.impeccable/

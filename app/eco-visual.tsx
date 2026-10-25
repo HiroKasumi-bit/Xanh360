@@ -1,33 +1,22 @@
 'use client';
-import {useEffect,useRef,useSyncExternalStore} from 'react';
-import {Recycle,Leaf,PackageCheck,Sparkles,Pause} from 'lucide-react';
+import {useEffect,useSyncExternalStore} from 'react';
+import {Pause,Sparkles} from 'lucide-react';
+import {applyDaypart} from './daypart';
 
 export function EcoAtmosphere(){
  return <div className="eco-atmosphere" aria-hidden="true"><i className="ambient-color ambient-sun"/></div>;
 }
-// The scene's loops only run while someone can see them: the hero is marked data-scene="asleep" (CSS pauses the loops)
-// when it scrolls out of view or the page is hidden.
-export function EcoScene(){
- const scene=useRef<HTMLDivElement>(null);
+// The hero's photograph of Saigon: a ghe ve chai crossing the river in front of Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco,
+// the Ba Son bridge and Landmark 81, rendered in Blender for four times of day (scripts/blender/saigon_hero.py). The CSS
+// picks the picture from html[data-daypart] (app/daypart.ts, set before the first paint); this keeps it in step with the
+// clock while the page stays open, checking every few minutes and whenever the tab comes back.
+export function SaigonScene(){
  useEffect(()=>{
-  const hero=scene.current?.closest<HTMLElement>('.hero-intro');if(!hero)return;
-  let onScreen=true;
-  const sync=()=>{hero.dataset.scene=onScreen&&document.visibilityState==='visible'?'awake':'asleep'};
-  const observer=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{onScreen=entries[entries.length-1].isIntersecting;sync()}):null;
-  observer?.observe(hero);document.addEventListener('visibilitychange',sync);sync();
-  return()=>{observer?.disconnect();document.removeEventListener('visibilitychange',sync);delete hero.dataset.scene};
+  const sync=()=>{if(document.visibilityState==='visible')applyDaypart()};
+  const timer=setInterval(sync,5*60*1000);document.addEventListener('visibilitychange',sync);
+  return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',sync)};
  },[]);
- return <div className="eco-scene" aria-hidden="true" ref={scene}>
-  <div className="planet-shadow"/>
-  <div className="planet-float"><div className="eco-planet">
-   {/* Surface and clouds are seamless tiles (public/globe, made by scripts/generate-globe-textures.mjs) on strips two globes wide. */}
-   <div className="planet-surface"/><div className="planet-clouds"/>
-   <div className="planet-light"/>
-  </div></div>
-  <div className="floating-label label-recycle"><span><Recycle/></span><b>Tái chế</b></div>
-  <div className="floating-label label-leaf"><span><Leaf/></span><b>Sống xanh</b></div>
-  <div className="floating-label label-special"><span><PackageCheck/></span><b>Thu gom riêng</b></div>
- </div>;
+ return <div className="eco-scene" aria-hidden="true"><div className="saigon-photo"/></div>;
 }
 
 // Reduced motion lives on html[data-motion] and html[data-motion-source], set before the first paint by the inline
