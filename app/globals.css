@@ -137,7 +137,8 @@
   --dur-slow: 320ms;
   --ease-out: cubic-bezier(.2, .8, .2, 1);
   --ease-in: cubic-bezier(.4, 0, 1, 1);
-  --ease-spring: cubic-bezier(.34, 1.36, .64, 1);
+  /* Release: a quick start that slows to rest, with no overshoot. */
+  --ease-settle: cubic-bezier(.22, 1, .36, 1);
   --ease-press: cubic-bezier(.3, 0, .5, 1);
   /* Ambient loops (bobbing, swaying): symmetric so an alternating loop has no visible turnaround. */
   --ease-float: cubic-bezier(.45, 0, .55, 1);
@@ -170,21 +171,21 @@
   --radius: .75rem;
   color-scheme: light;
 
-  /* Type scale (16px root). Readable text never goes below --fs-caption (12px); only uppercase 600 labels may use 11px. */
+  /* Type scale (16px root). Secondary text is 15px and nothing goes below 13px. */
   --fs-display: clamp(2rem, 1.3rem + 3.1vw, 3.5rem);
   --fs-h1: clamp(1.75rem, 1.45rem + 1.3vw, 2.5rem);
   --fs-h2: clamp(1.25rem, 1.12rem + .55vw, 1.5rem);
   --fs-h3: clamp(1.0625rem, 1.03rem + .15vw, 1.125rem);
   --fs-lead: clamp(.9375rem, .9rem + .2vw, 1.0625rem);
   --fs-body: 1rem;
-  --fs-small: .875rem;
+  --fs-small: .9375rem;
   --fs-meta: .8125rem;
-  --fs-caption: .75rem;
-  --fs-label: .75rem;
+  --fs-caption: .8125rem;
+  --fs-label: .8125rem;
   --fs-button: .9375rem;
   --fs-tab: .875rem;
   --fs-chip: .8125rem;
-  --fs-badge: .75rem;
+  --fs-badge: .8125rem;
   --fs-reading: 1.25rem;
   --fs-wordmark: 1.5rem;
 
@@ -245,6 +246,7 @@
     font-size: var(--fs-body);
     line-height: var(--lh-body);
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   /* Tailwind's preflight leaves borders in currentColor; shadcn components expect the soft theme line. */
@@ -544,12 +546,12 @@ button.primary,
   margin-block: -12px;
 }
 
-/* Something is broken or leaking: earth red with a stripe, so it never reads as a calm green or amber note. */
+/* Something is broken or leaking: earth red, edged all round and led by its warning icon, so it never reads as a calm
+   green or amber note. */
 .notice.hazard {
   background: var(--cat-hazard-surface);
   color: var(--cat-hazard-fg);
-  border: 1px solid var(--cat-hazard-line);
-  border-left: 4px solid var(--cat-hazard-accent);
+  border: 1px solid var(--cat-hazard-accent);
 }
 
 .notice.hazard h3 {
@@ -1133,11 +1135,6 @@ header {
   padding: 44px 0 24px;
 }
 
-.hero-intro .eyebrow {
-  align-items: center;
-  gap: 7px;
-}
-
 /* The one display-size rule for the hero headline. */
 .hero-intro h1 {
   font-size: var(--fs-display);
@@ -1184,7 +1181,7 @@ header {
   text-align: left;
   color: #173e31;
   min-width: 0;
-  transition: transform var(--dur-base) var(--ease-spring);
+  transition: transform var(--dur-base) var(--ease-settle);
 }
 
 .capture-card-icon {
@@ -1392,7 +1389,7 @@ header {
   align-items: center;
   align-content: start;
   border-radius: var(--r-lg);
-  transition: transform var(--dur-base) var(--ease-spring);
+  transition: transform var(--dur-base) var(--ease-settle);
 }
 
 .item-card b {
@@ -1725,8 +1722,7 @@ header {
   padding: 16px 18px;
   color: var(--cat-hazard-fg);
   background: var(--cat-hazard-surface);
-  border: 1px solid var(--cat-hazard-line);
-  border-left: 4px solid var(--cat-hazard-accent);
+  border: 1px solid var(--cat-hazard-accent);
   border-radius: var(--r-md);
   box-shadow: var(--edge-light);
 }
@@ -2833,7 +2829,7 @@ textarea {
 .candidate-cta svg {
   width: 18px;
   height: 18px;
-  transition: translate var(--dur-base) var(--ease-spring);
+  transition: translate var(--dur-base) var(--ease-settle);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -3248,9 +3244,8 @@ footer .text-button {
 
 /* Phones. */
 @media (max-width: 640px) {
-  /* Design tokens: uppercase 600 labels may drop to 11px on phones; nothing else goes below 12px. */
+  /* Design tokens: the wordmark tightens on phones; text sizes stay as on larger screens. */
   :root {
-    --fs-label: .6875rem;
     --fs-wordmark: 1.375rem;
   }
 
@@ -3933,6 +3928,23 @@ footer .text-button {
   .capture-card:not(.capture-primary) > svg {
     top: 14px;
     right: 10px;
+  }
+}
+
+/* Phones under 390px: the header row tightens a little so "TP. Hồ Chí Minh" keeps to one line beside the brand and its
+   13px tagline from 360px up. */
+@media (max-width: 389px) {
+  .site-header {
+    column-gap: 6px;
+  }
+
+  .brand {
+    gap: 6px;
+  }
+
+  .location-button {
+    gap: 4px;
+    padding: 6px 10px 6px 8px;
   }
 }
 
