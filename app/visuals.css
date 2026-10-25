@@ -157,13 +157,16 @@ html {
    the Maps fallback and the footer. Headings take the light on-ground colour, body text (and the 404 page's error
    code) the muted one, links the accent; cards keep their ink. */
 footer,
-.maps-fallback {
+.maps-fallback,
+.user-points,
+.user-points-add {
   border-color: var(--on-ground-line);
 }
 
 .intro:not(.hero-intro) h1,
 .popular-section > .section-heading h2,
 .point-results > .section-heading h2,
+.user-points > .section-heading h2,
 .maps-fallback h3,
 .pagination > span {
   color: var(--on-ground);
@@ -172,6 +175,9 @@ footer,
 .intro:not(.hero-intro) p,
 .intro .eyebrow,
 .point-results > .section-heading .small,
+.user-points > p,
+.user-points > .section-heading .small,
+.user-points-add p,
 .maps-fallback p,
 footer {
   color: var(--on-ground-2);
@@ -188,6 +194,7 @@ footer {
 
 .intro .text-button,
 .popular-section > .section-heading .text-button,
+.user-points > .user-points-notice,
 footer .text-button {
   color: var(--accent-on-ground);
 }

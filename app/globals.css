@@ -2266,6 +2266,166 @@ textarea {
   color: var(--red-700);
 }
 
+/* Points added by visitors: under the sourced list, each on a point card with its confirmations and a report menu, and
+   the way to add one at the end. */
+.user-points {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.user-points > p {
+  margin: 0 0 6px;
+}
+
+.user-points-notice {
+  font-weight: 600;
+}
+
+.user-points-notice:empty {
+  display: none;
+}
+
+.user-point-groups {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.user-point-report {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.user-points-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+}
+
+.user-points-add p {
+  margin: 0;
+}
+
+/* The add-a-point form: plain labelled fields (16px text, so phones do not zoom), the kinds as 44px toggle chips,
+   the location step with a link to check it in Google Maps, and the error line above the buttons. */
+.add-point-dialog {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+.add-point-form {
+  display: grid;
+  gap: 14px;
+}
+
+.add-point-form > label,
+.add-point-form legend {
+  display: grid;
+  gap: 7px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+}
+
+.add-point-form legend {
+  margin-bottom: 8px;
+}
+
+.add-point-form input:not([type=checkbox]) {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: white;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.add-point-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.add-point-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.add-point-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.add-point-chip:has(input:checked) {
+  border-color: var(--green-300);
+  background: var(--green-100);
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.add-point-chip input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--green-600);
+}
+
+.add-point-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.add-point-location p,
+.add-point-form > p {
+  margin: 0;
+}
+
+.add-point-location a {
+  color: var(--green-600);
+  text-decoration-line: underline;
+}
+
+.add-point-error {
+  display: block;
+  color: var(--red-700);
+  font-weight: 600;
+}
+
+.add-point-location > .add-point-error {
+  flex-basis: 100%;
+}
+
+.add-point-error:empty {
+  display: none;
+}
+
+.add-point-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 /* History */
 .history-list {
   border: 1px solid var(--border);
