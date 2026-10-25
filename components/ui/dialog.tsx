@@ -145,7 +145,7 @@ function DialogContent({
           >
             <DialogPrimitive.Close
               data-slot="dialog-close"
-              className="mt-3 grid size-11 place-items-center rounded-full bg-(--paper) text-(--ink-2) ring-1 ring-(--line-soft) transition-colors hover:bg-(--green-100) hover:text-(--ink) disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5"
+              className="mt-3 grid size-11 place-items-center rounded-full bg-(--paper) text-(--ink-2) ring-1 ring-(--line-soft) transition-colors hover:bg-(--river-100) hover:text-(--ink) disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5"
             >
               <XIcon />
               <span className="sr-only">Đóng</span>

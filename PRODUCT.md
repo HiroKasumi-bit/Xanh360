@@ -40,10 +40,11 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 
 ## Brand Commitments
 
-- Tên: **Xanh360**. Khẩu hiệu đầu trang: "Bỏ đúng chỗ. Xanh thêm mỗi ngày."
+- Tên: **Xanh360**. Khẩu hiệu đầu trang: "Bỏ đúng chỗ, vì Sài Gòn xanh hơn." Logo: chiếc lá trên gợn sóng sông Sài Gòn (`app/brand-mark.tsx`, `public/favicon.svg`).
 - Toàn bộ giao diện và nội dung bằng tiếng Việt.
 - Bản sắc TP.HCM: ảnh sông Sài Gòn với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày. (Hoạ tiết gạch bông đã bỏ theo ý chủ dự án.)
-- Giữ thiết kế trắng kem và xanh lá ("lá & giấy dưới nắng"). Chủ dự án đã thử nền xanh rừng với màu nhấn vàng nắng và quyết định không dùng; không có nút "Dừng hiệu ứng" và không dùng hoa văn trang trí.
+- Giấy kem dưới bầu trời Sài Gòn: đầu mỗi tab ngả theo màu trời của ảnh lúc đó (bình minh, ngày, hoàng hôn, đêm) rồi nhạt dần về nền kem. Nút và thương hiệu dùng một màu cố định, xanh sông Sài Gòn. Không tô màu theo loại rác; chỉ đỏ (nguy hại) và cam (cần thu gom riêng) có màu riêng.
+- Chủ dự án đã thử và không dùng: nền xanh rừng với màu nhấn vàng nắng; mỗi loại rác một màu; nút "Dừng hiệu ứng"; hoa văn trang trí.
 
 ## Evidence on Hand
 

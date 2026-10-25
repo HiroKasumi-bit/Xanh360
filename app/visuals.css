@@ -1,12 +1,43 @@
-/* Xanh360 material, light and motion layer ("Leaf & paper in the sun"), loaded after globals.css.
+/* Xanh360 material, light and motion layer ("Paper under the Saigon sky"), loaded after globals.css.
    One key light comes from the top right: highlights sit on top/right edges, shadows fall down and slightly left.
    Decorative scenes never intercept product actions, and loops animate only transform and opacity. */
 
-/* Page: warm recycled paper with a fine grain tile as a background layer */
+/* Page: recycled paper under the sky of the hour. The top of every tab takes the colour of the hero photograph's sky
+   (html[data-daypart], app/daypart.ts; day when it is missing) and settles into the paper below the first screen. The
+   wash scrolls with the page, so lists further down sit on plain paper. --sky-top is also the browser's theme colour
+   for that hour (app/daypart.ts). */
+:root {
+  --sky-top: #b9d5ec;
+  --sky-mid: #d6e7f2;
+  --sky-light: 255 244 214;
+  /* Body text straight on the wash, at the top of a tab: 4.5:1 or more on all four skies (--ink-2 drops to 4.2:1 at night). */
+  --ink-on-sky: #3a4f56;
+}
+
+:root[data-daypart=dawn] {
+  --sky-top: #d2c9e4;
+  --sky-mid: #efd6d2;
+  --sky-light: 255 222 204;
+}
+
+:root[data-daypart=sunset] {
+  --sky-top: #ecc0ae;
+  --sky-mid: #f4d3bb;
+  --sky-light: 255 206 166;
+}
+
+:root[data-daypart=night] {
+  --sky-top: #bdc0e0;
+  --sky-mid: #dadbec;
+  --sky-light: 228 232 255;
+}
+
 body {
   background-color: var(--paper);
-  background-image: var(--grain);
-  background-size: 180px 180px;
+  background-image: var(--grain), linear-gradient(180deg, var(--sky-top) 0, var(--sky-mid) 520px, rgb(246 245 239 / 0) 940px);
+  background-image: var(--grain), linear-gradient(180deg in oklab, var(--sky-top) 0, var(--sky-mid) 520px, rgb(246 245 239 / 0) 940px);
+  background-size: 180px 180px, 100% 940px;
+  background-repeat: repeat, no-repeat;
 }
 
 .experience-color {
@@ -14,7 +45,8 @@ body {
   isolation: isolate;
 }
 
-/* Static ambient light: a warm sun glow from the top right that fades out well inside the first screen. No animation, so it costs one composited layer. */
+/* Static ambient light from the top right in the light of the hour (sun by day, rose at dawn, amber at sunset, moonlight
+   at night) that fades out well inside the first screen. No animation, so it costs one composited layer. */
 .eco-atmosphere {
   position: fixed;
   inset: 0;
@@ -35,7 +67,7 @@ body {
   height: 90vmax;
   right: -42vmax;
   top: -50vmax;
-  background: radial-gradient(closest-side, rgb(255 233 168 / .5), rgb(255 233 168 / .18) 55%, rgb(255 233 168 / 0));
+  background: radial-gradient(closest-side, rgb(var(--sky-light) / .6), rgb(var(--sky-light) / .2) 55%, rgb(var(--sky-light) / 0));
 }
 
 /* Site header */
@@ -45,23 +77,27 @@ body {
 
 /* App tile lit from the top right: a bright top edge, a darker foot and a soft drop, no hard offset slab. */
 .brand-symbol {
-  background: radial-gradient(120% 100% at 78% 0, #2f9a6c 0, var(--green-600) 55%, #0f4a37 100%);
-  border: 1px solid #0b3a2c;
+  background: radial-gradient(120% 100% at 78% 0, #3391ad 0, var(--river-600) 55%, #184553 100%);
+  border: 1px solid #133641;
   border-radius: var(--r-md);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -2px 4px rgb(0 0 0 / .2), 0 1px 2px rgb(10 42 34 / .22), -2px 8px 16px -8px rgb(10 42 34 / .5);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -2px 4px rgb(0 0 0 / .2), 0 1px 2px rgb(16 39 47 / .22), -2px 8px 16px -8px rgb(16 39 47 / .5);
 }
 
 .brand-symbol svg {
-  color: var(--sprout);
+  color: var(--foam);
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / .25));
 }
 
 .brand {
-  color: var(--green-700);
+  color: var(--river-700);
 }
 
 .brand small {
-  color: var(--ink-2);
+  color: var(--ink);
+}
+
+.intro > p {
+  color: var(--ink-on-sky);
 }
 
 .location-button {
@@ -85,7 +121,7 @@ body {
   margin: 0;
   background: var(--paper-sunken);
   border: 0;
-  box-shadow: inset 0 1px 2px rgb(13 42 31 / .09), inset 0 0 0 1px rgb(13 42 31 / .05), 0 1px 0 rgb(255 255 255 / .8);
+  box-shadow: inset 0 1px 2px rgb(16 39 47 / .09), inset 0 0 0 1px rgb(16 39 47 / .05), 0 1px 0 rgb(255 255 255 / .8);
 }
 
 .nav-tabs [role=tab] {
@@ -95,11 +131,11 @@ body {
 .nav-tabs [role=tab][data-state=active],
 .tab-pill {
   background: var(--paper-raised);
-  box-shadow: var(--edge-light), 0 1px 1px rgb(16 58 42 / .08), 0 2px 6px -1px rgb(16 58 42 / .12);
+  box-shadow: var(--edge-light), 0 1px 1px rgb(20 54 65 / .08), 0 2px 6px -1px rgb(20 54 65 / .12);
 }
 
 .nav-tabs [role=tab][data-state=active] {
-  color: var(--green-600);
+  color: var(--river-600);
 }
 
 /* Once the pill is in place it is the only raised surface; the active trigger only changes its colour. */
@@ -108,9 +144,9 @@ body {
   box-shadow: none;
 }
 
-/* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest gradient
-   shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring switches
-   to sprout on the dark surface. */
+/* Hero: a photograph of Saigon for the hour (below), under a deep river scrim where the copy sits; the photo's fallback
+   colour shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring
+   switches to foam on the dark surface. */
 .hero-intro {
   --focus-ring: var(--focus-ring-on-dark);
   --focus-halo: var(--focus-halo-on-dark);
@@ -128,7 +164,7 @@ body {
   color: #fff;
   overflow: hidden;
   isolation: isolate;
-  box-shadow: 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
+  box-shadow: 0 1px 2px rgb(16 39 47 / .2), -4px 26px 48px -26px rgb(16 39 47 / .7);
 }
 
 /* Film grain over the photograph and its scrim, under the copy. */
@@ -157,13 +193,13 @@ body {
   color: #fbfdf7;
 }
 
-/* The second line, the promise, is set in sprout. */
+/* The second line, the promise, is set in foam. */
 .hero-intro h1 em {
-  color: #c9ef98;
+  color: var(--foam);
 }
 
 .hero-copy > p {
-  color: #d5e8de;
+  color: #d5e6ec;
   max-width: 465px;
   margin: 0;
   text-wrap: pretty;
@@ -172,7 +208,7 @@ body {
 .hero-meta {
   gap: 8px 16px;
   margin-top: 25px;
-  color: #dcecdf;
+  color: #daeaf0;
 }
 
 .hero-meta span {
@@ -180,7 +216,7 @@ body {
 }
 
 .hero-meta svg {
-  color: var(--sprout);
+  color: var(--foam);
   width: 14px;
   height: 14px;
 }
@@ -207,7 +243,7 @@ body {
 .saigon-photo {
   position: absolute;
   inset: 0;
-  background-color: var(--green-800);
+  background-color: var(--river-800);
   background-repeat: no-repeat;
   background-position: right bottom;
   background-size: cover;
@@ -233,7 +269,7 @@ body {
   background-image: image-set(url(/hero/saigon-night-wide-1280.webp) 1x, url(/hero/saigon-night-wide-2560.webp) 2x);
 }
 
-/* The scrim: forest green, dense where the copy sits and clear over the skyline. Beside the copy (laptops) and above
+/* The scrim: deep river, dense where the copy sits and clear over the skyline. Beside the copy (laptops) and above
    it in a left column (landscape tablets), it fades from the left, so the towers on the right keep their light; where
    the copy spans the frame (portrait tablets, phones), it fades from the top, with a lighter wash from the left. */
 .eco-scene::after {
@@ -241,23 +277,23 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgb(7 30 24 / .88) 0, rgb(7 30 24 / .8) 34%, rgb(7 30 24 / .46) 46%, rgb(7 30 24 / 0) 60%),
-    linear-gradient(0deg, rgb(7 30 24 / .35) 0, rgb(7 30 24 / 0) 24%);
+    linear-gradient(90deg, rgb(11 28 34 / .88) 0, rgb(11 28 34 / .8) 34%, rgb(11 28 34 / .46) 46%, rgb(11 28 34 / 0) 60%),
+    linear-gradient(0deg, rgb(11 28 34 / .35) 0, rgb(11 28 34 / 0) 24%);
 }
 
 @media (max-width: 1179px) {
   .eco-scene::after {
     background:
-      linear-gradient(90deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .76) 40%, rgb(7 30 24 / .4) 58%, rgb(7 30 24 / 0) 74%),
-      linear-gradient(180deg, rgb(7 30 24 / .5) 0, rgb(7 30 24 / .25) 40%, rgb(7 30 24 / 0) 62%);
+      linear-gradient(90deg, rgb(11 28 34 / .84) 0, rgb(11 28 34 / .76) 40%, rgb(11 28 34 / .4) 58%, rgb(11 28 34 / 0) 74%),
+      linear-gradient(180deg, rgb(11 28 34 / .5) 0, rgb(11 28 34 / .25) 40%, rgb(11 28 34 / 0) 62%);
   }
 }
 
 @media (max-width: 900px) {
   .eco-scene::after {
     background:
-      linear-gradient(180deg, rgb(7 30 24 / .84) 0, rgb(7 30 24 / .74) 50%, rgb(7 30 24 / .44) 66%, rgb(7 30 24 / 0) 80%),
-      linear-gradient(90deg, rgb(7 30 24 / .55) 0, rgb(7 30 24 / 0) 60%);
+      linear-gradient(180deg, rgb(11 28 34 / .84) 0, rgb(11 28 34 / .76) 52%, rgb(11 28 34 / .52) 70%, rgb(11 28 34 / 0) 84%),
+      linear-gradient(90deg, rgb(11 28 34 / .55) 0, rgb(11 28 34 / 0) 60%);
   }
   .saigon-photo {
     background-image: url(/hero/saigon-day-tall-800.webp);
@@ -281,8 +317,8 @@ body {
   /* On phones the meta line wraps and sits two thirds down the hero, so the scrim holds longer before it clears. */
   .eco-scene::after {
     background:
-      linear-gradient(180deg, rgb(7 30 24 / .86) 0, rgb(7 30 24 / .8) 56%, rgb(7 30 24 / .66) 75%, rgb(7 30 24 / .2) 82%, rgb(7 30 24 / 0) 88%),
-      linear-gradient(90deg, rgb(7 30 24 / .6) 0, rgb(7 30 24 / 0) 60%);
+      linear-gradient(180deg, rgb(11 28 34 / .86) 0, rgb(11 28 34 / .8) 56%, rgb(11 28 34 / .66) 75%, rgb(11 28 34 / .2) 82%, rgb(11 28 34 / 0) 88%),
+      linear-gradient(90deg, rgb(11 28 34 / .6) 0, rgb(11 28 34 / 0) 60%);
   }
   .saigon-photo {
     background-image: image-set(url(/hero/saigon-day-tall-800.webp) 1x, url(/hero/saigon-day-tall-1200.webp) 2x);
@@ -298,7 +334,7 @@ body {
   }
 }
 
-/* Capture cards: paper with a two-layer shadow; the primary card is a lit forest-green tile */
+/* Capture cards: paper with a two-layer shadow; the primary card is a lit deep-river tile */
 .capture-card {
   isolation: isolate;
   background: var(--paper-raised);
@@ -323,9 +359,9 @@ body {
 }
 
 .capture-card-icon {
-  background: linear-gradient(180deg, #eef5e6, #dfeacf);
-  color: var(--green-600);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(13 42 31 / .08), 0 1px 2px rgb(13 42 31 / .12);
+  background: linear-gradient(180deg, #e6f5fa, #d0eaf4);
+  color: var(--river-600);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(16 39 47 / .08), 0 1px 2px rgb(16 39 47 / .12);
 }
 
 .capture-card > svg {
@@ -334,28 +370,28 @@ body {
 }
 
 .capture-primary {
-  background: radial-gradient(120% 130% at 90% -24%, #2c8d66 0, rgb(44 141 102 / 0) 58%), linear-gradient(180deg, var(--green-600), #0f4a37);
-  border-color: #0b3a2c;
+  background: radial-gradient(120% 130% at 90% -24%, #33859e 0, rgb(51 133 158 / 0) 58%), linear-gradient(180deg, var(--river-600), #184553);
+  border-color: #133641;
   color: #fff;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .16), inset 0 -2px 6px rgb(0 0 0 / .18), 0 1px 2px rgb(10 42 34 / .25), -2px 12px 24px -12px rgb(15 74 55 / .7);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .16), inset 0 -2px 6px rgb(0 0 0 / .18), 0 1px 2px rgb(16 39 47 / .25), -2px 12px 24px -12px rgb(24 69 83 / .7);
 }
 
 .capture-primary::after {
-  box-shadow: 0 2px 4px rgb(10 42 34 / .12), -2px 18px 32px -14px rgb(15 74 55 / .75);
+  box-shadow: 0 2px 4px rgb(16 39 47 / .12), -2px 18px 32px -14px rgb(24 69 83 / .75);
 }
 
 .capture-primary > span:not(.capture-card-icon) {
-  color: #e6f4ec;
+  color: #e6f2f7;
 }
 
 .capture-primary > svg {
-  color: #cfe6d9;
+  color: #cfe3eb;
 }
 
 .capture-primary .capture-card-icon {
-  background: linear-gradient(180deg, #e8fbbf, #c4ea8e);
-  color: var(--green-700);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7), inset 0 -1px 0 rgb(13 42 31 / .12), 0 1px 2px rgb(0 0 0 / .2);
+  background: linear-gradient(180deg, #e8fbf7, var(--foam));
+  color: var(--river-700);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7), inset 0 -1px 0 rgb(16 39 47 / .12), 0 1px 2px rgb(0 0 0 / .2);
 }
 
 /* Search card and quick picks */
@@ -379,13 +415,13 @@ body {
 .searchbox {
   background: #faf9f4;
   border-color: var(--line-strong);
-  box-shadow: inset 0 1px 2px rgb(13 42 31 / .07);
+  box-shadow: inset 0 1px 2px rgb(16 39 47 / .07);
 }
 
 .searchbox button,
 .primary {
-  background: linear-gradient(180deg, var(--green-500), var(--green-600)) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2), 0 4px 10px -4px rgb(23 105 76 / .55);
+  background: linear-gradient(180deg, var(--river-500), var(--river-600)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(16 39 47 / .2), 0 4px 10px -4px rgb(33 98 118 / .55);
 }
 
 /* An unavailable primary button lies flat, so it does not look pressable. */
@@ -397,8 +433,8 @@ body {
 .quick button {
   background: var(--paper-raised);
   border-color: var(--line);
-  color: var(--green-700);
-  box-shadow: 0 1px 1px rgb(16 58 42 / .05);
+  color: var(--river-700);
+  box-shadow: 0 1px 1px rgb(20 54 65 / .05);
 }
 
 /* Item cards */
@@ -432,29 +468,18 @@ body {
   animation-delay: calc(5 * var(--stagger));
 }
 
-/* Icon tiles are small pressed paper chips tinted by category. */
+/* Icon tiles are small pressed paper chips. */
 .item-icon {
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(13 42 31 / .07);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(16 39 47 / .07);
 }
 
-.item-icon.recycle {
-  background: linear-gradient(180deg, #edf5ea, var(--cat-recycle-bg));
-  color: var(--cat-recycle-fg);
-}
-
-.item-icon.organic {
-  background: linear-gradient(180deg, #f4f6e4, var(--cat-organic-bg));
-  color: var(--cat-organic-fg);
-}
-
-.item-icon.special {
-  background: linear-gradient(180deg, #fdf4e4, var(--cat-special-bg));
-  color: var(--cat-special-fg);
-}
-
+/* Every item's tile takes the same river tint, whatever its class: the glyph and the name tell items apart. */
+.item-icon.recycle,
+.item-icon.organic,
+.item-icon.special,
 .item-icon.unknown {
-  background: linear-gradient(180deg, #f4f5f3, var(--cat-unknown-bg));
-  color: var(--cat-unknown-fg);
+  background: linear-gradient(180deg, #e9f4f9, var(--cat-recycle-bg));
+  color: var(--cat-recycle-fg);
 }
 
 /* Panels: the how-it-works strip is plain paper. */
@@ -480,32 +505,32 @@ body {
 }
 
 .pin-icon {
-  background: linear-gradient(180deg, #edf5ea, var(--cat-recycle-bg));
-  color: var(--green-600);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(13 42 31 / .07);
+  background: linear-gradient(180deg, #e9f4f9, var(--cat-recycle-bg));
+  color: var(--river-600);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .75), inset 0 -1px 0 rgb(16 39 47 / .07);
 }
 
 /* Photo dialog and location card */
 .photo-dropzone {
   background: var(--paper-sunken);
-  border-color: #9fbf9f;
-  box-shadow: inset 0 2px 6px rgb(13 42 31 / .06);
+  border-color: #96bcca;
+  box-shadow: inset 0 2px 6px rgb(16 39 47 / .06);
 }
 
 .drop-icon {
   background: var(--paper-raised);
-  color: var(--green-600);
+  color: var(--river-600);
   box-shadow: var(--elev-1);
 }
 
 .feature-icon {
-  background: linear-gradient(180deg, #eef5e6, #dfeacf);
-  color: var(--green-600);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(13 42 31 / .08);
+  background: linear-gradient(180deg, #e6f5fa, #d0eaf4);
+  color: var(--river-600);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(16 39 47 / .08);
 }
 
 .position-card {
-  background: var(--green-100);
+  background: var(--river-100);
 }
 
 /* Keyframes: decorative loops move only transform and opacity. */
@@ -569,11 +594,11 @@ body {
   }
 
   .history-item:hover b {
-    color: var(--green-600);
+    color: var(--river-600);
   }
 
   .btn-outline:not(:disabled, [aria-disabled=true]):hover {
-    border-color: var(--green-300);
+    border-color: var(--river-300);
     background-color: #f8fbf4;
   }
 
@@ -584,12 +609,12 @@ body {
 
   .primary:not(:disabled):hover,
   .searchbox button:not(:disabled):hover {
-    background: linear-gradient(180deg, var(--green-600), var(--green-700)) !important;
+    background: linear-gradient(180deg, var(--river-600), var(--river-700)) !important;
   }
 
   .quick button:not(:disabled):hover,
   .location-button:hover {
-    border-color: var(--green-300);
+    border-color: var(--river-300);
   }
 
   .nav-tabs [role=tab][data-state=inactive]:hover {
@@ -784,7 +809,7 @@ body {
     -webkit-backdrop-filter: blur(18px) saturate(140%);
     backdrop-filter: blur(18px) saturate(140%);
     border-top: 1px solid var(--line-soft);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(16 58 42 / .22);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(20 54 65 / .22);
   }
 
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -799,7 +824,7 @@ body {
   }
 
   .tab-pill {
-    background: linear-gradient(180deg, #dcebd6, var(--green-100));
+    background: linear-gradient(180deg, #d4eaf2, var(--river-100));
     box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
   }
 }

@@ -28,12 +28,12 @@ export const metadata: Metadata = {
 };
 
 // viewport-fit=cover lets the page run under notches and the home indicator; the bottom tab bar, sheets and page gutters
-// pad themselves with env(safe-area-inset-*). The theme colour is the paper background, so the browser chrome blends in.
+// pad themselves with env(safe-area-inset-*). The theme colour is set in <head> below, so the daypart script can turn the
+// browser chrome to the sky of the hour.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#f6f5ef",
 };
 
 // The single source of truth for reduced motion. This runs in <head>, before the first paint, and sets
@@ -42,8 +42,9 @@ export const viewport: Viewport = {
 // hence suppressHydrationWarning.
 const motionScript = `(function(){var d=document.documentElement;try{var m=window.matchMedia('(prefers-reduced-motion: reduce)');var set=function(){d.setAttribute('data-motion',m.matches?'reduced':'full')};set();m.addEventListener('change',set)}catch(e){d.setAttribute('data-motion','full')}})()`;
 
-// The hero's photograph follows the hour in Ho Chi Minh City (app/daypart.ts): html[data-daypart] is set here, before the
-// first paint, so the CSS asks for the right picture straight away.
+// The hero's photograph and the sky wash follow the hour in Ho Chi Minh City (app/daypart.ts): html[data-daypart] and the
+// theme colour are set here, before the first paint, so the CSS asks for the right picture straight away. The meta tag
+// starts on the day sky and must come before the script, which looks it up.
 const daypartScript = `(${applyDaypart.toString()})()`;
 
 export default function RootLayout({
@@ -54,6 +55,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#b9d5ec" />
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
         <script dangerouslySetInnerHTML={{ __html: daypartScript }} />
       </head>

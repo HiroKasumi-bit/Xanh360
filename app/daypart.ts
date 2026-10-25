@@ -1,10 +1,11 @@
 // Which of the hero's four photographs of Saigon to show (scripts/blender/saigon_hero.py): the one for the hour in Ho
 // Chi Minh City, which keeps UTC+7 all year. Dawn 5:00–7:30, day until 16:30, sunset until 18:30, night until 5:00.
 //
-// applyDaypart sets html[data-daypart], which the CSS reads to pick the picture (app/visuals.css), and preloads that
-// picture in the frame and size the screen will use (the same breakpoints and densities as the CSS). app/layout.tsx
-// inlines it in <head> by its source, so it runs before the first paint and before the CSS asks for an image;
-// SaigonScene (app/eco-visual.tsx) calls it again as the hours pass.
+// applyDaypart sets html[data-daypart], which the CSS reads to pick the picture and the sky wash of the page
+// (app/visuals.css), points the browser's theme colour at that sky (the same --sky-top values), and preloads the picture
+// in the frame and size the screen will use (the same breakpoints and densities as the CSS). app/layout.tsx inlines it
+// in <head> by its source, so it runs before the first paint and before the CSS asks for an image; EcoAtmosphere
+// (app/eco-visual.tsx) calls it again as the hours pass.
 // It must stay self-contained (no imports, nothing from outside its own body) and plain enough that the bundler leaves
 // it as written: no destructuring or for…of, which could be rewritten into helpers it cannot reach.
 export function applyDaypart() {
@@ -14,6 +15,9 @@ export function applyDaypart() {
   const root = document.documentElement;
   if (root.getAttribute('data-daypart') === part) return;
   root.setAttribute('data-daypart', part);
+  const sky = part === 'dawn' ? '#d2c9e4' : part === 'sunset' ? '#ecc0ae' : part === 'night' ? '#bdc0e0' : '#b9d5ec';
+  const theme = document.querySelector('meta[name="theme-color"]');
+  if (theme) theme.setAttribute('content', sky);
   const frames = [['wide', '1280', '2560', '(min-width: 901px)'], ['tall', '800', '1600', '(min-width: 641px) and (max-width: 900px)'],
     ['tall', '800', '1200', '(max-width: 640px)']];
   for (let i = 0; i < frames.length; i++) {
