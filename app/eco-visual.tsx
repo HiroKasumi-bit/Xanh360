@@ -15,8 +15,8 @@ export function EcoAtmosphere(){
 }
 
 // The hero's picture of Saigon: a ghe ve chai crossing the river in front of Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco,
-// the Ba Son bridge and Landmark 81, one for each of four times of day. They are AI illustrations, not photographs, and
-// the hero says so (.hero-credit in app/waste-app.tsx). The CSS picks the picture from html[data-daypart].
+// the Ba Son bridge and Landmark 81, one for each of four times of day (AI illustrations, not photographs). The CSS
+// picks the picture from html[data-daypart].
 export function SaigonScene(){
  return <div className="eco-scene" aria-hidden="true"><div className="saigon-photo"/></div>;
 }

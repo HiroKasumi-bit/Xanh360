@@ -221,23 +221,6 @@ body {
   height: 14px;
 }
 
-/* The pictures are AI illustrations, and the hero says so in its bottom left corner, on a feathered shade of its own
-   because the river and the low buildings there can be bright. */
-.hero-credit {
-  position: absolute;
-  left: 30px;
-  bottom: 12px;
-  z-index: 2;
-  padding: 2px 12px;
-  border-radius: 999px;
-  background: rgb(11 28 34 / .5);
-  box-shadow: 0 0 14px 8px rgb(11 28 34 / .5);
-  color: #daeaf0;
-  font-size: var(--fs-caption);
-  font-weight: 500;
-  line-height: 1.4;
-}
-
 /* Saigon (SaigonScene in app/eco-visual.tsx): an AI illustration for each time of day, picked from html[data-daypart]
    (app/daypart.ts; day when it is missing). Laptops and landscape tablets get the wide frame, portrait tablets and phones
    the tall one (the wide picture's skyline band under a taller sky, so the towers sit below the copy), each cropped like
@@ -745,10 +728,6 @@ body {
   .hero-meta {
     margin-top: 18px;
   }
-
-  .hero-credit {
-    left: 14px;
-  }
 }
 
 @media (max-width: 900px) {
@@ -796,11 +775,6 @@ body {
   .hero-meta {
     gap: 3px 14px;
     margin-top: 10px;
-  }
-
-  .hero-credit {
-    left: 8px;
-    bottom: 10px;
   }
 
   .capture-card {
@@ -872,10 +846,6 @@ body {
   .hero-intro {
     padding: 18px 17px calc(18px + var(--city-room));
   }
-
-  .hero-credit {
-    left: 5px;
-  }
 }
 
 /* Phones in landscape: the screen is short, so the hero is compact at every width, and the capture cards start within
@@ -899,14 +869,6 @@ body {
     background:
       linear-gradient(180deg, rgb(11 28 34 / .8) 0, rgb(11 28 34 / .74) 100%),
       linear-gradient(90deg, rgb(11 28 34 / .3) 0, rgb(11 28 34 / 0) 70%);
-  }
-
-  /* The sentence runs the full width here, so the note moves to the top right corner, beside the short headline. */
-  .hero-credit {
-    left: auto;
-    right: 14px;
-    top: 12px;
-    bottom: auto;
   }
 
   .hero-intro h1 {
