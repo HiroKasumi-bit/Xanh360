@@ -43,7 +43,7 @@ Hướng dẫn có nguồn, chỉ trong phạm vi TP.HCM: mỗi quy tắc và đ
 - Tên: **Xanh360**. Khẩu hiệu đầu trang: "Bỏ đúng chỗ. Xanh thêm mỗi ngày."
 - Toàn bộ giao diện và nội dung bằng tiếng Việt.
 - Bản sắc TP.HCM: ảnh sông Sài Gòn với Chợ Bến Thành, Nhà thờ Đức Bà, Bitexco, cầu Ba Son, Landmark 81 và ghe ve chai, đổi theo giờ trong ngày. (Hoạ tiết gạch bông đã bỏ theo ý chủ dự án.)
-- Người dùng (chủ dự án) yêu cầu nền trang xanh đậm, thẻ nội dung sáng, và một màu nhấn tạo chất riêng (đang chọn giữa vàng nắng, đỏ gạch, xanh mạ).
+- Giữ thiết kế trắng kem và xanh lá ("lá & giấy dưới nắng"). Chủ dự án đã thử nền xanh rừng với màu nhấn vàng nắng và quyết định không dùng; không có nút "Dừng hiệu ứng" và không dùng hoa văn trang trí.
 
 ## Evidence on Hand
 
