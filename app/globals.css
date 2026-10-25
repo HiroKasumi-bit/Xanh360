@@ -44,9 +44,6 @@
   /* Lime accent, on dark surfaces only. */
   --sprout: #d7f79b;
 
-  /* One gạch bông (encaustic cement) tile in green and sand only: sand quarter-flowers in the corners meet across
-     tiles, a green four-petal medallion sits in the middle. */
-  --gach-bong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23cdb680'%3E%3Cpath d='M0 0h8a8 8 0 0 1-8 8z'/%3E%3Cpath d='M40 0v8a8 8 0 0 1-8-8z'/%3E%3Cpath d='M40 40h-8a8 8 0 0 1 8-8z'/%3E%3Cpath d='M0 40v-8a8 8 0 0 1 8 8z'/%3E%3C/g%3E%3Cpath d='M20 1 39 20 20 39 1 20z' fill='none' stroke='%2317694c' stroke-width='.9' stroke-opacity='.5'/%3E%3Cg fill='%2317694c'%3E%3Cpath d='M20 5c5 5 5 10 0 14-5-4-5-9 0-14z'/%3E%3Cpath d='M35 20c-5 5-10 5-14 0 4-5 9-5 14 0z'/%3E%3Cpath d='M20 35c-5-5-5-10 0-14 5 4 5 9 0 14z'/%3E%3Cpath d='M5 20c5-5 10-5 14 0-4 5-9 5-14 0z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='2.4' fill='%23cdb680'/%3E%3C/svg%3E");
 
   /* Amber (collect separately) and earth red (hazard, destructive). Text steps reach 4.5:1 on their own tints and on paper. */
   --amber-50: #fff8ec;
@@ -593,8 +590,8 @@ header {
   flex-wrap: wrap;
 }
 
-/* One row on wide screens: brand left; location, weather and the motion toggle right. When the row runs out of room,
-   the weather chip and the motion toggle wrap together to a second row, still right-aligned. */
+/* One row on wide screens: brand left; location and weather right. When the row runs out of room, the weather chip
+   wraps to a second row, still right-aligned. */
 .site-header {
   justify-content: flex-end;
   padding: 16px 0;
@@ -2255,6 +2252,167 @@ textarea {
   color: var(--red-700);
 }
 
+/* Points added by visitors: under the sourced list, each on a point card with its confirmations and a report menu, and
+   the way to add one at the end. */
+.user-points {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.user-points > p {
+  margin: 0 0 6px;
+}
+
+.user-points-notice {
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.user-points-notice:empty {
+  display: none;
+}
+
+.user-point-groups {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.user-point-report {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.user-points-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+}
+
+.user-points-add p {
+  margin: 0;
+}
+
+/* The add-a-point form: plain labelled fields (16px text, so phones do not zoom), the kinds as 44px toggle chips,
+   the location step with a link to check it in Google Maps, and the error line above the buttons. */
+.add-point-dialog {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+.add-point-form {
+  display: grid;
+  gap: 14px;
+}
+
+.add-point-form > label,
+.add-point-form legend {
+  display: grid;
+  gap: 7px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+}
+
+.add-point-form legend {
+  margin-bottom: 8px;
+}
+
+.add-point-form input:not([type=checkbox]) {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: white;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.add-point-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.add-point-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.add-point-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.add-point-chip:has(input:checked) {
+  border-color: var(--green-300);
+  background: var(--green-100);
+  color: var(--green-700);
+  font-weight: 600;
+}
+
+.add-point-chip input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--green-600);
+}
+
+.add-point-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.add-point-location p,
+.add-point-form > p {
+  margin: 0;
+}
+
+.add-point-location a {
+  color: var(--green-600);
+  text-decoration-line: underline;
+}
+
+.add-point-error {
+  display: block;
+  color: var(--red-700);
+  font-weight: 600;
+}
+
+.add-point-location > .add-point-error {
+  flex-basis: 100%;
+}
+
+.add-point-error:empty {
+  display: none;
+}
+
+.add-point-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 /* History */
 .history-list {
   border: 1px solid var(--border);
@@ -3255,7 +3413,7 @@ footer .text-button {
     padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
   }
 
-  /* Site header and brand: two compact rows, brand and location first, then the weather chip with the motion toggle beside it. */
+  /* Site header and brand: two compact rows, brand and location first, then the weather chip. */
   header {
     padding: 18px 0;
   }
@@ -3303,7 +3461,7 @@ footer .text-button {
     display: none;
   }
 
-  /* City weather chip: fills the second row beside the motion toggle; the level names move to the details. */
+  /* City weather chip: fills the second row; the level names move to the details. */
   .city-widget {
     flex: 1;
     min-width: 0;

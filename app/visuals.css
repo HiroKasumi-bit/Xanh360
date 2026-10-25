@@ -108,71 +108,6 @@ body {
   box-shadow: none;
 }
 
-/* The motion toggle is the last chip in the header, the same height as the location and weather chips. */
-.motion-control {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid var(--line-soft);
-  border-radius: var(--r-pill);
-  background: var(--paper-raised);
-  box-shadow: var(--elev-1);
-  color: var(--ink-2);
-  padding: 8px 14px;
-  font-size: var(--fs-caption);
-  font-weight: 500;
-  line-height: 1.3;
-  min-width: 46px;
-  min-height: 46px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.motion-control svg {
-  width: 15px;
-  height: 15px;
-}
-
-/* The label stays "Dừng hiệu ứng"; aria-pressed carries the state. Pressed, the chip sinks into the paper and takes the
-   brand tint, so the stopped state is seen as well as announced. */
-.motion-control[aria-pressed=true] {
-  background: var(--green-100);
-  border-color: var(--green-300);
-  color: var(--green-700);
-  box-shadow: var(--elev-pressed);
-}
-
-/* When the system asks for reduced motion there is nothing to switch, so a plain line explains why nothing moves
-   instead of a disabled button. html[data-motion-source] is set before the first paint (app/layout.tsx). */
-.motion-status {
-  display: none;
-  align-items: center;
-  gap: 7px;
-  max-width: 172px;
-  margin: 0;
-  color: var(--ink-2);
-  font-size: var(--fs-caption);
-  font-weight: 500;
-  line-height: 1.3;
-  text-wrap: balance;
-}
-
-.motion-status svg {
-  width: 15px;
-  height: 15px;
-  color: var(--green-600);
-}
-
-:root[data-motion-source=system] .motion-control {
-  display: none;
-}
-
-:root[data-motion-source=system] .motion-status {
-  display: inline-flex;
-}
-
 /* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest gradient
    shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring switches
    to sprout on the dark surface. */
@@ -188,15 +123,12 @@ body {
   padding: 43px 42px;
   margin: 0 0 24px;
   border-radius: var(--r-2xl);
-  background:
-    radial-gradient(120% 100% at 98% -18%, rgb(118 190 128 / .55) 0, rgb(88 170 118 / .22) 36%, rgb(74 168 118 / 0) 62%),
-    radial-gradient(85% 75% at -4% 112%, rgb(4 22 17 / .85) 0, rgb(4 22 17 / 0) 62%),
-    linear-gradient(160deg, var(--green-800), var(--green-900));
+  /* No border and no background of its own: the photograph (with its own fallback colour) runs to the rounded edge,
+     where a dark ring would show as a hairline against a bright sky. */
   color: #fff;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid #0a2a22;
-  box-shadow: inset 0 1px 0 rgb(217 255 230 / .16), inset 0 0 0 1px rgb(255 255 255 / .04), 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
+  box-shadow: 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
 }
 
 /* Film grain over the photograph and its scrim, under the copy. */
@@ -525,44 +457,11 @@ body {
   color: var(--cat-unknown-fg);
 }
 
-/* Panels. The how-it-works strip carries a corner of faint gạch bông, fading out from the top right so the step copy
-   stays on plain paper. */
+/* Panels: the how-it-works strip is plain paper. */
 .how-grid {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   background: var(--paper-raised);
   border: 1px solid var(--line-soft);
   box-shadow: var(--elev-1);
-}
-
-.how-grid::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gach-bong) 0 0 / 40px 40px;
-  opacity: .12;
-  -webkit-mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
-  mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* The footer stands on a single row of gạch bông, like the tiled step of an old Saigon house. */
-footer {
-  position: relative;
-  border-top: 0;
-  padding-top: 46px;
-}
-
-footer::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 28px;
-  background: var(--gach-bong) 0 0 / 28px 28px repeat-x;
-  opacity: .4;
-  pointer-events: none;
 }
 
 .source-panel {
@@ -689,8 +588,7 @@ footer::before {
   }
 
   .quick button:not(:disabled):hover,
-  .location-button:hover,
-  .motion-control:hover {
+  .location-button:hover {
     border-color: var(--green-300);
   }
 
@@ -709,7 +607,6 @@ footer::before {
 .quick button,
 .searchbox button,
 .location-button,
-.motion-control,
 .nav-tabs [role=tab],
 .area-option,
 .result-row,
@@ -735,7 +632,6 @@ footer::before {
 .quick button:not(:disabled):active,
 .searchbox button:not(:disabled):active,
 .location-button:active,
-.motion-control:active,
 .nav-tabs [role=tab]:active,
 .photo-dropzone:active,
 .shutter:not(:disabled):active,
@@ -780,7 +676,6 @@ footer::before {
   box-shadow: inset 0 2px 4px rgb(0 0 0 / .25);
 }
 
-.motion-control:active,
 .btn-outline:not(:disabled, [aria-disabled=true]):active {
   box-shadow: var(--elev-pressed);
 }
@@ -813,41 +708,9 @@ footer::before {
   }
 }
 
-/* Small laptops: the header runs short of room, so the motion toggle keeps only its icon. */
 @media (max-width: 1000px) {
   .hero-meta {
     gap: 8px 12px;
-  }
-
-  /* The motion toggle shrinks to its icon; the label stays as its accessible name and title. */
-  .motion-control {
-    width: 46px;
-    padding: 0;
-  }
-
-  .motion-control span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .motion-control svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  /* No room for the explanation, and nothing to switch: the system setting is already followed. The line stays for
-     screen readers, so the state is still discoverable. */
-  :root[data-motion-source=system] .motion-status {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 }
 
@@ -984,7 +847,7 @@ footer::before {
 }
 
 /* Reduced motion, one switch. html[data-motion] is set before the first paint by the inline script in app/layout.tsx
-   (from the system setting and the saved "Dừng hiệu ứng" choice) and kept in sync by MotionControl. When it is
+   from the system setting, and follows it if it changes. When it is
    "reduced", nothing moves: loops, entrances, staggers, lifts, the tab pill, sheets and smooth scrolling all stop.
    Busy spinners keep turning, because they carry information. Colour and opacity changes stay. `*` does not reach
    pseudo-elements, so they are listed too. */
