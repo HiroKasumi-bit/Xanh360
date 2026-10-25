@@ -1,67 +1,47 @@
-/* Xanh360 material, light and motion layer ("Leaf & paper in the sun"), loaded after globals.css.
-   One key light comes from the top right: highlights sit on top/right edges, shadows fall down and slightly left.
+/* Xanh360 material, light and motion layer ("Paper on the forest"), loaded after globals.css.
+   Paper cards lie on a deep forest-green ground; one key light comes from the top right: highlights sit on top/right
+   edges, shadows fall down and slightly left.
    Decorative scenes never intercept product actions, and loops animate only transform and opacity. */
 
-/* Page: warm recycled paper with a fine grain tile as a background layer */
+/* Page: the forest ground with a fine grain tile as a background layer */
 body {
-  background-color: var(--paper);
+  background-color: var(--ground);
   background-image: var(--grain);
   background-size: 180px 180px;
 }
 
-.experience-color {
-  position: relative;
-  isolation: isolate;
+::selection {
+  background: var(--accent-fill);
+  color: var(--accent-ink);
 }
 
-/* Static ambient light: a warm sun glow from the top right that fades out well inside the first screen. No animation, so it costs one composited layer. */
-.eco-atmosphere {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-  contain: strict;
-}
-
-.ambient-color {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.ambient-sun {
-  width: 90vmax;
-  height: 90vmax;
-  right: -42vmax;
-  top: -50vmax;
-  background: radial-gradient(closest-side, rgb(255 233 168 / .5), rgb(255 233 168 / .18) 55%, rgb(255 233 168 / 0));
+/* The page scrollbar belongs to the ground too. */
+html {
+  scrollbar-color: rgb(181 214 192 / .4) var(--ground);
 }
 
 /* Site header */
 .site-header {
-  border-color: var(--line-soft);
+  border-color: var(--on-ground-line);
 }
 
-/* App tile lit from the top right: a bright top edge, a darker foot and a soft drop, no hard offset slab. */
+/* App tile in the accent, lit from the top right: a bright top edge, a darker foot and a soft drop. */
 .brand-symbol {
-  background: radial-gradient(120% 100% at 78% 0, #2f9a6c 0, var(--green-600) 55%, #0f4a37 100%);
-  border: 1px solid #0b3a2c;
+  background: radial-gradient(120% 100% at 78% 0, var(--accent-hi) 0, var(--accent-fill) 60%);
   border-radius: var(--r-md);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -2px 4px rgb(0 0 0 / .2), 0 1px 2px rgb(10 42 34 / .22), -2px 8px 16px -8px rgb(10 42 34 / .5);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), inset 0 -2px 4px rgb(0 0 0 / .14), 0 1px 2px rgb(0 0 0 / .25), -2px 8px 16px -8px rgb(0 0 0 / .5);
 }
 
 .brand-symbol svg {
-  color: var(--sprout);
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / .25));
+  color: var(--accent-ink);
 }
 
 .brand {
-  color: var(--green-700);
+  color: var(--on-ground);
 }
 
 .brand small {
-  color: var(--ink-2);
+  color: var(--on-ground-2);
 }
 
 .location-button {
@@ -71,7 +51,7 @@ body {
   color: var(--ink);
 }
 
-/* Navigation: a pressed-in tray with a raised paper pill on the active tab */
+/* Navigation: a tray pressed into the ground, with a raised paper pill on the active tab */
 .nav-line {
   display: flex;
   flex-wrap: wrap;
@@ -83,13 +63,13 @@ body {
 
 .nav-line .nav-tabs {
   margin: 0;
-  background: var(--paper-sunken);
+  background: var(--ground-tray);
   border: 0;
-  box-shadow: inset 0 1px 2px rgb(13 42 31 / .09), inset 0 0 0 1px rgb(13 42 31 / .05), 0 1px 0 rgb(255 255 255 / .8);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / .22), inset 0 0 0 1px var(--on-ground-line), 0 1px 0 rgb(255 255 255 / .05);
 }
 
 .nav-tabs [role=tab] {
-  color: var(--ink-2);
+  color: var(--on-ground-2);
 }
 
 .nav-tabs [role=tab][data-state=active],
@@ -99,7 +79,7 @@ body {
 }
 
 .nav-tabs [role=tab][data-state=active] {
-  color: var(--green-600);
+  color: var(--green-700);
 }
 
 /* Once the pill is in place it is the only raised surface; the active trigger only changes its colour. */
@@ -152,7 +132,7 @@ body {
   gap: 7px;
   max-width: 172px;
   margin: 0;
-  color: var(--ink-2);
+  color: var(--on-ground-2);
   font-size: var(--fs-caption);
   font-weight: 500;
   line-height: 1.3;
@@ -162,7 +142,7 @@ body {
 .motion-status svg {
   width: 15px;
   height: 15px;
-  color: var(--green-600);
+  color: var(--accent-on-ground);
 }
 
 :root[data-motion-source=system] .motion-control {
@@ -173,9 +153,61 @@ body {
   display: inline-flex;
 }
 
-/* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest gradient
+/* What sits straight on the ground rather than in a card: page intros, the headings between cards, the page count,
+   the Maps fallback and the footer. Headings take the light on-ground colour, body text the muted one, links and
+   eyebrows the accent; cards keep their ink. */
+footer,
+.maps-fallback {
+  border-color: var(--on-ground-line);
+}
+
+.intro:not(.hero-intro) h1,
+.popular-section > .section-heading h2,
+.point-results > .section-heading h2,
+.maps-fallback h3,
+.pagination > span {
+  color: var(--on-ground);
+}
+
+.intro:not(.hero-intro) p,
+.intro .eyebrow,
+.point-results > .section-heading .small,
+.maps-fallback p,
+footer {
+  color: var(--on-ground-2);
+}
+
+/* A page button that cannot be used yet is drawn as an outline in the ground's own line, not a dimmed paper chip. */
+.pagination .btn-outline[aria-disabled=true] {
+  background: transparent;
+  border-color: var(--on-ground-line);
+  box-shadow: none;
+  color: var(--on-ground-2);
+  opacity: .7;
+}
+
+.intro .text-button,
+.popular-section > .section-heading .text-button,
+footer .text-button {
+  color: var(--accent-on-ground);
+}
+
+/* The signed-in admin is a working tool with its tables and forms laid straight on the page, so it keeps a paper
+   ground: the on-ground colours fall back to ink inside it. */
+body:has(.admin-shell) {
+  background-color: var(--paper);
+}
+
+.admin-shell {
+  --on-ground: var(--ink);
+  --on-ground-2: var(--ink-2);
+  --on-ground-line: var(--line-soft);
+  --accent-on-ground: var(--green-600);
+}
+
+/* Hero: a photograph of Saigon for the hour (below), under a forest-green scrim where the copy sits; the forest fallback
    shows while the picture loads. Its headline can take focus (when a button opens the search tab), so the ring switches
-   to sprout on the dark surface. */
+   to the accent on the dark surface. */
 .hero-intro {
   --focus-ring: var(--focus-ring-on-dark);
   --focus-halo: var(--focus-halo-on-dark);
@@ -222,9 +254,9 @@ body {
   color: #fbfdf7;
 }
 
-/* The second line, the promise, is set in sprout. */
+/* The second line, the promise, is set in the accent. */
 .hero-intro h1 em {
-  color: #c9ef98;
+  color: var(--accent-on-ground);
 }
 
 .hero-copy > p {
@@ -245,7 +277,7 @@ body {
 }
 
 .hero-meta svg {
-  color: var(--sprout);
+  color: var(--accent-on-ground);
   width: 14px;
   height: 14px;
 }
@@ -399,28 +431,25 @@ body {
 }
 
 .capture-primary {
-  background: radial-gradient(120% 130% at 90% -24%, #2c8d66 0, rgb(44 141 102 / 0) 58%), linear-gradient(180deg, var(--green-600), #0f4a37);
-  border-color: #0b3a2c;
-  color: #fff;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .16), inset 0 -2px 6px rgb(0 0 0 / .18), 0 1px 2px rgb(10 42 34 / .25), -2px 12px 24px -12px rgb(15 74 55 / .7);
+  background: radial-gradient(120% 130% at 90% -24%, var(--accent-hi) 0, transparent 58%), var(--accent-fill);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), inset 0 -2px 6px rgb(0 0 0 / .12), 0 1px 2px rgb(0 0 0 / .25), -2px 12px 24px -12px rgb(0 0 0 / .6);
 }
 
 .capture-primary::after {
-  box-shadow: 0 2px 4px rgb(10 42 34 / .12), -2px 18px 32px -14px rgb(15 74 55 / .75);
+  box-shadow: 0 2px 4px rgb(0 0 0 / .14), -2px 18px 32px -14px rgb(0 0 0 / .65);
 }
 
-.capture-primary > span:not(.capture-card-icon) {
-  color: #e6f4ec;
-}
-
+.capture-primary > span:not(.capture-card-icon),
 .capture-primary > svg {
-  color: #cfe6d9;
+  color: var(--accent-ink);
 }
 
 .capture-primary .capture-card-icon {
-  background: linear-gradient(180deg, #e8fbbf, #c4ea8e);
-  color: var(--green-700);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7), inset 0 -1px 0 rgb(13 42 31 / .12), 0 1px 2px rgb(0 0 0 / .2);
+  background: var(--accent-icon-bg);
+  color: var(--accent-icon-fg);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(0 0 0 / .22);
 }
 
 /* Search card and quick picks */
@@ -543,23 +572,6 @@ body {
   mask-image: radial-gradient(42% 120% at 100% 0, #000 0, rgb(0 0 0 / .5) 45%, transparent 100%);
   pointer-events: none;
   z-index: -1;
-}
-
-/* The footer stands on a single row of gạch bông, like the tiled step of an old Saigon house. */
-footer {
-  position: relative;
-  border-top: 0;
-  padding-top: 46px;
-}
-
-footer::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 28px;
-  background: var(--gach-bong) 0 0 / 28px 28px repeat-x;
-  opacity: .4;
-  pointer-events: none;
 }
 
 .source-panel {
@@ -692,7 +704,7 @@ footer::before {
   }
 
   .nav-tabs [role=tab][data-state=inactive]:hover {
-    color: var(--ink);
+    color: var(--on-ground);
   }
 }
 
@@ -850,13 +862,6 @@ footer::before {
 
 /* Phones: the tab list becomes a frosted bottom bar, the hero tightens and the skyline band gets shorter. */
 @media (max-width: 640px) {
-  .ambient-sun {
-    width: 140vmax;
-    height: 140vmax;
-    right: -80vmax;
-    top: -90vmax;
-  }
-
   .brand-symbol {
     border-radius: var(--r-sm);
   }
@@ -904,37 +909,44 @@ footer::before {
   }
 }
 
-/* Phones, and phones held sideways: the tab list is a frosted bottom bar (layout in globals.css). The paper is nearly
-   opaque, so text scrolling under the short bar does not compete with its labels. */
+/* Phones, and phones held sideways: the tab list is a frosted bottom bar (layout in globals.css), the deep forest of
+   the ground, nearly opaque, so cards scrolling under the short bar do not compete with its labels. */
 @media (max-width: 640px), (orientation: landscape) and (max-height: 500px) {
   /* The tab list is fixed to the bottom, so its row in the flow is only a gap under the header. */
   .nav-line {
     margin: 0 0 12px;
   }
 
-  /* Bottom tab bar: frosted paper over the page, a bright top edge and a soft shadow cast upwards. */
+  /* Bottom tab bar: frosted forest over the page, a faint lit top edge and a shadow cast upwards. The active tab's
+     icon sits on a sunlit lozenge and its label turns bright. */
   .nav-line .nav-tabs {
-    background: rgb(255 253 248 / .9);
+    background: rgb(10 42 34 / .92);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
     backdrop-filter: blur(18px) saturate(140%);
-    border-top: 1px solid var(--line-soft);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 -10px 24px -14px rgb(16 58 42 / .22);
+    border-top: 1px solid var(--on-ground-line);
+    box-shadow: 0 -10px 24px -14px rgb(0 0 0 / .5);
   }
 
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav-line .nav-tabs {
-      background: rgb(255 253 248 / .97);
+      background: rgb(10 42 34 / .98);
     }
   }
 
   .nav-tabs [role=tab][data-state=active] {
     background: transparent;
     box-shadow: none;
+    color: var(--on-ground);
+  }
+
+  /* The icon sits on the sunlit lozenge once the pill is in place; before that it keeps the label's colour. */
+  .nav-tabs:has(> .tab-pill[data-ready]) [role=tab][data-state=active] svg {
+    color: var(--accent-ink);
   }
 
   .tab-pill {
-    background: linear-gradient(180deg, #dcebd6, var(--green-100));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / .7);
+    background: var(--accent-fill);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .35);
   }
 }
 

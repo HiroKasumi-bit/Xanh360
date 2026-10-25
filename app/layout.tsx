@@ -28,12 +28,12 @@ export const metadata: Metadata = {
 };
 
 // viewport-fit=cover lets the page run under notches and the home indicator; the bottom tab bar, sheets and page gutters
-// pad themselves with env(safe-area-inset-*). The theme colour is the paper background, so the browser chrome blends in.
+// pad themselves with env(safe-area-inset-*). The theme colour is the forest ground, so the browser chrome blends in.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#f6f5ef",
+  themeColor: "#0f3a2e",
 };
 
 // The single source of truth for reduced motion. This runs in <head>, before the first paint, and sets
