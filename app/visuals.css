@@ -154,8 +154,8 @@ html {
 }
 
 /* What sits straight on the ground rather than in a card: page intros, the headings between cards, the page count,
-   the Maps fallback and the footer. Headings take the light on-ground colour, body text the muted one, links and
-   eyebrows the accent; cards keep their ink. */
+   the Maps fallback and the footer. Headings take the light on-ground colour, body text (and the 404 page's error
+   code) the muted one, links the accent; cards keep their ink. */
 footer,
 .maps-fallback {
   border-color: var(--on-ground-line);

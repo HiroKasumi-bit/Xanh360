@@ -50,7 +50,7 @@
   --on-ground-2: #b5d6c0;
   --on-ground-line: rgb(214 236 222 / .14);
 
-  /* The accent: one colour beside the forest, for the primary action, the brand tile and what is lit on the ground.
+  /* The accent: one colour beside the forest, for the "Chụp ảnh" tile, the brand tile and what is lit on the ground.
      --accent-on-ground is the accent as text on the ground (4.5:1 or more); --accent-ink is text on an accent fill. */
   --accent-fill: #f2bf4a;
   --accent-hi: #ffd56f;
@@ -1232,10 +1232,6 @@ header {
   right: 24px;
   top: 27px;
   width: 19px;
-}
-
-.capture-primary > svg {
-  color: #d0e4d8;
 }
 
 /* Search card */
