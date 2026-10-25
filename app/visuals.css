@@ -188,15 +188,12 @@ body {
   padding: 43px 42px;
   margin: 0 0 24px;
   border-radius: var(--r-2xl);
-  background:
-    radial-gradient(120% 100% at 98% -18%, rgb(118 190 128 / .55) 0, rgb(88 170 118 / .22) 36%, rgb(74 168 118 / 0) 62%),
-    radial-gradient(85% 75% at -4% 112%, rgb(4 22 17 / .85) 0, rgb(4 22 17 / 0) 62%),
-    linear-gradient(160deg, var(--green-800), var(--green-900));
+  /* No border and no background of its own: the photograph (with its own fallback colour) runs to the rounded edge,
+     where a dark ring would show as a hairline against a bright sky. */
   color: #fff;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid #0a2a22;
-  box-shadow: inset 0 1px 0 rgb(217 255 230 / .16), inset 0 0 0 1px rgb(255 255 255 / .04), 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
+  box-shadow: 0 1px 2px rgb(10 42 34 / .2), -4px 26px 48px -26px rgb(10 42 34 / .7);
 }
 
 /* Film grain over the photograph and its scrim, under the copy. */
