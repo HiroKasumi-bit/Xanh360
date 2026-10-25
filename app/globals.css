@@ -24,26 +24,26 @@
   size-adjust: 110.36%;
 }
 
-/* Design tokens: "Leaf & paper in the sun". Components use these instead of one-off values. */
+/* Design tokens: "Paper under the Saigon sky". Components use these instead of one-off values. */
 :root {
   /* Paper surfaces */
   --paper: #f6f5ef;
   --paper-raised: #fffdf8;
   --paper-sunken: #efeee6;
 
-  /* Green scale: 9 steps from tint to forest. 500 is the focus/link green, 600 the primary action, 800-900 the hero forest. */
-  --green-100: #e8f1e3;
-  --green-200: #d3e6cf;
-  --green-300: #a8d1a6;
-  --green-400: #5fae7f;
-  --green-500: #1d7a55;
-  --green-600: #17694c;
-  --green-700: #14503d;
-  --green-800: #0f3a2e;
-  --green-900: #0a2a22;
-  /* Lime accent, on dark surfaces only. */
-  --sprout: #d7f79b;
-
+  /* River scale (the Saigon river, OKLCH hue 222): 9 steps from tint to deep water. 500 is the focus/link colour, 600 the
+     primary action, 800-900 the hero scrim. One fixed hue that sits with all four skies of the hero (app/visuals.css). */
+  --river-100: #e2f0f6;
+  --river-200: #cbe4ee;
+  --river-300: #9acde0;
+  --river-400: #5aa6c0;
+  --river-500: #23728a;
+  --river-600: #216276;
+  --river-700: #1d4b5a;
+  --river-800: #173641;
+  --river-900: #10272f;
+  /* Pale aqua accent, on dark surfaces only. */
+  --foam: #b5efe4;
 
   /* Amber (collect separately) and earth red (hazard, destructive). Text steps reach 4.5:1 on their own tints and on paper. */
   --amber-50: #fff8ec;
@@ -59,27 +59,28 @@
   --red-700: #8c2f1a;
 
   /* Ink and lines. --ink-2 and --ink-3 stay at or above 4.5:1 on every paper surface, including the darkest grain specks of the page background. */
-  --ink: #153c32;
-  --ink-2: #4a5d52;
-  --ink-3: #4e6055;
+  --ink: #1c3942;
+  --ink-2: #4a5b61;
+  --ink-3: #4e5e64;
   /* Field placeholders: 4.8:1 or more on paper, white and the row tint. */
-  --ink-placeholder: #5f7067;
-  --line: #dbe5dc;
-  --line-soft: rgb(13 42 31 / .09);
-  --line-strong: #c9d9cf;
+  --ink-placeholder: #5f6e74;
+  --line: #d9e4e8;
+  --line-soft: rgb(16 39 47 / .09);
+  --line-strong: #c9d7dd;
   /* List rows: hover tint and pressed tint. */
-  --row-hover: #f3f7f0;
-  --row-pressed: var(--green-100);
+  --row-hover: #f0f5f7;
+  --row-pressed: var(--river-100);
 
-  /* Waste categories. Colour carries meaning: green recyclable, olive organic, amber collect separately, red hazard, stone residual or unknown. */
-  --cat-recycle-bg: #e6f1e4;
-  --cat-recycle-fg: #1f6142;
-  --cat-recycle-line: #c9e0c6;
-  --cat-recycle-accent: var(--green-500);
-  --cat-organic-bg: #eef1da;
-  --cat-organic-fg: #4d6320;
-  --cat-organic-line: #dbe3b5;
-  --cat-organic-accent: #7a9a2e;
+  /* Waste categories share the river tint; the label and icon tell them apart. Only the two that ask for care keep a
+     colour of their own: amber for collect separately, red for hazard. */
+  --cat-recycle-bg: #e2f0f5;
+  --cat-recycle-fg: #1f5b6e;
+  --cat-recycle-line: #c1dee9;
+  --cat-recycle-accent: var(--river-500);
+  --cat-organic-bg: var(--cat-recycle-bg);
+  --cat-organic-fg: var(--cat-recycle-fg);
+  --cat-organic-line: var(--cat-recycle-line);
+  --cat-organic-accent: var(--cat-recycle-accent);
   --cat-special-bg: var(--amber-100);
   --cat-special-fg: var(--amber-700);
   --cat-special-line: var(--amber-300);
@@ -89,31 +90,31 @@
   --cat-hazard-line: var(--red-300);
   --cat-hazard-accent: var(--red-500);
   --cat-hazard-surface: var(--red-50);
-  --cat-residual-bg: #eeefec;
-  --cat-residual-fg: #4d5a53;
-  --cat-residual-line: #d9ddd8;
-  --cat-residual-accent: #7b867f;
-  --cat-unknown-bg: #edf0f1;
-  --cat-unknown-fg: #4b5d63;
-  --cat-unknown-line: #d6dde0;
-  --cat-unknown-accent: #7d8d93;
+  --cat-residual-bg: var(--cat-recycle-bg);
+  --cat-residual-fg: var(--cat-recycle-fg);
+  --cat-residual-line: var(--cat-recycle-line);
+  --cat-residual-accent: var(--cat-recycle-accent);
+  --cat-unknown-bg: var(--cat-recycle-bg);
+  --cat-unknown-fg: var(--cat-recycle-fg);
+  --cat-unknown-line: var(--cat-recycle-line);
+  --cat-unknown-accent: var(--cat-recycle-accent);
 
-  /* Elevation: one key light from above, green-tinted shadows, a bright top edge on raised surfaces. */
+  /* Elevation: one key light from above, river-tinted shadows, a bright top edge on raised surfaces. */
   --edge-light: inset 0 1px 0 #fff9;
-  --elev-1: var(--edge-light), 0 1px 1px rgb(16 58 42 / .06), 0 2px 6px -1px rgb(16 58 42 / .08);
-  --elev-2: var(--edge-light), 0 1px 2px rgb(16 58 42 / .07), 0 6px 14px -4px rgb(16 58 42 / .12), 0 16px 32px -16px rgb(16 58 42 / .16);
-  --elev-3: var(--edge-light), 0 2px 4px rgb(10 42 34 / .08), 0 24px 48px -16px rgb(10 42 34 / .24), 0 48px 96px -40px rgb(10 42 34 / .3);
-  --elev-pressed: inset 0 1px 2px rgb(16 58 42 / .14);
+  --elev-1: var(--edge-light), 0 1px 1px rgb(20 54 65 / .06), 0 2px 6px -1px rgb(20 54 65 / .08);
+  --elev-2: var(--edge-light), 0 1px 2px rgb(20 54 65 / .07), 0 6px 14px -4px rgb(20 54 65 / .12), 0 16px 32px -16px rgb(20 54 65 / .16);
+  --elev-3: var(--edge-light), 0 2px 4px rgb(16 39 47 / .08), 0 24px 48px -16px rgb(16 39 47 / .24), 0 48px 96px -40px rgb(16 39 47 / .3);
+  --elev-pressed: inset 0 1px 2px rgb(20 54 65 / .14);
   /* The lifted drop of --elev-2 without its inset edge, for hover layers that fade in on a pseudo-element instead of animating box-shadow. */
-  --elev-lift: 0 2px 4px rgb(16 58 42 / .06), 0 10px 20px -8px rgb(16 58 42 / .18), 0 22px 40px -22px rgb(16 58 42 / .22);
-  --scrim: rgb(6 30 22 / .45);
+  --elev-lift: 0 2px 4px rgb(20 54 65 / .06), 0 10px 20px -8px rgb(20 54 65 / .18), 0 22px 40px -22px rgb(20 54 65 / .22);
+  --scrim: rgb(9 28 34 / .45);
 
   /* Recycled-paper grain: a tiny SVG noise tile used as a background layer (never a fixed overlay). Its specks are warm brown at a few percent alpha. */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .14 0 0 0 .45 -.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
-  --focus-ring: var(--green-500);
-  --focus-ring-on-dark: var(--sprout);
+  --focus-ring: var(--river-500);
+  --focus-ring-on-dark: var(--foam);
   --focus-halo: #fff;
-  --focus-halo-on-dark: var(--green-900);
+  --focus-halo-on-dark: var(--river-900);
 
   /* Layout: the phone tab bar's height, before the safe-area inset is added. */
   --tabbar-h: 56px;
@@ -153,13 +154,13 @@
   --card-foreground: var(--ink);
   --popover: #fff;
   --popover-foreground: var(--ink);
-  --primary: var(--green-600);
+  --primary: var(--river-600);
   --primary-foreground: #fff;
-  --secondary: var(--green-100);
+  --secondary: var(--river-100);
   --secondary-foreground: var(--ink);
-  --muted: var(--green-100);
+  --muted: var(--river-100);
   --muted-foreground: var(--ink-2);
-  --accent: var(--green-100);
+  --accent: var(--river-100);
   --accent-foreground: var(--ink);
   --destructive: var(--red-600);
   --border: var(--line);
@@ -360,10 +361,10 @@ button,
   touch-action: manipulation;
 }
 
-/* Keyboard focus: a 2.5px ring in the focus green (5.3:1 on paper), 2px off the element, with a white halo filling the
+/* Keyboard focus: a 2.5px ring in the focus river blue (5.5:1 on paper), 2px off the element, with a white halo filling the
    gap so the ring stays clear against the element and the page alike. Fully zero specificity, so a component that draws
    its own ring (the search field) or must keep its own shadow (raised cards) overrides it; it is unlayered, so it does
-   replace the faint shadcn rings. Dark surfaces switch the ring to sprout (see .camera-stage). */
+   replace the faint shadcn rings. Dark surfaces switch the ring to foam (see .camera-stage). */
 :where(a, button, input, select, textarea, summary, [tabindex]:not([data-slot$=dialog-content])):where(:focus-visible) {
   outline: 2.5px solid var(--focus-ring);
   outline-offset: 2px;
@@ -406,7 +407,7 @@ svg {
   letter-spacing: var(--tr-label);
   line-height: var(--lh-label);
   text-transform: uppercase;
-  color: #3f604b;
+  color: #3d5d68;
   text-wrap: balance;
 }
 
@@ -419,7 +420,7 @@ svg {
   border: 0;
   padding: 8px 0;
   min-height: 44px;
-  color: var(--green-600);
+  color: var(--river-600);
   font-weight: 600;
   font-size: var(--fs-small);
   line-height: var(--lh-ui);
@@ -463,13 +464,13 @@ button.primary,
   border-radius: var(--r-sm);
   background: var(--paper-raised);
   padding: 10px 16px;
-  color: var(--green-700);
+  color: var(--river-700);
   font-size: var(--fs-button);
   font-weight: 600;
   line-height: var(--lh-ui);
 }
 
-/* Destructive outline: earth red, never the brand green. */
+/* Destructive outline: earth red, never the brand river blue. */
 .btn-outline.danger {
   color: var(--red-700);
   border-color: var(--red-300);
@@ -525,7 +526,7 @@ button.primary,
   align-items: flex-start;
   gap: 10px;
   padding: 14px 16px;
-  background: var(--green-100);
+  background: var(--river-100);
   border-radius: var(--r-sm);
   margin: 15px 0;
   font-size: var(--fs-small);
@@ -544,7 +545,7 @@ button.primary,
 }
 
 /* Something is broken or leaking: earth red, edged all round and led by its warning icon, so it never reads as a calm
-   green or amber note. */
+   river or amber note. */
 .notice.hazard {
   background: var(--cat-hazard-surface);
   color: var(--cat-hazard-fg);
@@ -625,7 +626,7 @@ header {
 .brand svg {
   width: 36px;
   height: 36px;
-  color: #287447;
+  color: #1c6d85;
 }
 
 .brand-symbol {
@@ -666,7 +667,7 @@ header {
 
 .location-button small {
   display: block;
-  color: var(--green-600);
+  color: var(--river-600);
   font-size: var(--fs-caption);
   font-weight: 600;
 }
@@ -981,7 +982,7 @@ header {
 }
 
 .aqi-moderate .aqi-badge {
-  background: #fff0b2;
+  background: #daf4fe;
   color: #634900;
 }
 
@@ -1176,7 +1177,7 @@ header {
   align-content: start;
   gap: 6px;
   text-align: left;
-  color: #173e31;
+  color: #1c3a45;
   min-width: 0;
   transition: transform var(--dur-base) var(--ease-settle);
 }
@@ -1217,7 +1218,7 @@ header {
 }
 
 .capture-primary > svg {
-  color: #d0e4d8;
+  color: #d0e2e8;
 }
 
 /* Search card */
@@ -1321,9 +1322,9 @@ header {
 
 .quick button {
   padding: 5px 13px;
-  color: #41664f;
+  color: #3f626f;
   border-radius: var(--r-pill);
-  border: 1px solid #e2e9dc;
+  border: 1px solid #dce9ee;
   font-size: var(--fs-chip);
   font-weight: 500;
   line-height: 1.35;
@@ -1504,13 +1505,13 @@ header {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(180deg, var(--green-500), var(--green-600));
+  background: linear-gradient(180deg, var(--river-500), var(--river-600));
   color: #fff;
   font-size: var(--fs-meta);
   font-weight: 700;
   letter-spacing: .02em;
   line-height: 1;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 1px 2px rgb(10 42 34 / .25);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 1px 2px rgb(16 39 47 / .25);
 }
 
 /* The connector runs from this step's disc across the column gap towards the next disc. */
@@ -1522,7 +1523,7 @@ header {
   right: -20px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--green-300), var(--green-200));
+  background: linear-gradient(90deg, var(--river-300), var(--river-200));
 }
 
 .how-grid h3 {
@@ -1573,14 +1574,14 @@ header {
 
 .question-skeleton .skeleton-text {
   color: transparent;
-  background: linear-gradient(var(--green-100), var(--green-100)) center / 100% 14px no-repeat;
+  background: linear-gradient(var(--river-100), var(--river-100)) center / 100% 14px no-repeat;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
 .question-skeleton .choices .btn-outline {
   color: transparent;
-  background: var(--green-100);
+  background: var(--river-100);
   border-color: transparent;
   box-shadow: none;
 }
@@ -1605,7 +1606,7 @@ header {
 }
 
 .result-skeleton [data-slot=skeleton] {
-  background: var(--green-100);
+  background: var(--river-100);
   border-radius: var(--r-xs);
 }
 
@@ -1649,7 +1650,7 @@ header {
   font-size: var(--fs-reading);
   font-weight: 600;
   line-height: 1.4;
-  color: var(--green-700);
+  color: var(--river-700);
   margin-bottom: 22px;
 }
 
@@ -1684,7 +1685,7 @@ header {
   bottom: -2px;
   width: 2px;
   border-radius: 2px;
-  background: var(--green-200);
+  background: var(--river-200);
 }
 
 /* The disc is 4px taller than the first line, so it is pulled up 2px to centre on it. */
@@ -1696,15 +1697,15 @@ header {
   height: 28px;
   margin-top: -2px;
   border-radius: 50%;
-  background: linear-gradient(180deg, var(--green-500), var(--green-600));
+  background: linear-gradient(180deg, var(--river-500), var(--river-600));
   color: #fff;
   font-size: var(--fs-meta);
   font-weight: 700;
   line-height: 1;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 1px 2px rgb(10 42 34 / .25);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 1px 2px rgb(16 39 47 / .25);
 }
 
-/* Hazard result: something is broken or leaking. Earth red and a warning mark instead of the calm brand green. */
+/* Hazard result: something is broken or leaking. Earth red and a warning mark instead of the calm brand river blue. */
 .classification.is-hazard {
   border-color: var(--cat-hazard-line);
 }
@@ -1740,7 +1741,7 @@ header {
 }
 
 .source-panel > svg {
-  color: #488359;
+  color: #3e7d92;
   width: 26px;
   height: 26px;
 }
@@ -1756,7 +1757,7 @@ header {
   font-size: var(--fs-meta);
   line-height: 1.5;
   margin-top: 14px;
-  color: var(--green-600);
+  color: var(--river-600);
   text-decoration-line: underline;
 }
 
@@ -1794,9 +1795,9 @@ header {
 }
 
 .choices .btn-outline[aria-pressed=true] {
-  border-color: var(--green-400);
-  background: var(--green-100);
-  color: var(--green-700);
+  border-color: var(--river-400);
+  background: var(--river-100);
+  color: var(--river-700);
   box-shadow: var(--elev-pressed);
 }
 
@@ -1846,7 +1847,7 @@ header {
   background: linear-gradient(180deg, rgb(255 255 255 / .5), rgb(255 255 255 / 0) 65%), var(--sign-bg);
   border: 1px solid var(--sign-line);
   border-radius: var(--r-lg);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .85), 0 1px 1px rgb(16 58 42 / .08), -1px 6px 14px -8px rgb(16 58 42 / .3);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .85), 0 1px 1px rgb(20 54 65 / .08), -1px 6px 14px -8px rgb(20 54 65 / .3);
 }
 
 .waste-sign::before {
@@ -1867,14 +1868,14 @@ header {
   border-radius: var(--r-lg);
   background: linear-gradient(180deg, #fff, #f4f2ea);
   color: var(--sign-fg);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px rgb(13 42 31 / .06), 0 1px 1px rgb(13 42 31 / .12), -1px 5px 10px -5px rgb(13 42 31 / .3);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px rgb(16 39 47 / .06), 0 1px 1px rgb(16 39 47 / .12), -1px 5px 10px -5px rgb(16 39 47 / .3);
 }
 
 /* Embossed: a bright edge above the glyph and a soft shade below it. */
 .waste-sign-icon svg {
   width: 40px;
   height: 40px;
-  filter: drop-shadow(0 -1px 0 rgb(255 255 255 / .9)) drop-shadow(0 1px 1px rgb(13 42 31 / .28));
+  filter: drop-shadow(0 -1px 0 rgb(255 255 255 / .9)) drop-shadow(0 1px 1px rgb(16 39 47 / .28));
 }
 
 .waste-sign small {
@@ -2113,7 +2114,7 @@ textarea {
   gap: 8px;
   margin: 20px 0 8px;
   font-size: var(--fs-body);
-  color: var(--green-700);
+  color: var(--river-700);
 }
 
 .reuse-group h4 svg {
@@ -2207,7 +2208,7 @@ textarea {
 .community-status svg {
   width: 18px;
   height: 18px;
-  color: var(--green-600);
+  color: var(--river-600);
 }
 
 .community > p {
@@ -2244,7 +2245,7 @@ textarea {
 }
 
 .community-message {
-  color: var(--green-700);
+  color: var(--river-700);
   font-weight: 600;
 }
 
@@ -2265,7 +2266,7 @@ textarea {
 }
 
 .user-points-notice {
-  color: var(--green-700);
+  color: var(--river-700);
   font-weight: 600;
 }
 
@@ -2362,9 +2363,9 @@ textarea {
 }
 
 .add-point-chip:has(input:checked) {
-  border-color: var(--green-300);
-  background: var(--green-100);
-  color: var(--green-700);
+  border-color: var(--river-300);
+  background: var(--river-100);
+  color: var(--river-700);
   font-weight: 600;
 }
 
@@ -2372,7 +2373,7 @@ textarea {
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: var(--green-600);
+  accent-color: var(--river-600);
 }
 
 .add-point-location {
@@ -2388,7 +2389,7 @@ textarea {
 }
 
 .add-point-location a {
-  color: var(--green-600);
+  color: var(--river-600);
   text-decoration-line: underline;
 }
 
@@ -2478,7 +2479,7 @@ textarea {
 .empty > svg {
   width: 32px;
   height: 32px;
-  color: #83a38e;
+  color: #81a0ab;
 }
 
 .empty-card > h2 {
@@ -2552,7 +2553,7 @@ textarea {
 /* Content scrolled under the header: a hairline and a soft shadow under the sticky title separate the two. */
 [data-slot=dialog-content][data-scrolled] > [data-slot=dialog-title],
 [data-slot=dialog-content][data-scrolled] > .photo-title {
-  box-shadow: 0 1px 0 var(--line-soft), 0 8px 12px -10px rgb(16 58 42 / .35);
+  box-shadow: 0 1px 0 var(--line-soft), 0 8px 12px -10px rgb(20 54 65 / .35);
 }
 
 /* The sticky title carries its own 6px, so its description sits right under it. */
@@ -2580,7 +2581,7 @@ textarea {
 [data-slot=alert-dialog-footer] > [data-slot=alert-dialog-cancel] {
   background: var(--paper-raised);
   border-color: var(--line);
-  color: var(--green-700);
+  color: var(--river-700);
   box-shadow: none;
 }
 
@@ -2638,16 +2639,16 @@ textarea {
 }
 
 .area-option.active {
-  background: var(--green-100);
+  background: var(--river-100);
 }
 
 .area-option.active {
-  color: var(--green-700);
+  color: var(--river-700);
   font-weight: 600;
 }
 
 .area-option.active > svg {
-  color: var(--green-600);
+  color: var(--river-600);
 }
 
 .location-status {
@@ -2681,7 +2682,7 @@ textarea {
   display: grid;
   gap: 5px;
   padding: 15px;
-  border: 1px solid #d0e5ce;
+  border: 1px solid #c9e3ed;
   border-radius: var(--r-md);
   font-size: var(--fs-meta);
   overflow-wrap: anywhere;
@@ -2691,7 +2692,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #24603d;
+  color: #1d5b6d;
 }
 
 .position-card svg {
@@ -2704,7 +2705,7 @@ textarea {
 }
 
 .position-card small {
-  color: #60705e;
+  color: #5a6f76;
   font-size: var(--fs-caption);
   line-height: 1.5;
 }
@@ -2737,7 +2738,7 @@ textarea {
 .location-divider::after {
   content: '';
   height: 1px;
-  background: #e0e7dc;
+  background: #dbe7eb;
   flex: 1;
 }
 
@@ -2757,7 +2758,7 @@ textarea {
 .feature-icon {
   display: grid;
   place-items: center;
-  color: #286147;
+  color: #2a5c6c;
   width: 44px;
   height: 44px;
   border-radius: var(--r-md);
@@ -2794,7 +2795,7 @@ textarea {
   flex-direction: column;
   justify-content: center;
   gap: 9px;
-  border: 1.5px dashed #aec5a5;
+  border: 1.5px dashed #a1c3d0;
   border-radius: var(--r-lg);
   min-height: 210px;
   padding: 25px 15px;
@@ -2805,11 +2806,11 @@ textarea {
 .drop-icon {
   display: grid;
   place-items: center;
-  background: #e1edd7;
+  background: #d7edf5;
   width: 58px;
   height: 58px;
   border-radius: var(--r-lg);
-  color: #35613e;
+  color: #2a5d6d;
   margin-bottom: 4px;
 }
 
@@ -2829,8 +2830,8 @@ textarea {
 }
 
 .photo-dropzone.is-dragging {
-  border-color: #1f7744;
-  background: #dfeeda;
+  border-color: #06708a;
+  background: #d8edf5;
 }
 
 .photo-loading {
@@ -2841,8 +2842,8 @@ textarea {
   gap: 10px;
   min-height: 200px;
   border-radius: var(--r-lg);
-  background: #f0f5eb;
-  color: #496445;
+  background: #ebf5f9;
+  color: #3d626f;
 }
 
 .photo-loading span {
@@ -2852,7 +2853,7 @@ textarea {
 .photo-preview {
   overflow: hidden;
   border-radius: var(--r-lg);
-  border: 1px solid #dce5d7;
+  border: 1px solid #d6e4ea;
   background: #edf1e9;
 }
 
@@ -2888,7 +2889,7 @@ textarea {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  color: #355e41;
+  color: #2f5a69;
   font-size: var(--fs-meta);
   margin: 0;
 }
@@ -2901,7 +2902,7 @@ textarea {
 }
 
 .photo-manual {
-  border-top: 1px solid #dfe7da;
+  border-top: 1px solid #dae7eb;
   padding-top: 15px;
 }
 
@@ -2933,8 +2934,8 @@ textarea {
   justify-content: center;
 }
 
-/* A recognised item is a full-width row whose right end is the call to action: a solid green pill (white on
-   --green-600 is 6.6:1) with an arrow, so "Xem hướng dẫn" reads as the next step, not as a faint caption. The whole
+/* A recognised item is a full-width row whose right end is the call to action: a solid river-blue pill (white on
+   --river-600 is 6.6:1) with an arrow, so "Xem hướng dẫn" reads as the next step, not as a faint caption. The whole
    row is the button and stays at least 56px tall, well past the 44px touch target. */
 .recognition-controls .candidate-row {
   width: 100%;
@@ -2951,7 +2952,7 @@ textarea {
 }
 
 .candidate-row .candidate-check {
-  color: var(--green-500);
+  color: var(--river-500);
 }
 
 .candidate-row > span:nth-child(2) {
@@ -2964,7 +2965,7 @@ textarea {
 }
 
 .candidate-row small {
-  color: var(--green-700);
+  color: var(--river-700);
   font-weight: 600;
 }
 
@@ -2975,13 +2976,13 @@ textarea {
   min-height: 40px;
   padding: 8px 12px 8px 14px;
   border-radius: var(--r-pill);
-  background: var(--green-600);
+  background: var(--river-600);
   color: #fff;
   font-size: var(--fs-small);
   font-weight: 600;
   line-height: var(--lh-ui);
   white-space: nowrap;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(10 42 34 / .2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 1px 2px rgb(16 39 47 / .2);
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 
@@ -2993,7 +2994,7 @@ textarea {
 
 @media (hover: hover) and (pointer: fine) {
   .candidate-row:not(:disabled):hover .candidate-cta {
-    background: var(--green-700);
+    background: var(--river-700);
   }
 
   .candidate-row:not(:disabled):hover .candidate-cta svg {
@@ -3002,7 +3003,7 @@ textarea {
 }
 
 .candidate-row:not(:disabled):active .candidate-cta {
-  background: var(--green-800);
+  background: var(--river-800);
 }
 
 
@@ -3015,7 +3016,7 @@ textarea {
 .consent input {
   width: 17px;
   height: 17px;
-  accent-color: var(--green-600);
+  accent-color: var(--river-600);
   flex-shrink: 0;
   margin-top: 3px;
 }
@@ -3023,11 +3024,11 @@ textarea {
 .local-photo-note {
   display: flex;
   gap: 10px;
-  background: #eef3e9;
-  border: 1px solid #dfe8d6;
+  background: #e9f3f7;
+  border: 1px solid #d6e8ee;
   border-radius: var(--r-md);
   padding: 13px 14px;
-  color: #526a49;
+  color: #436875;
   font-size: var(--fs-caption);
 }
 
@@ -3041,7 +3042,7 @@ textarea {
 .local-photo-note b {
   font-size: var(--fs-meta);
   font-weight: 600;
-  color: #3b5c39;
+  color: #2d5968;
 }
 
 .local-photo-note p {
@@ -3068,7 +3069,7 @@ textarea {
   --focus-halo: var(--focus-halo-on-dark);
   position: relative;
   overflow: hidden;
-  background: #122a22;
+  background: #15282e;
   border-radius: var(--r-lg);
   aspect-ratio: 4 / 3;
   min-height: 260px;
@@ -3123,10 +3124,10 @@ textarea {
   height: 60px;
   border-radius: 50%;
   background: #fff;
-  color: #184f34;
+  color: #174a5a;
   display: grid;
   place-items: center;
-  border: 5px solid #b2d29e;
+  border: 5px solid #99d0e4;
   box-shadow: 0 0 0 3px #fff8;
 }
 
@@ -3149,7 +3150,7 @@ textarea {
 
 .camera-wait p {
   font-size: var(--fs-meta);
-  color: #dce7dd;
+  color: #dae6ea;
   margin: 0;
 }
 
@@ -3315,22 +3316,22 @@ footer .text-button {
   }
 
   .primary:hover {
-    background: var(--green-700);
+    background: var(--river-700);
   }
 
   .icon-button:hover {
-    background: var(--green-100);
+    background: var(--river-100);
   }
 
   /* Location dialog and status */
   .area-option:hover {
-    background: var(--green-100);
+    background: var(--river-100);
   }
 
   /* Photo dialog and camera */
   .photo-dropzone:hover {
-    background: #eaf2e2;
-    border-color: #679358;
+    background: #e2f2f8;
+    border-color: #4a90a7;
   }
 }
 
@@ -3677,7 +3678,7 @@ footer .text-button {
     right: auto;
     width: 2px;
     height: auto;
-    background: var(--green-200);
+    background: var(--river-200);
   }
 
   .how-grid h3 {
@@ -3816,7 +3817,7 @@ footer .text-button {
     height: 4px;
     margin-left: -18px;
     border-radius: 2px;
-    background: rgb(13 42 31 / .2);
+    background: rgb(16 39 47 / .2);
   }
 
   /* Location dialog and status */
