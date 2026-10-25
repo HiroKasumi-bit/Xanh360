@@ -6,7 +6,8 @@ afternoon, with a ghe ve chai and its rower in a nón lá. The layout follows th
 random sequence, and the same camera, so pressing "Xem 3D" swaps in a view that lines up with this picture.
 
 Everything above the skyline is transparent (the hero's green shows through), so the sky only lights the scene and
-colours reflections. Run from the repository root (about ten minutes at full size on four CPU cores):
+colours reflections. Made with Blender 4.2 LTS; run from the repository root (about two minutes at full size on four
+CPU cores):
 
     blender -b -P scripts/blender/saigon_still.py -- [--out public/hero] [--samples 160] [--scale 1] [--png path]
 

@@ -3757,7 +3757,7 @@ footer .text-button {
     white-space: nowrap;
   }
 
-  /* Navigation tabs: a bottom tab bar with four equal columns, the icon over a 12px label, 56px plus the home-indicator
+  /* Navigation tabs: a bottom tab bar with four equal columns, the icon over a 13px label, 56px plus the home-indicator
      inset. It is still the Radix tablist, so Tab reaches the active tab and the arrow keys, Home and End move between
      tabs. The material lives in visuals.css. */
   .nav-tabs {
@@ -3775,6 +3775,7 @@ footer .text-button {
     gap: 0;
     border-radius: 0;
     overflow: visible;
+    container: tabbar / inline-size;
   }
 
   .nav-tabs [role=tab] {
@@ -3826,10 +3827,10 @@ footer .text-button {
   }
 }
 
-/* Narrow phones: "Điểm tiếp nhận" no longer fits a quarter of the tab bar at 12px, so it shows "Tiếp nhận". The full label
-   stays in the accessible name, which still contains the visible words. */
-@media (max-width: 385px) {
-  /* Navigation tabs */
+/* Phone tab bar: where "Điểm tiếp nhận" no longer fits a quarter of the bar, it shows "Tiếp nhận". The bar is the query
+   container and the threshold is in em, so a larger text size switches it too. The full label stays in the accessible
+   name, which still contains the visible words. */
+@container tabbar (max-width: 26em) {
   .tab-label-full {
     position: absolute;
     width: 1px;
